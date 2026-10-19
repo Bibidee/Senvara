@@ -20,7 +20,7 @@ The contract is deployed to Studionet 61999 and its exact source, ABI schema, ve
 - [ ] Complete real MetaMask and Rabby user journeys including simultaneous extensions, rejection, disconnect, switching, reboot/reload and unknown receipt recovery. **Partial pass:** Rabby connection, switching, disconnect/reconnect, injected selection and signed sends passed; MetaMask and several negative wallet paths remain unavailable.
 - [ ] Complete the Playwright browser sweep across all routes at desktop, tablet and mobile widths with axe and manual mobile review. **Partial pass:** local Chromium, keyboard, accessibility, responsive and RPC-recovery assertions passed; axe-specific and manual mobile review remain open.
 - [x] Local production dependency vulnerability scan (0 vulnerabilities) and documented residual limitations.
-- [x] Hosted exact-head CI and hosted production dependency scan (GitHub Actions runs 8, 9 and 10 passed).
+- [x] Hosted exact-head CI and hosted production dependency scan (GitHub Actions runs 8 through 12 passed).
 - [x] Documentation/prod parity of source, ABI, contract ID, chain 61999, version, frontend environment and CI manifest; the executed lifecycle and transaction matrix are recorded, while conclusive and negative-path gates remain open.
 - [x] Cleanup scan for unintentional cross-project identifiers, placeholder deployment values, dangling TODOs and unverified security claims.
 
