@@ -21,7 +21,7 @@
 | `npm ci` and `npm --prefix frontend ci` | **PASS** | Both generated lockfiles reproduce clean installs; npm emitted only dependency deprecation warnings |
 | `npm run verify:deployment` | **PASS** | Local source, manifest, frontend env and chain constants match the canonical deployment |
 | `npm run test:browser` | **PASS** | Playwright Chromium 151; routes, 390/1440px layout, visible control/field labels, public read, RPC retry recovery, keyboard traversal and fake EIP-6963 provider assertions |
-| Hosted exact-head GitHub Actions run | **PASS** | Run 9 on `ac2227afc8a2b93a5d730912e16c9a3b546f1011`; Direct Mode, frontend production audit, build, Linux Chromium/Playwright and client checks passed. GitHub emitted only Node.js 20 action and Ubuntu image migration notices. Run 8 also passed on the preceding lifecycle-documentation head. |
+| Hosted exact-head GitHub Actions run | **PASS** | Runs 9 and 10 passed on `ac2227afc8a2b93a5d730912e16c9a3b546f1011` and `6e7f351804a7f8c65086eb7bb938d69b29f7f611`; Direct Mode, frontend production audit, build, Linux Chromium/Playwright and client checks passed. GitHub emitted only Node.js 20 action and Ubuntu image migration notices. Run 8 also passed on the preceding lifecycle-documentation head. |
 | Hosted preview read-only browser sweep | **PASS; read-only** | Brave session reached `/`, `/open/`, `/method/` and `/workbench/`; no browser console warnings/errors observed. Wallet writes were not attempted. |
 | Hosted real Rabby wallet session | **PASS; signed lifecycle** | Wallet A/B connection and switching were exercised on Studionet 61999; proposal, response and two evaluation retries were signed and each receipt was independently reconciled. |
 
