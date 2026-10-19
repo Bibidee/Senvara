@@ -23,7 +23,7 @@
 | `npm run test:browser` | **PASS** | Playwright Chromium 151; routes, 390/1440px layout, visible control/field labels, public read, RPC retry recovery, keyboard traversal and fake EIP-6963 provider assertions |
 | Hosted exact-head GitHub Actions run | **PASS** | Run 5 on `74568a1fe2ffc81f6c01a3d10e2101ad64f2ff51`; Direct Mode, full frontend audit, build, Linux Chromium/Playwright and client checks passed. |
 | Hosted preview read-only browser sweep | **PASS; read-only** | Brave session reached `/`, `/open/`, `/method/` and `/workbench/`; no browser console warnings/errors observed. Wallet writes were not attempted. |
-| Hosted real Rabby wallet session | **PASS; no writes** | Connected on Studionet 61999, app disconnect cleared the session, reconnect and injected-provider selection succeeded, and reload silently restored the account. |
+| Hosted real Rabby wallet session | **PASS; signed lifecycle** | Wallet A/B connection and switching were exercised on Studionet 61999; proposal, response and two evaluation retries were signed and each receipt was independently reconciled. |
 
 ## Executed against Studionet
 
@@ -32,10 +32,12 @@
 | Contract deployment | **FINALIZED** | `0x011be7340538a7279ffd600408218cb7736a375031dd52c0d06e975edb3fa02d`; one consensus round, 5/5 validator votes `AGREE` |
 | Deployed source readback | **PASS; exact SHA-256 match** | 19,552 bytes; `33385d0283d67cd7c13f0cdafe79ba06c3466a20a35356032afe7c9d32fc797c` matches `contracts/senvara.py` |
 | ABI/schema and version readback | **PASS** | `evaluate(number:int, request_nonce:string)`; `get_version() = 0.1.0`; `get_total() = 0` |
+| Live two-wallet lifecycle, record `#1` | **PASS; canonical unresolved outcome** | Wallet A `0x4a7d…32f5` proposed and Wallet B `0xff20…9b54` responded. Proposal `0x00f36bee64d3c5f3507b7f65f1b6c805e8d917c95c5dcf5fd36cf74c55081d7e` and response `0xbd45604b8700e8bec6f81f6e3b8ea6be729f838a4f02e37131772963af8d2438` finalized and read back. Both frozen sources are on signed GitHub commit `272a0a003e875c95902aa6f39c03458f26e4798c`. |
+| Live validator evaluation and retry accounting | **PASS; no false verdict** | Evaluation attempt 1 `0x7106ba897365d5b4336ca5cb0f7e8fca0fa06f9b60bf053b3299c3b02b8f17a1` and fresh-nonce attempt 2 `0xd3b577ca7eebf8f6ddbf2a6b4a81fa4840e45f75663b664faa785d6c83e46aba` both finalized. Canonical state is `attempts 2/3`, `last_reason = JUDGMENT_UNAVAILABLE`, with no `DECIDED` outcome; unavailable evidence was not converted into a favorable or adverse judgment. |
 
 ## Not executed
 
-GenVM lint, live GitHub validator retrieval, the two-wallet Studionet application lifecycle, real MetaMask, account-change/network-change and signed transaction journeys, axe-specific automation and manual mobile-device verification remain open. Real Rabby connection/disconnect/reconnect/injected selection/reload passed without signing. MetaMask was unavailable. The local browser harness is a pass; its fake providers are not real wallet extensions and its local RPC-failure route is intentionally synthetic.
+GenVM lint, live conclusive validator evidence, real MetaMask, account-change/network-change assertions in MetaMask, axe-specific automation and manual mobile-device verification remain open. Real Rabby connection/disconnect/reconnect/injected selection/reload and the signed Wallet A/B lifecycle passed. The two live evaluation attempts finalized as `JUDGMENT_UNAVAILABLE`; a third retry was not submitted. MetaMask was unavailable. The local browser harness is a pass; its fake providers are not real wallet extensions and its local RPC-failure route is intentionally synthetic.
 
 These are release gates, not passing results. The explicitly authorized contract deployment was verified above; a Vercel preview was prepared and read-only route navigation was checked, but no frontend production setting or production promotion was changed.
 

@@ -1,5 +1,5 @@
 {
-  "browser_wallet_verification": "LOCAL_PLAYWRIGHT_PASS_FAKE_EIP6963; REAL_RABBY_CONNECT_DISCONNECT_RECONNECT_INJECTED_RELOAD_PASS_ON_STUDIONET; METAMASK_NOT_AVAILABLE; NO_SIGNED_WRITE",
+  "browser_wallet_verification": "LOCAL_PLAYWRIGHT_PASS_FAKE_EIP6963; REAL_RABBY_SIGNED_WALLET_A_B_LIFECYCLE_AND_RETRY_PASS_ON_STUDIONET; METAMASK_NOT_AVAILABLE",
   "chain_id": 61999,
   "cli_local": "0.39.1",
   "contract_address": "0x9668263921d88c1deaB8DA5A416a65D562cB4187",
@@ -32,7 +32,7 @@
   "frontend_typecheck_and_build": "TYPECHECK_LINT_BUILD_PASSED_LOCAL",
   "dependency_audit": "PASS_0_ALL_FRONTEND_VULNERABILITIES_LOCAL",
   "lockfile_reproducibility": "PASS_NPM_CI_BOTH",
-  "github_commit": "74568a1fe2ffc81f6c01a3d10e2101ad64f2ff51",
+  "github_commit": "272a0a003e875c95902aa6f39c03458f26e4798c",
   "hosted_ci_run": "https://github.com/Bibidee/Senvara/actions/runs/39241782943",
   "live_genvm_verification": "DEPLOYMENT_FINALIZED_SOURCE_READBACK_VERIFIED",
   "product": "Senvara",
@@ -71,5 +71,19 @@
   "vercel_status": "PREVIEW_READY_HOSTED_READ_ONLY_ROUTES_VERIFIED; CLI_PROTECTED_CURL_NOT_USED; NO_PRODUCTION_PROMOTION",
   "github_actions_workflow": ".github/workflows/quality.yml",
   "github_actions_status": "PASS_RUN_5_LINUX_DIRECT_MODE_CHROMIUM_CLIENT_FRONTEND_CHECKS_FULL_AUDIT",
+  "live_two_wallet_lifecycle": {
+    "record": 1,
+    "signed_commit": "272a0a003e875c95902aa6f39c03458f26e4798c",
+    "wallet_a": "0x4a7d76b8c4668a3426d6d54ec24b41fa87b532f5",
+    "wallet_b": "0xff203bb65942f50cb81a8af98c5f5bd9d8a79b54",
+    "propose_transaction": "0x00f36bee64d3c5f3507b7f65f1b6c805e8d917c95c5dcf5fd36cf74c55081d7e",
+    "respond_transaction": "0xbd45604b8700e8bec6f81f6e3b8ea6be729f838a4f02e37131772963af8d2438",
+    "evaluate_attempt_1": "0x7106ba897365d5b4336ca5cb0f7e8fca0fa06f9b60bf053b3299c3b02b8f17a1",
+    "evaluate_attempt_2": "0xd3b577ca7eebf8f6ddbf2a6b4a81fa4840e45f75663b664faa785d6c83e46aba",
+    "canonical_attempts": 2,
+    "canonical_last_reason": "JUDGMENT_UNAVAILABLE",
+    "canonical_decision": "UNRESOLVED_NO_FALSE_VERDICT",
+    "third_retry_submitted": false
+  },
   "version": "0.1.0"
 }
