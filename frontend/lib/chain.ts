@@ -11,6 +11,10 @@ type Result = Record<string, unknown>;
 const MAX_PAGE = 20;
 const CATEGORIES = new Set(["SUPPORTS", "CONTRADICTS", "IRRELEVANT", "AMBIGUOUS"]);
 const DECISIONS = new Set(["SUPPORTED", "CONTRADICTED", "MIXED", "INSUFFICIENT"]);
+const RETRYABLE_REASONS = new Set([
+  "PROVIDER_OR_PROVENANCE_UNAVAILABLE", "JUDGMENT_UNAVAILABLE",
+  "JUDGMENT_EXECUTION_UNAVAILABLE", "JUDGMENT_MALFORMED_OUTPUT", "JUDGMENT_CITATION_INVALID",
+]);
 const OPPOSING_STATES = new Set(["READY_FOR_REVIEW", "DECIDED", "EXPIRED_UNRESOLVED", "REVIEW_EXHAUSTED"]);
 const READ_ONLY_ACCOUNT = {address: "0x0000000000000000000000000000000000000000"} as never;
 const RPC_CHAIN = {...simulator, name: "GenLayer Studionet", id: CHAIN_ID,
@@ -94,7 +98,7 @@ export async function observationById(id: number, attempt: number): Promise<Obse
   const observation = parseJsonString<Observation>(await readContract("get_observation", [BigInt(id), BigInt(attempt)]));
   if (!observation || (observation.kind !== "RETRYABLE" && observation.kind !== "EVALUATED")) throw new Error("Canonical observation has an invalid kind.");
   if (observation.kind === "RETRYABLE") {
-    if (observation.reason !== "PROVIDER_OR_PROVENANCE_UNAVAILABLE" && observation.reason !== "JUDGMENT_UNAVAILABLE") throw new Error("Canonical retry reason is invalid.");
+    if (typeof observation.reason !== "string" || !RETRYABLE_REASONS.has(observation.reason)) throw new Error("Canonical retry reason is invalid.");
     return observation;
   }
   if (typeof observation.primary !== "string" || !CATEGORIES.has(observation.primary) || typeof observation.opposing !== "string" || !CATEGORIES.has(observation.opposing) || observation.decision !== derivedDecision(observation.primary, observation.opposing)) throw new Error("Canonical observation classifications are inconsistent.");

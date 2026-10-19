@@ -11,6 +11,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "contracts" / "senvara.py"
+CANDIDATE_CONTRACT = ROOT / "contracts" / "senvara_v02.py"
 COMMIT = "a" * 40
 REPOSITORY = "example/registry"
 PRIMARY_PATH = "docs/primary.md"
@@ -66,6 +67,15 @@ def configure_judgement(vm, primary="SUPPORTS", opposing="SUPPORTS"):
         "primary_quote": "supports safe retries" if primary in ("SUPPORTS", "CONTRADICTS") else "",
         "opposing_quote": "Retries require an idempotency key" if opposing in ("SUPPORTS", "CONTRADICTS") else "",
     }))
+
+
+def configure_text_judgement(vm, primary="SUPPORTS", opposing="SUPPORTS", primary_quote="supports safe retries", opposing_quote="Retries require an idempotency key"):
+    vm.mock_llm(r".*", "```json\n" + json.dumps({
+        "primary": primary,
+        "opposing": opposing,
+        "primary_quote": primary_quote if primary in ("SUPPORTS", "CONTRADICTS") else "",
+        "opposing_quote": opposing_quote if opposing in ("SUPPORTS", "CONTRADICTS") else "",
+    }) + "\n```")
 
 
 def submit_ready(contract, vm, alice, bob):
@@ -151,3 +161,59 @@ def test_direct_mode_hostile_quote_becomes_retryable_not_verdict(direct_vm, dire
     dossier = json.loads(contract.get_dossier(number))
     assert dossier["status"] == "READY_FOR_REVIEW"
     assert dossier["last_reason"] == "JUDGMENT_UNAVAILABLE"
+
+
+def test_direct_mode_v02_parses_realistic_text_json_and_persists_conclusive_result(direct_vm, direct_deploy, direct_alice, direct_bob):
+    contract = direct_deploy(str(CANDIDATE_CONTRACT))
+    number = submit_ready(contract, direct_vm, direct_alice, direct_bob)
+    configure_sources(direct_vm)
+    configure_text_judgement(direct_vm)
+    direct_vm.sender = direct_alice
+    contract.evaluate(number, "d" * 64)
+    dossier = json.loads(contract.get_dossier(number))
+    observation = json.loads(contract.get_observation(number, 1))
+    assert contract.get_version() == "0.2.0"
+    assert dossier["status"] == "DECIDED"
+    assert observation["decision"] == "SUPPORTED"
+
+
+def test_direct_mode_v02_equivalence_authenticates_quotes_but_not_quote_wording(direct_vm, direct_deploy, direct_alice, direct_bob):
+    contract = direct_deploy(str(CANDIDATE_CONTRACT))
+    number = submit_ready(contract, direct_vm, direct_alice, direct_bob)
+    configure_sources(direct_vm)
+    configure_judgement(direct_vm)
+    direct_vm.sender = direct_alice
+    contract.evaluate(number, "e" * 64)
+    leader_observation = json.loads(contract.get_observation(number, 1))
+    dossier = json.loads(contract.get_dossier(number))
+    import sys
+    candidate_module = sys.modules["_contract_senvara_v02"]
+
+    alternate = dict(leader_observation)
+    alternate["primary_quote"] = "safe retries with an idempotency key"
+    alternate["opposing_quote"] = "Retries require an idempotency key before they are safe"
+    assert candidate_module._observation_equivalent(leader_observation, alternate, dossier) is True
+
+    fabricated = dict(alternate)
+    fabricated["primary_quote"] = "fabricated citation"
+    assert candidate_module._observation_equivalent(leader_observation, fabricated, dossier) is False
+
+    conflicting = dict(alternate)
+    conflicting["opposing"] = "CONTRADICTS"
+    assert candidate_module._observation_equivalent(leader_observation, conflicting, dossier) is False
+
+
+def test_direct_mode_v02_separates_malformed_output_and_citation_failures(direct_vm, direct_deploy, direct_alice, direct_bob):
+    contract = direct_deploy(str(CANDIDATE_CONTRACT))
+    number = submit_ready(contract, direct_vm, direct_alice, direct_bob)
+    configure_sources(direct_vm)
+    direct_vm.mock_llm(r".*", "not JSON")
+    direct_vm.sender = direct_alice
+    contract.evaluate(number, "f" * 64)
+    assert json.loads(contract.get_observation(number, 1))["reason"] == "JUDGMENT_MALFORMED_OUTPUT"
+
+    warp_seconds(direct_vm, 1200)
+    direct_vm._llm_mocks = []
+    configure_text_judgement(direct_vm, primary_quote="fabricated citation", opposing_quote="Retries require an idempotency key")
+    contract.evaluate(number, "0" * 63 + "1")
+    assert json.loads(contract.get_observation(number, 2))["reason"] == "JUDGMENT_CITATION_INVALID"

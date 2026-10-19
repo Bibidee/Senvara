@@ -6,7 +6,7 @@
   "scripts": {
     "studio:version": "genlayer --version",
     "test:contract": "node scripts/run-python.cjs -m unittest discover -s tests -p test_*.py -v",
-    "test:protocol": "node scripts/transpile-for-tests.cjs && node --test tests/*.test.cjs",
+    "test:protocol": "node scripts/transpile-for-tests.cjs && node --test tests/client.test.cjs tests/transaction.test.cjs",
     "test": "npm run test:client && npm run test:contract",
     "check:source": "node scripts/run-python.cjs scripts/preflight.py",
     "preflight": "npm run check:source && npm run test",

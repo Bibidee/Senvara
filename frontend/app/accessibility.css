@@ -1,0 +1,5 @@
+/* Shared WCAG AA contrast corrections. Keep these overrides separate from the
+   original visual system so contrast changes remain auditable. */
+:root{--gray:#5a637c;--blue:#4350c7;--blue-deep:#2f3bb0}
+.bottom-panel p,.method-footer p{color:var(--gray)}
+.opposing-source .source-type{color:#93452f}

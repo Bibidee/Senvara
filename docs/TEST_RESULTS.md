@@ -10,8 +10,10 @@
 |---|---|---|
 | `npx --no-install genlayer --version` | **0.39.1** | Repository-local CLI resolution; no GenVM run |
 | `npm run test:client` | **17/17 passed** | Transpiled client logic with mocked SDK/provider/RPC; not real wallet or chain |
+| `npm run test:protocol` | **17/17 passed** | Windows-compatible explicit Node test file list; client and transaction protocol assertions |
 | `npm run test:contract` | **30/30 passed** | Python behavior model with mocked GenLayer/GitHub/model; not hosted Studionet |
 | `python scripts/run-direct-pytest.py tests/test_direct_genvm.py -q` | **5/5 passed** | GenVM Direct Mode using the pinned optional runtime in `requirements-direct.txt` (`genlayer-py 0.16.3`, `genlayer-test 0.29.2`, `pytest 8.4.2`); not hosted Studionet |
+| `python scripts/run-direct-pytest.py tests/test_direct_genvm.py -q` after judgment remediation | **8/8 passed** | Includes the 5 deployed-0.1.0 compatibility tests plus 3 candidate-0.2.0 tests for realistic JSON text, bounded diagnostics and citation-aware equivalence; not hosted Studionet |
 | `npm run check:source` | **PASS** | Static source/network/backendless/custody guard |
 | `npm run preflight` | **PASS** | Source guard plus the two local suites |
 | `npm --prefix frontend run typecheck` | **PASS** | Dependency-aware TypeScript check |
@@ -21,6 +23,8 @@
 | `npm ci` and `npm --prefix frontend ci` | **PASS** | Both generated lockfiles reproduce clean installs; npm emitted only dependency deprecation warnings |
 | `npm run verify:deployment` | **PASS** | Local source, manifest, frontend env and chain constants match the canonical deployment |
 | `npm run test:browser` | **PASS** | Playwright Chromium 151; routes, 390/1440px layout, visible control/field labels, public read, RPC retry recovery, keyboard traversal and fake EIP-6963 provider assertions |
+| Read-only Chromium smoke after accessibility remediation | **PASS** | Static export served locally on an available loopback port; routes, responsive layout, keyboard traversal, RPC retry recovery, MetaMask/Rabby harness discovery, rejection, account change and network switch |
+| Local axe sweep | **PASS** | All five routes at 390x844 and 1440x1000 had no critical, serious or moderate violations after the contrast corrections; manual mobile review and hosted extension coverage remain open |
 | Hosted exact-head GitHub Actions run | **PASS** | Runs 9, 10, 11 and 12 passed on the final code/documentation heads, with Run 12 verifying `b4a64058fdf08fa2c7d895b6c40ea22d007ffc2a`; Direct Mode, frontend production audit, build, Linux Chromium/Playwright and client checks passed. GitHub emitted only Node.js 20 action and Ubuntu image migration notices. Run 8 also passed on the preceding lifecycle-documentation head. |
 | Hosted preview read-only browser sweep | **PASS; read-only** | Brave session reached `/`, `/open/`, `/method/` and `/workbench/`; no browser console warnings/errors observed. Wallet writes were not attempted. |
 | Hosted real Rabby wallet session | **PASS; signed lifecycle** | Wallet A/B connection and switching were exercised on Studionet 61999; proposal, response and two evaluation retries were signed and each receipt was independently reconciled. |
@@ -37,7 +41,7 @@
 
 ## Not executed
 
-GenVM lint, live conclusive validator evidence, real MetaMask, account-change/network-change assertions in MetaMask, axe-specific automation and manual mobile-device verification remain open. Real Rabby connection/disconnect/reconnect/injected selection/reload and the signed Wallet A/B lifecycle passed. All three live evaluation attempts finalized as `JUDGMENT_UNAVAILABLE`; the third retry exhausted the canonical review budget without a false verdict. MetaMask was unavailable. The local browser harness is a pass; its fake providers are not real wallet extensions and its local RPC-failure route is intentionally synthetic.
+GenVM lint, live conclusive validator evidence, real MetaMask extension coverage, account-change/network-change assertions in MetaMask and manual mobile-device verification remain open. Real Rabby connection/disconnect/reconnect/injected selection/reload and the signed Wallet A/B lifecycle passed. All three live evaluation attempts finalized as `JUDGMENT_UNAVAILABLE`; the third retry exhausted the canonical review budget without a false verdict. MetaMask was unavailable. The local browser harness and local axe sweep are passes; its fake providers are not real wallet extensions and its local RPC-failure route is intentionally synthetic. The judgment root-cause limitation and undeployed 0.2.0 candidate are recorded in `docs/JUDGMENT_REMEDIATION.md`.
 
 These are release gates, not passing results. The explicitly authorized contract deployment was verified above; a Vercel preview was prepared and read-only route navigation was checked, but no frontend production setting or production promotion was changed.
 
