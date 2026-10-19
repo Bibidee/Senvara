@@ -15,9 +15,9 @@
 | `npm run check:source` | **PASS** | Static source/network/backendless/custody guard |
 | `npm run preflight` | **PASS** | Source guard plus the two local suites |
 | `npm --prefix frontend run typecheck` | **PASS** | Dependency-aware TypeScript check |
-| `npm --prefix frontend run lint` | **PASS** | ESLint with Next core web vitals |
+| `npm --prefix frontend run lint` | **PASS** | ESLint core plus React, hooks and JSX accessibility rules; the vulnerable Next ESLint wrapper was removed |
 | `npm --prefix frontend run build` | **PASS** | Next.js 16.4.2 Webpack static export; 7 routes prerendered |
-| `npm audit --omit=dev --audit-level=high` (root + frontend) | **PASS** | 0 production vulnerabilities after upgrading viem to 2.57.7 |
+| `npm audit --audit-level=high` (frontend) | **PASS** | 0 vulnerabilities after removing the vulnerable Next ESLint development-toolchain wrapper; production audit remains 0 |
 | `npm ci` and `npm --prefix frontend ci` | **PASS** | Both generated lockfiles reproduce clean installs; npm emitted only dependency deprecation warnings |
 | `npm run verify:deployment` | **PASS** | Local source, manifest, frontend env and chain constants match the canonical deployment |
 | `npm run test:browser` | **PASS** | Playwright Chromium 151; routes, 390/1440px layout, visible control/field labels, public read, RPC retry recovery, keyboard traversal and fake EIP-6963 provider assertions |

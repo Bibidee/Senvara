@@ -45,7 +45,7 @@ A malicious proposer, reviewer, stranger wallet, compromised external document a
 - **Wallet interoperability:** The local Playwright harness exercises fake EIP-6963 MetaMask/Rabby-shaped providers, rejection, account change, disconnect and network switching. Hosted preview testing completed a real Rabby connection on 61999, app disconnect/reconnect, injected-provider selection and silent reload. MetaMask was unavailable; real account/network-change handling and selected-provider signed sends remain open.
 - **Unknown transaction recovery:** Local signing guards intentionally remain blocked after an ambiguous submission with no known hash. A manual, risk-acknowledged local guard release is available only for unknown no-hash outcomes and finalized execution failures; it cannot prove the absence of an earlier broadcast. Automatic replay is forbidden.
 - **Release identity:** The reviewed contract is deployed at `0x9668263921d88c1deaB8DA5A416a65D562cB4187`; exact source readback, ABI schema, version and finalized deployment receipt are recorded in `docs/RELEASE_MANIFEST.json`. No live application record or submission-ready production claim is justified until the hosted lifecycle and frontend identity are verified.
-- **Dependencies:** Local lockfiles are now generated and both production dependency audits report zero vulnerabilities. Hosted CI must repeat the audit on the exact release head.
+- **Dependencies:** The full frontend audit now reports zero vulnerabilities after removing the vulnerable `eslint-config-next` development-toolchain wrapper and retaining direct React, hooks and JSX accessibility lint rules. Hosted CI must repeat the full audit on the exact release head.
 
 ## Security posture
 
