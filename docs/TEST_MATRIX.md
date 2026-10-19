@@ -16,7 +16,7 @@ The checklist uses **executed** only for checks actually run against the current
 | Next.js static export build | Dependency-aware production build | Hosted deployment smoke test | Local build executed |
 | Mobile and accessibility | Responsive source review + Playwright harness | Playwright + axe + keyboard + manual mobile | Local Playwright/keyboard/accessibility assertions passed; hosted preview routes read in Brave; axe-specific and manual mobile open |
 | Studionet deployment/source parity | Finalized deployment receipt, fetched exact source comparison, schema/version readback | Two-wallet application lifecycle, explorer-linked evidence and hosted record transactions | Deployment/source readback and Wallet A/B lifecycle executed; two finalized `JUDGMENT_UNAVAILABLE` evaluations preserved an unresolved canonical state |
-| GitHub Actions exact-head CI | Workflow source added | Hosted workflow on exact merge SHA | Run 8 passed on final repository head; only GitHub runner/action deprecation notices were emitted |
+| GitHub Actions exact-head CI | Workflow source added | Hosted workflow on exact merge SHA | Run 9 passed on `ac2227afc8a2b93a5d730912e16c9a3b546f1011`; only GitHub runner/action deprecation notices were emitted |
 | Dependency and artifact reproducibility | npm lockfiles, production audit and static build | Hosted exact-head reproducibility | Local executed; hosted not executed |
 
 ## Negative-path test obligations

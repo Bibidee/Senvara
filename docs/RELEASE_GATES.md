@@ -13,15 +13,15 @@ The contract is deployed to Studionet 61999 and its exact source, ABI schema, ve
 - [x] Pin local GenLayer CLI 0.39.1; prove the repository-installed binary rather than using any global tool.
 - [x] Local GenVM Direct Mode lifecycle and adversarial cases on a supported runtime; GenVM lint remains open.
 - [ ] Independent third-party security review; the implementation audit and disposition are recorded in `docs/AUDIT_REPORT.md`.
-- [ ] Confirm Studio endpoint browser CORS/direct RPC support for read and write integration, without inserting a proxy.
+- [x] Confirm Studio endpoint browser CORS/direct RPC support for read and write integration, without inserting a proxy; hosted browser reads and signed Studionet writes succeeded.
 - [x] Deploy explicitly approved contract to Studionet 61999 and record source SHA-256 plus deployed-code readback.
 - [x] Generate and verify current ABI against exact code and version; frontend canonical preview configuration is recorded.
-- [ ] Two-wallet hosted lifecycle, successful verdict, unavailable evidence, unauthorized rejection and finality readback.
-- [ ] Real MetaMask and Rabby user journeys including simultaneous extensions, rejection, disconnect, switching, reboot/reload and unknown receipt recovery.
-- [ ] Playwright browser sweep across all routes at desktop, tablet and mobile widths; accessibility and keyboard interactions.
+- [ ] Complete two-wallet hosted lifecycle, including a conclusive verdict and live unauthorized/replay/stale-action rejection. **Partial pass:** Wallet A/B proposal and response, two finalized retryable evaluations, canonical readback and no-false-verdict handling are verified.
+- [ ] Complete real MetaMask and Rabby user journeys including simultaneous extensions, rejection, disconnect, switching, reboot/reload and unknown receipt recovery. **Partial pass:** Rabby connection, switching, disconnect/reconnect, injected selection and signed sends passed; MetaMask and several negative wallet paths remain unavailable.
+- [ ] Complete the Playwright browser sweep across all routes at desktop, tablet and mobile widths with axe and manual mobile review. **Partial pass:** local Chromium, keyboard, accessibility, responsive and RPC-recovery assertions passed; axe-specific and manual mobile review remain open.
 - [x] Local production dependency vulnerability scan (0 vulnerabilities) and documented residual limitations.
-- [x] Hosted exact-head CI and hosted vulnerability scan (GitHub Actions run 5).
-- [x] Documentation/prod parity of source, ABI, contract ID, chain 61999, version, frontend environment and CI manifest; explorer transaction matrix remains open until the live application lifecycle is executed.
+- [x] Hosted exact-head CI and hosted production dependency scan (GitHub Actions runs 8 and 9; latest run 9 passed).
+- [x] Documentation/prod parity of source, ABI, contract ID, chain 61999, version, frontend environment and CI manifest; the executed lifecycle and transaction matrix are recorded, while conclusive and negative-path gates remain open.
 - [x] Cleanup scan for unintentional cross-project identifiers, placeholder deployment values, dangling TODOs and unverified security claims.
 
 ## Evidence labels
