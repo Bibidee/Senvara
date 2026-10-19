@@ -1,0 +1,4 @@
+# Optional runtime for tests/test_direct_genvm.py.
+genlayer-py==0.16.3
+genlayer-test==0.29.2
+pytest==8.4.2

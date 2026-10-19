@@ -1,0 +1,23 @@
+{
+  "name": "senvara",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Security-first GenLayer documentary evidence review",
+  "scripts": {
+    "studio:version": "genlayer --version",
+    "test:contract": "node scripts/run-python.cjs -m unittest discover -s tests -p test_*.py -v",
+    "test:protocol": "node scripts/transpile-for-tests.cjs && node --test tests/*.test.cjs",
+    "test": "npm run test:client && npm run test:contract",
+    "check:source": "node scripts/run-python.cjs scripts/preflight.py",
+    "preflight": "npm run check:source && npm run test",
+    "test:browser": "node tests/browser-smoke.cjs",
+    "verify:deployment": "node scripts/verify-deployment.cjs",
+    "web:dev": "npm --prefix frontend run dev",
+    "web:build": "npm --prefix frontend run build",
+    "test:client": "node scripts/transpile-for-tests.cjs && node --test tests/client.test.cjs tests/transaction.test.cjs"
+  },
+  "devDependencies": {
+    "genlayer": "0.39.1",
+    "playwright": "^1.62.1"
+  }
+}

@@ -1,0 +1,33 @@
+# Senvara Security and Release Audit
+
+**Date:** 2026-10-19
+**Scope:** repository source, contract behavior model, frontend wallet/transaction code, documentation and local release checks.
+**Verdict:** **Release blocked.** The implementation is materially stronger and locally buildable, and the reviewed contract is deployed with exact source/ABI readback and a finalized Studionet receipt. The full application lifecycle, real wallet-extension session and independent audit evidence remain open.
+
+## Findings and disposition
+
+| Severity | Finding | Disposition |
+|---|---|---|
+| High | The frontend imported `studionet` from `genlayer-js@0.9.0`, which does not export it; the app could not typecheck or build. | **Fixed.** Uses the SDK's `simulator` chain shape with the required Studionet RPC and chain ID `61999`; typecheck and static export pass. |
+| High | The previous write implementation supplied a selected provider to an unsupported SDK option. GenLayerJS 0.9.0 routes address-based `eth_*` calls through global `window.ethereum`, so Rabby or another EIP-6963-selected provider could be ignored. | **Fixed.** Consensus metadata and calldata are prepared directly; the final `eth_sendTransaction` is sent only through the selected EIP-1193 provider. No global-provider substitution is used. |
+| High | `wallet_addEthereumChain` was followed immediately by a chain read, without explicitly requesting a switch. A wallet that adds but does not switch would be rejected as wrong-chain. | **Fixed.** The flow requests `wallet_switchEthereumChain` again after a 4902 add and verifies `eth_chainId`. |
+| Medium | A refresh discarded the active wallet session and did not restore an already-authorized selected wallet. | **Fixed.** The app stores only a versioned provider identifier and restores with silent `eth_accounts`; disconnect clears the preference. |
+| Medium | The pre-signing wallet recheck did not revalidate the active session after asynchronous account/chain calls. | **Fixed.** A final provider/account/epoch comparison occurs after both reads and before transaction preparation. |
+| Medium | Canonical dossier and observation reads performed only partial shape validation, leaving room for malformed contract data to be rendered as a status or verdict. | **Fixed.** Required fields, timeline relations, role separation, state-dependent opposing source, decision derivation, classifications, citations and fingerprints are validated before rendering or reconciliation. |
+| Medium | Provider provenance fields used truthiness and string coercion for signed payload, signature, repository identity, commit URL and Git blob metadata. | **Fixed.** These fields now require exact expected types and non-empty signed strings; non-finite JSON and NUL-containing evidence fail closed. |
+| Medium | An evaluation request had no participant-bound replay nonce, and the client could reconcile against an old matching state rather than the state changed by the submitted transaction. | **Fixed.** `evaluate(number, request_nonce)` requires a fresh 64-hex nonce scoped to dossier/sender/nonce and records `last_attempt_by`; the client requires the expected actor, attempt number and recent canonical timestamp. |
+| Medium | A browser storage failure could remove the local action guard while the wallet remained able to sign, making an ambiguous or duplicate action harder to recover safely. | **Fixed.** Intent and action arguments are persisted and checked before signing; unavailable storage blocks the write. |
+| Low | The client test command used a shell glob that Windows passed literally to Node, so the declared suite failed before executing tests. | **Fixed.** Test files are listed explicitly, and the Python runner resolves common Windows interpreter layouts. |
+| Release blocker | Production frontend identity and live writes require a reviewed deployment configuration. | **Partially addressed.** The frontend is configured for `0x9668263921d88c1deaB8DA5A416a65D562cB4187` and the protected Vercel preview build is ready; no production promotion or real signed write was performed. |
+| Release blocker | GenVM Direct Mode passed 5/5 local tests, and the deployment receipt was finalized with 5/5 validator votes agreeing, but GenVM lint, validator access to real GitHub sources and a two-wallet Studionet lifecycle were not executed. | **Open.** Deployment receipt evidence does not replace hosted application transaction/state lifecycle evidence. |
+| Release blocker | Real MetaMask/Rabby extension tests and responsive manual verification were not completed. The executable Playwright harness now passes locally with Chromium 151, including route, responsive, keyboard/accessibility, RPC-recovery and fake EIP-6963 provider assertions. | **Open.** Real Rabby was detected but locked, MetaMask was unavailable, manual mobile review and independent audit remain outstanding. Hosted preview routes were read-only verified. |
+
+## Security review conclusion
+
+The contract has no custody, payable method, admin verdict override or application backend. Its main safety property is conservative: provenance, file-integrity, model-output and leader/validator equivalence failures remain retryable or unresolved rather than becoming a documentary decision. The contract behavior model and local GenVM Direct Mode suite cover authorization, immutable anchors, duplicate proposals, path traversal, deadlines, cooldown, nonce replay, exhaustion, malformed evidence, quote fabrication and validator disagreement.
+
+Residual trust remains in GitHub's reported signature verification and response metadata, GenLayer's nondeterministic execution environment, validator/model behavior and the nominated reviewer relationship. A successful documentary outcome is not a software-security certification, proof of repository ownership or proof of deployed behavior.
+
+## Evidence boundary
+
+Local checks are source/model evidence only. The contract deployment itself is hosted-verified for exact source, ABI and finalized receipt in `docs/RELEASE_MANIFEST.json`. The overall release label must remain blocked until provider behavior, the application lifecycle and the browser-wallet matrix are recorded there as well.

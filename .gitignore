@@ -1,0 +1,17 @@
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+frontend/out/
+.test-dist/
+*.log
+__pycache__/
+*.pyc
+.env
+.env.local
+frontend/.env.local
+.vercel/
+coverage/
+*.tsbuildinfo
+frontend/AGENTS.md
+.DS_Store
