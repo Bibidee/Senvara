@@ -81,10 +81,11 @@
     "respond_transaction": "0xbd45604b8700e8bec6f81f6e3b8ea6be729f838a4f02e37131772963af8d2438",
     "evaluate_attempt_1": "0x7106ba897365d5b4336ca5cb0f7e8fca0fa06f9b60bf053b3299c3b02b8f17a1",
     "evaluate_attempt_2": "0xd3b577ca7eebf8f6ddbf2a6b4a81fa4840e45f75663b664faa785d6c83e46aba",
-    "canonical_attempts": 2,
+    "evaluate_attempt_3": "0xcea1906872b232bf712d674ef66f7817251d126b60ed044110dd8729ce2dda6f",
+    "canonical_attempts": 3,
     "canonical_last_reason": "JUDGMENT_UNAVAILABLE",
-    "canonical_decision": "UNRESOLVED_NO_FALSE_VERDICT",
-    "third_retry_submitted": false
+    "canonical_decision": "UNRESOLVED_NO_FALSE_VERDICT_REVIEW_EXHAUSTED",
+    "third_retry_submitted": true
   },
   "version": "0.1.0"
 }
