@@ -30,7 +30,13 @@ os.unlink = windows_temp_unlink_compat
 try:
     import pytest
     import gltest.direct.loader as direct_loader
+    import gltest.direct.sdk_loader as direct_sdk_loader
     import gltest.direct.vm as direct_vm_module
+
+    real_get_latest_version = direct_sdk_loader.get_latest_version
+    forced_genvm_version = os.environ.get("SENVARA_GENVM_VERSION")
+    if forced_genvm_version:
+        direct_sdk_loader.get_latest_version = lambda: forced_genvm_version
 
     real_inject_message = direct_loader._inject_message_to_fd0
     real_allocate_contract = direct_loader._allocate_contract
@@ -105,6 +111,8 @@ finally:
         direct_loader._allocate_contract = real_allocate_contract
     if "direct_vm_module" in locals():
         direct_vm_module.VMContext._refresh_gl_message = real_refresh_message
+    if "direct_sdk_loader" in locals() and "real_get_latest_version" in locals():
+        direct_sdk_loader.get_latest_version = real_get_latest_version
     os.unlink = real_unlink
 
 for path in locked_paths:

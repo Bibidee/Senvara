@@ -5,6 +5,7 @@ on:
 env:
   NEXT_PUBLIC_SENVARA_CONTRACT: "0x9668263921d88c1deaB8DA5A416a65D562cB4187"
   NEXT_PUBLIC_SENVARA_RPC: "https://studio.genlayer.com/api"
+  SENVARA_GENVM_VERSION: "v0.2.12"
 jobs:
   source-and-web:
     runs-on: ubuntu-latest
