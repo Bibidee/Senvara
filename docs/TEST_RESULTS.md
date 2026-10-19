@@ -48,3 +48,4 @@ These are release gates, not passing results. The explicitly authorized contract
 - Canonical dossiers and observations are validated before display/reconciliation.
 - Evaluation requests carry a unique 64-hex request nonce; committed attempts record `last_attempt_by`, and exact nonce replay is rejected.
 - Transaction reconciliation requires the expected state transition, actor, attempt number and recent canonical timestamp; browser storage failure blocks signing rather than dropping the duplicate-action guard.
+<!-- GitHub-verified lifecycle fixture revision. -->
