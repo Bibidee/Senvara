@@ -14,9 +14,9 @@ Before semantic judgment, **each validator** performs the following remote check
 6. Decode only valid standard base64, verify Git's SHA-1 blob ID from exact bytes and compute a separate SHA-256 fingerprint.
 7. Decode strict UTF-8 and enforce at most 8,192 source bytes per file.
 8. Ask the language model to classify each file, requiring any decisive result to cite an exact 8–320-character quote contained in the corresponding file.
-9. Independently compare the leader and validator decision-critical vector: source hashes, signed payload hash, both classifications, both quotations and the derived outcome.
+9. Independently compare the leader and validator decision-critical vector: source hashes, signed payload hash, both classifications and the derived outcome. Each quotation is independently checked as an exact, relevant substring of its authenticated source. Candidate 0.2.0 intentionally permits different valid quote spans; quote text is citation evidence, not an independent consensus key.
 
-A provenance failure, provider outage, ambiguous model response or invalid quote yields `RETRYABLE`, never `CONTRADICTED` or `SUPPORTED`. Validator disagreement may prevent any consensus transaction from committing.
+A provenance failure, provider outage, ambiguous model response or invalid quote yields a bounded `RETRYABLE` category, never `CONTRADICTED` or `SUPPORTED`. Validator disagreement may prevent any consensus transaction from committing. In candidate 0.2.0, a finalized retryable category records diagnostics and cooldown/replay identity but does not consume a semantic assessment slot.
 
 ## Outcome derivation
 
@@ -39,6 +39,6 @@ Participant notes, repo files, filenames and source comments are untrusted data.
 - GenLayer's web API can return a body from a redirect or internal retrieval infrastructure. Runtime DNS, final redirect resolution and response provenance beyond the reported data are outside this contract's independent verification.
 - A Git SHA-1 blob ID is a provider-compatible content identity. SHA-256 is retained as an extra review fingerprint, but neither alone proves truthful prose.
 - The contract bounds **decoded evidence bytes**, not HTTP transport memory consumption before the response is provided by the runtime.
-- Validators can disagree on classifications or quotations. A successful majority decision is still a consensus-mediated interpretation, not universal truth.
+- Validators can disagree on classifications or authenticated source fingerprints. A successful majority decision is still a consensus-mediated interpretation, not universal truth. Different valid quote spans are not by themselves a disagreement in candidate 0.2.0.
 - The limited provider shape may change; newly unexpected fields and unavailable metadata fail closed.
 - Some valid repositories use unsigned Git commits. Such sources cannot be decisively reviewed under V1 policy, by deliberate design.

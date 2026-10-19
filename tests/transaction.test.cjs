@@ -2,7 +2,7 @@ const {test,before}=require('node:test');
 const assert=require('node:assert/strict');
 const Module=require('node:module');
 // Fixture-only contract address, never configured in the application.
-process.env.NEXT_PUBLIC_SENVARA_CONTRACT='0x'+'a'.repeat(40);
+process.env.NEXT_PUBLIC_SENVARA_CONTRACT='0x9668263921d88c1deaB8DA5A416a65D562cB4187';
 const crypto=require('node:crypto');
 const originalLoad=Module._load;
 const sampleHash='0x'+'f'.repeat(64);
@@ -91,9 +91,27 @@ test('evaluation readback must advance attempt count',async()=>{
   assert.equal(result.phase,'FINALIZED_UNVERIFIED');
   assert.equal(result.expectedAttempt,2);
 });
-test('transaction with same hash and canonical advanced attempt can reconcile',async()=>{
+test('historical evaluation attempt cannot be attributed without an effect identifier',async()=>{
   const tx=store.readLocalTransactions()[0];
   chain.dossierById=async()=>({id:4,status:'DECIDED',attempts:2,proposer:actor,last_attempt_by:actor,last_attempt_at:Math.floor(Date.now()/1000)});
   const result=await transactions.refreshStoredTransaction(tx);
+  assert.equal(result.phase,'FINALIZED_UNVERIFIED');
+});
+test('record-level evaluation guard blocks a fresh nonce while the first request is unresolved',async()=>{
+  map.clear();
+  chain.dossierById=async()=>({id:5,status:'READY_FOR_REVIEW',attempts:0,proposer:actor,reviewer:'0x'+'2'.repeat(40),last_attempt_by:'',last_attempt_at:0});
+  const first=await transactions.sendAction(participant,check,'evaluate',[5n,'a'.repeat(64)],5);
+  await assert.rejects(()=>transactions.sendAction(participant,check,'evaluate',[5n,'b'.repeat(64)],5),/record already has a pending/i);
+  assert.equal(store.getEvaluationGuard(5,actor)?.txId,first.id);
+  store.clearEvaluationGuard(5,actor,first.id);
+});
+test('proposal reconciliation searches older bounded pages and requires the immutable tuple',async()=>{
+  map.clear();
+  chain.transactionState=async()=>({phase:'VERIFYING',description:'Finalized and successful'});
+  chain.listDossiers=async(offset)=>({total:41,ids:offset===0?[41,40]:offset===20?[21,20]:[1]});
+  chain.dossierById=async(id)=>({id,proposer:actor,reviewer:'0x'+'2'.repeat(40),assertion:id===1?'A precise documentary assertion that is long enough.':'other',repository:'acme/public-tool',commit:'a'.repeat(40),primary_path:'docs/retries.md',opposing_path:'',reviewer_note:'',status:'AWAITING_REVIEWER',updated_at:1,created_at:1,attempts:0,last_attempt_by:'',last_attempt_at:0,decision:'',last_reason:''});
+  const tx=await transactions.sendAction(participant,check,'propose',['A precise documentary assertion that is long enough.','acme/public-tool','a'.repeat(40),'docs/retries.md','0x'+'2'.repeat(40),86400n]);
+  const result=await transactions.refreshStoredTransaction(tx);
   assert.equal(result.phase,'VERIFIED');
+  assert.equal(result.recordId,1);
 });

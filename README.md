@@ -8,16 +8,16 @@ This is **not** a proof that deployed software runs correctly, that code is secu
 
 ## Current status
 
-**Contract deployed and source-verified on Studionet; the frontend is configured for the canonical contract and a protected Vercel preview, but release remains blocked. Real Rabby connection/recovery passed without signing; the complete hosted lifecycle, MetaMask/account-change matrix and independent audit remain open.**
+**The historical 0.1.0 contract is deployed and source-verified on Studionet; the frontend is configured for that exact identity, but release remains blocked. The undeployed 0.2.0 candidate contains the judgment-remediation changes and has only local evidence. Real extension coverage, a fresh hosted conclusive lifecycle and independent audit remain open.**
 
-The contract behavior model, local GenVM Direct Mode tests, client transaction tests, dependency-aware TypeScript check, ESLint and production static export run locally. The deployed contract's exact source hash, ABI schema, version and finalized deployment receipt were read back from Studionet. Validator access against real GitHub sources, real MetaMask/Rabby testing, the two-wallet lifecycle and a production frontend deployment remain **open release gates**.
+The contract behavior model, candidate GenVM Direct Mode tests, client transaction tests, dependency-aware TypeScript check, ESLint, candidate lint/schema validation and production static export run locally. The deployed contract's exact source hash, ABI schema, version and finalized deployment receipt were read back from Studionet. A new 0.2.0 deployment, conclusive hosted judgment, real MetaMask/Rabby extension coverage and a production frontend promotion remain **open release gates**.
 
 ## Product loop
 
 1. **Propose:** A wallet freezes one 24–420-character claim, `owner/repo`, a 40-digit commit SHA, the first evidence path, a distinct reviewer wallet and a 1–14 day response deadline.
 2. **Respond or decline:** Only the designated wallet can add a different file from the exact same commit, with an optional contextual note. A silent reviewer cannot confer approval. The proposer may withdraw only before a response.
 3. **Evaluate:** Once both sources exist, either participant may request an assessment within a 3-day window. GitHub API authenticity, signature metadata, exact file bytes, model citations and independent validator observations all matter.
-4. **Resolve:** The result is `SUPPORTED`, `CONTRADICTED`, `MIXED` or `INSUFFICIENT`, referring only to documentary evidence. Retrieval failures are retryable, not negative votes. After three attempted retryable reviews or elapsed deadlines, the unresolved state is explicit.
+4. **Resolve:** The result is `SUPPORTED`, `CONTRADICTED`, `MIXED` or `INSUFFICIENT`, referring only to documentary evidence. Retrieval and model/citation failures are retryable, not negative votes. In deployed 0.1.0, every finalized retryable evaluation consumed an attempt; candidate 0.2.0 keeps bounded retry diagnostics and cooldown/replay protection without consuming the three semantic-attempt budget.
 5. **Return:** Anyone can read finalized public records without a connected wallet.
 
 ## Architecture
@@ -64,7 +64,7 @@ There is **no application backend**, private relay, API route, centralized datab
 - **Readback:** 19,552 bytes and SHA-256 `33385d0283d67cd7c13f0cdafe79ba06c3466a20a35356032afe7c9d32fc797c`, exactly matching the reviewed local source
 - **Interface:** `evaluate(number:int, request_nonce:string)` and `get_version() = 0.1.0`
 
-The frontend is configured for local/preview reads and writes against this contract. No production Vercel promotion was made; the preview is protected by the Vercel team’s SSO/deployment protection, while read-only route navigation was verified in a logged-in Brave session.
+The frontend is configured for reads and writes against this historical identity on Studionet. Candidate 0.2.0 configuration is opt-in and requires a matching candidate address, expected address, version and source hash; it is not silently mixed with the deployed contract. No production Vercel promotion was made. The earlier preview is protected by Vercel deployment protection, and only read-only route navigation was verified there.
 
 ## Start locally
 
@@ -80,12 +80,17 @@ npm run web:dev
 
 The preflight command checks source and mock-based model tests; it does not substitute for hosted validation. To test the frontend independently, run `npm --prefix frontend run typecheck`, `npm --prefix frontend run lint` and `npm run web:build` after installing dependencies.
 
-The app starts in **predeployment preview** mode, intentionally refusing all signed actions. After the contract address and interface are reviewed for a production release, the maintainer may set:
+The default frontend identity is the source-verified 0.1.0 deployment. A release candidate must set all candidate identity fields together; otherwise the frontend refuses signed actions rather than mixing ABIs or state:
 
 ```sh
 # frontend/.env.local
 NEXT_PUBLIC_SENVARA_CONTRACT=0x<verified_40_digit_contract_address>
 NEXT_PUBLIC_SENVARA_RPC=https://studio.genlayer.com/api
+# For an authorized 0.2.0 deployment only:
+NEXT_PUBLIC_SENVARA_V020_CONTRACT=0x<candidate_address>
+NEXT_PUBLIC_SENVARA_V020_EXPECTED_ADDRESS=0x<candidate_address>
+NEXT_PUBLIC_SENVARA_CONTRACT_VERSION=0.2.0
+NEXT_PUBLIC_SENVARA_SOURCE_SHA256=<candidate_source_sha256>
 ```
 
 Use the repository-local versioned CLI via `npx --no-install genlayer --version` after root installation. No deployment or transaction-submission script is included; deployments require a separate reviewed deployment procedure and authorization. The frontend does not temporarily replace `window.ethereum`: it uses the selected EIP-1193 provider for the final `eth_sendTransaction` call, so simultaneous injected wallets remain isolated.
@@ -120,7 +125,7 @@ python -m pip install -r requirements-direct.txt
 python scripts/run-direct-pytest.py tests/test_direct_genvm.py -q
 ```
 
-The recorded local run passed 5/5 tests. This is local GenVM evidence; it does not replace the separate hosted application lifecycle. The browser harness is `tests/browser-smoke.cjs`; it remains pending until a Chromium runtime with a working Windows side-by-side configuration is available.
+The current local run passes 8/8 Direct Mode tests, including candidate malformed-output, citation and equivalence cases. This is local GenVM evidence; it does not replace hosted `run_nondet_unsafe` consensus or a live application lifecycle. The browser harness is `tests/browser-smoke.cjs`; it uses deterministic fake EIP-6963 providers and never signs or broadcasts.
 
 ## Documentation
 

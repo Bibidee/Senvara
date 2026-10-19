@@ -1,0 +1,42 @@
+{
+  "product": "Senvara",
+  "candidate_version": "0.2.0",
+  "status": "UNDEPLOYED_CANDIDATE",
+  "network": {
+    "name": "GenLayer Studionet",
+    "chain_id": 61999,
+    "rpc": "https://studio.genlayer.com/api"
+  },
+  "contract_path": "contracts/senvara_v02.py",
+  "source_sha256": "d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2",
+  "source_size_bytes": 25549,
+  "contract_address": null,
+  "deployment_transaction": null,
+  "public_abi": [
+    "propose(assertion:string, repository:string, commit_sha:string, primary_path:string, reviewer:string, response_seconds:u256)",
+    "respond(number:u256, opposing_path:string, context:string)",
+    "decline(number:u256)",
+    "withdraw(number:u256)",
+    "close_expired(number:u256)",
+    "evaluate(number:u256, request_nonce:string)",
+    "get_version() -> string",
+    "get_total() -> u256",
+    "get_dossier(number:u256) -> string",
+    "get_observation(number:u256, attempt:u256) -> string",
+    "list_dossiers(offset:u256, limit:u256) -> string"
+  ],
+  "compatibility": {
+    "method_signatures_unchanged_from_v010": true,
+    "new_observation_reasons": [
+      "PROVENANCE_UNAVAILABLE",
+      "SOURCE_RETRIEVAL_UNAVAILABLE",
+      "JUDGMENT_EXECUTION_UNAVAILABLE",
+      "JUDGMENT_MALFORMED_OUTPUT",
+      "JUDGMENT_CITATION_INVALID"
+    ],
+    "new_dossier_field": "last_attempt_nonce_sha256"
+  },
+  "historical_deployment_preserved": true,
+  "release_head": null,
+  "verification_command": "node scripts/verify-candidate-v020.cjs"
+}

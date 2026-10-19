@@ -1,4 +1,4 @@
-import { INTENT_PREFIX, TX_PREFIX } from "./constants";
+import { CHAIN_ID, CONTRACT_ADDRESS, CONTRACT_VERSION, EVALUATION_GUARD_PREFIX, INTENT_PREFIX, TX_PREFIX } from "./constants";
 import type { TxReceipt } from "./types";
 
 const cap = (items:TxReceipt[])=>items.sort((a,b)=>b.createdAt-a.createdAt).slice(0,50);
@@ -37,6 +37,48 @@ export function readActionArgs(id:string): unknown[] {
   const parsed = JSON.parse(raw || "[]");
   if(!Array.isArray(parsed)) throw new Error("Saved transaction arguments are malformed.");
   return parsed;
+}
+
+export type EvaluationGuard = {
+  id: string; recordId: number; account: string; chainId: number;
+  contractAddress: string; contractVersion: string; createdAt: number; txId: string;
+};
+
+export function evaluationGuardKey(recordId:number, account:string, chainId=CHAIN_ID,
+  contractAddress=CONTRACT_ADDRESS, contractVersion=CONTRACT_VERSION) {
+  return `${EVALUATION_GUARD_PREFIX}${chainId}:${contractAddress.toLowerCase()}:${contractVersion}:${recordId}:${account.toLowerCase()}`;
+}
+function readEvaluationGuard(key:string):EvaluationGuard|null {
+  try {
+    const raw=typeof window==="undefined"?null:window.localStorage.getItem(key);
+    if(!raw)return null;
+    const guard=JSON.parse(raw) as EvaluationGuard;
+    return guard&&typeof guard.id==="string"&&Number.isSafeInteger(guard.recordId)?guard:null;
+  } catch{return null;}
+}
+export function getEvaluationGuard(recordId:number, account:string, chainId=CHAIN_ID,
+  contractAddress=CONTRACT_ADDRESS, contractVersion=CONTRACT_VERSION) {
+  return readEvaluationGuard(evaluationGuardKey(recordId,account,chainId,contractAddress,contractVersion));
+}
+const ACTIVE_EVALUATION_PHASES = new Set(["SIGNING","SUBMITTED","ACCEPTED_PROVISIONAL","IN_PROGRESS","VERIFYING","FINALIZED_UNVERIFIED","UNKNOWN"]);
+export function claimEvaluationGuard(recordId:number, account:string, txId:string, now=Date.now(),
+  chainId=CHAIN_ID, contractAddress=CONTRACT_ADDRESS, contractVersion=CONTRACT_VERSION):string|null {
+  const key=evaluationGuardKey(recordId,account,chainId,contractAddress,contractVersion);
+  const existing=readEvaluationGuard(key);
+  if(existing && ACTIVE_EVALUATION_PHASES.has((readLocalTransactions().find(tx=>tx.id===existing.txId)?.phase)||"UNKNOWN")) return null;
+  const guard:EvaluationGuard={id:key,recordId,account:account.toLowerCase(),chainId,contractAddress:contractAddress.toLowerCase(),contractVersion,createdAt:now,txId};
+  try {
+    window.localStorage.setItem(key,JSON.stringify(guard));
+    return readEvaluationGuard(key)?.txId===txId?key:null;
+  } catch{return null;}
+}
+export function clearEvaluationGuard(recordId:number, account:string, txId?:string,
+  chainId=CHAIN_ID, contractAddress=CONTRACT_ADDRESS, contractVersion=CONTRACT_VERSION) {
+  const key=evaluationGuardKey(recordId,account,chainId,contractAddress,contractVersion);
+  try {
+    const existing=readEvaluationGuard(key);
+    if(!txId || existing?.txId===txId) window.localStorage.removeItem(key);
+  } catch{/* optional browser recovery state */}
 }
 export async function digestIntent(value:unknown):Promise<string> {
   if(typeof window==="undefined"||!window.crypto?.subtle) throw new Error("A secure browser context is required for transaction fingerprinting.");

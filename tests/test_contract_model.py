@@ -45,7 +45,7 @@ class FakeResponse:
         self.body = json.dumps(value).encode() if not isinstance(value, bytes) else value
 
 class TestHarness:
-    def __init__(self):
+    def __init__(self, contract_path=None, module_name="senvara_contract_test"):
         self.now = 1_780_000_000
         self.actor = ADDR1
         self.chain_id = 61999
@@ -59,6 +59,8 @@ class TestHarness:
         self.output_primary = "SUPPORTS"
         self.output_counter = "SUPPORTS"
         self.disagree = False
+        self.alternate_quotes = False
+        self.flip_source = False
         self.prompt_count = 0
         self.api_reads = []
         vm = Vm()
@@ -77,8 +79,7 @@ class TestHarness:
         module.u256 = int
         module.__all__ = ["gl", "TreeMap", "u256"]
         sys.modules["genlayer"] = module
-        module_name = "senvara_contract_test"
-        spec = importlib.util.spec_from_file_location(module_name, ROOT / "contracts" / "senvara.py")
+        spec = importlib.util.spec_from_file_location(module_name, contract_path or ROOT / "contracts" / "senvara.py")
         self.source = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(self.source)
         self.gl = gl
@@ -116,7 +117,10 @@ class TestHarness:
             path = url.split("/contents/", 1)[1].split("?ref=", 1)[0]
             if path not in (PATH_A, PATH_B):
                 return FakeResponse({"message": "not found"}, 404)
-            content = (SRC_A if path == PATH_A else SRC_B).encode("utf8")
+            content_value = SRC_A if path == PATH_A else SRC_B
+            if self.flip_source and len(self.api_reads) >= 5 and path == PATH_A:
+                content_value = "This unrelated paragraph discusses deployment branding only."
+            content = content_value.encode("utf8")
             blob = hashlib.sha1(b"blob " + str(len(content)).encode() + b"\0" + content).hexdigest()
             return FakeResponse({"path": path, "type": "file", "encoding": "base64", "size": len(content),
                                  "content": base64.b64encode(content).decode(),
@@ -125,16 +129,26 @@ class TestHarness:
 
     def prompt(self, prompt, response_format="json"):
         assert response_format == "json"
-        assert "untrusted DATA" in prompt
+        assert "DATA" in prompt
         self.prompt_count += 1
         counter = self.output_counter
         if self.disagree and self.prompt_count % 2 == 0:
             counter = "CONTRADICTS" if counter != "CONTRADICTS" else "SUPPORTS"
         def quote(category, content):
-            return ("Fabricated content that is absent in both source files." if self.bad_quote else content[:79]) if category in ("SUPPORTS", "CONTRADICTS") else ""
+            if category not in ("SUPPORTS", "CONTRADICTS"):
+                return ""
+            if self.bad_quote:
+                return "Fabricated content that is absent in both source files."
+            if content == SRC_A:
+                return "supports retrying failed requests safely when an idempotency key is present"
+            return "requires a client-generated idempotency key before retries are safe"
+        primary_quote = quote(self.output_primary, SRC_A)
+        opposing_quote = quote(counter, SRC_B)
+        if self.alternate_quotes and not self.bad_quote:
+            primary_quote = "supports retrying failed requests safely when an idempotency key is present"
+            opposing_quote = "requires a client-generated idempotency key before retries are safe"
         return {"primary": self.output_primary, "opposing": counter,
-                "primary_quote": quote(self.output_primary, SRC_A),
-                "opposing_quote": quote(counter, SRC_B)}
+                "primary_quote": primary_quote, "opposing_quote": opposing_quote}
 
     def create(self):
         return self.contract.propose(ASSERTION, REPO, COMMIT, PATH_A, ADDR2, 86400)

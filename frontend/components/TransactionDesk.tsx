@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { EXPLORER } from "@/lib/constants";
-import { clearIntent, readLocalTransactions, saveLocalTransaction } from "@/lib/tx-store";
+import { clearEvaluationGuard, clearIntent, readLocalTransactions, saveLocalTransaction } from "@/lib/tx-store";
 import { refreshStoredTransaction } from "@/lib/transactions";
 import type { TxReceipt } from "@/lib/types";
 
@@ -29,6 +29,7 @@ export function TransactionDesk({compact=false}:{compact?:boolean}) {
     const caution=tx.hash?"The saved transaction has a chain hash. Releasing this guard does not prove anything about its outcome. Confirm that it failed before retrying.":"No transaction hash was received. A previous wallet request might still have been broadcast. Check wallet activity and the contract before retrying.";
     if(!window.confirm(caution+"\n\nClear the local duplicate-action lock anyway?"))return;
     clearIntent(tx.id);
+    if(tx.recordId&&tx.action==="evaluate") clearEvaluationGuard(tx.recordId,tx.account,tx.id,tx.chainId,tx.contractAddress,tx.contractVersion);
     saveLocalTransaction({...tx,phase:"GUARD_RELEASED",message:"Local duplicate-action guard manually released. No network outcome was verified; check for any earlier broadcast before retrying."});
   };
   const displayed=compact?items.slice(0,3):items;

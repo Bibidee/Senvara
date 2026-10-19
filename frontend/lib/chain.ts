@@ -2,7 +2,7 @@ import { abi, createClient } from "genlayer-js";
 import { simulator } from "genlayer-js/chains";
 import { TransactionStatus } from "genlayer-js/types";
 import { encodeFunctionData } from "viem";
-import { CHAIN_ID, CONFIGURED, CONTRACT_ADDRESS, RPC } from "./constants";
+import { CHAIN_ID, CONFIGURED, CONTRACT_ADDRESS, HISTORICAL_CONTRACT_ADDRESS, RPC } from "./constants";
 import { parseJsonString, validPath } from "./validation";
 import { STATUS_LABEL } from "./format";
 import type { Dossier, EIP1193Provider, Observation, TxPhase } from "./types";
@@ -13,7 +13,8 @@ const CATEGORIES = new Set(["SUPPORTS", "CONTRADICTS", "IRRELEVANT", "AMBIGUOUS"
 const DECISIONS = new Set(["SUPPORTED", "CONTRADICTED", "MIXED", "INSUFFICIENT"]);
 const RETRYABLE_REASONS = new Set([
   "PROVIDER_OR_PROVENANCE_UNAVAILABLE", "JUDGMENT_UNAVAILABLE",
-  "JUDGMENT_EXECUTION_UNAVAILABLE", "JUDGMENT_MALFORMED_OUTPUT", "JUDGMENT_CITATION_INVALID",
+  "PROVENANCE_UNAVAILABLE", "SOURCE_RETRIEVAL_UNAVAILABLE", "JUDGMENT_EXECUTION_UNAVAILABLE",
+  "JUDGMENT_MALFORMED_OUTPUT", "JUDGMENT_CITATION_INVALID",
 ]);
 const OPPOSING_STATES = new Set(["READY_FOR_REVIEW", "DECIDED", "EXPIRED_UNRESOLVED", "REVIEW_EXHAUSTED"]);
 const READ_ONLY_ACCOUNT = {address: "0x0000000000000000000000000000000000000000"} as never;
@@ -33,6 +34,10 @@ function configured(): `0x${string}` {
   return CONTRACT_ADDRESS as `0x${string}`;
 }
 function reader() {return createClient({chain:RPC_CHAIN, endpoint:RPC, account:READ_ONLY_ACCOUNT});}
+function readerAt(address:string) {
+  if (!/^0x[0-9a-fA-F]{40}$/.test(address) || /^0x0{40}$/i.test(address)) throw new Error("The requested contract identity is invalid.");
+  return createClient({chain:RPC_CHAIN, endpoint:RPC, account:READ_ONLY_ACCOUNT});
+}
 
 async function rpcRequest<T>(method: string, params: unknown[] = []): Promise<T> {
   const response = await fetch(RPC, {method:"POST", headers:{"Content-Type":"application/json"},
@@ -46,6 +51,11 @@ async function rpcRequest<T>(method: string, params: unknown[] = []): Promise<T>
 
 export async function readContract<T>(method: string, args: unknown[] = []): Promise<T> {
   const result = await reader().readContract({address:configured() as never, functionName:method, args:args as never[], stateStatus:TransactionStatus.FINALIZED});
+  return result as T;
+}
+/** Explicit historical read path; it cannot accidentally read the active candidate. */
+export async function readHistoricalContract<T>(method: string, args: unknown[] = []): Promise<T> {
+  const result = await readerAt(HISTORICAL_CONTRACT_ADDRESS).readContract({address:HISTORICAL_CONTRACT_ADDRESS as never, functionName:method, args:args as never[], stateStatus:TransactionStatus.FINALIZED});
   return result as T;
 }
 
@@ -72,8 +82,11 @@ function validateDossier(rec: Dossier, id: number): Dossier {
   if (typeof rec.reviewer_note !== "string" || rec.reviewer_note.length > 300 || rec.reviewer_note.includes("\0")) throw new Error("Canonical reviewer note is malformed.");
   if (typeof rec.last_attempt_by !== "string" || (rec.last_attempt_by !== "" && !/^0x[a-f0-9]{40}$/.test(rec.last_attempt_by))) throw new Error("Canonical evaluator identity is malformed.");
   if (rec.last_attempt_by && ![rec.proposer, rec.reviewer].includes(rec.last_attempt_by)) throw new Error("Canonical evaluator is not a named participant.");
+  if (rec.last_attempt_nonce_sha256 !== undefined && (typeof rec.last_attempt_nonce_sha256 !== "string" || !/^[a-f0-9]{64}$/.test(rec.last_attempt_nonce_sha256))) throw new Error("Canonical evaluation nonce fingerprint is malformed.");
   if (!Number.isSafeInteger(rec.attempts) || rec.attempts < 0 || rec.attempts > 3) throw new Error("Canonical attempt count is invalid.");
-  if ((rec.attempts === 0) !== (rec.last_attempt_by === "" && rec.last_attempt_at === 0)) throw new Error("Canonical attempt identity is inconsistent.");
+  const retryableDiagnostic = rec.attempts === 0 && rec.last_attempt_by !== "" && rec.last_attempt_at > 0 &&
+    RETRYABLE_REASONS.has(rec.last_reason) && Boolean(rec.last_attempt_nonce_sha256);
+  if ((rec.attempts === 0) !== (rec.last_attempt_by === "" && rec.last_attempt_at === 0) && !retryableDiagnostic) throw new Error("Canonical attempt identity is inconsistent.");
   if (rec.status === "DECIDED" ? !DECISIONS.has(rec.decision) : rec.decision !== "") throw new Error("Canonical decision does not match record status.");
   if (OPPOSING_STATES.has(rec.status) !== Boolean(rec.opposing_path)) throw new Error("Canonical source state is inconsistent.");
   timestamp(rec.created_at, "creation time", false);timestamp(rec.response_deadline, "response deadline", false);timestamp(rec.review_deadline, "review deadline");timestamp(rec.updated_at, "update time", false);timestamp(rec.last_attempt_at, "last attempt time");

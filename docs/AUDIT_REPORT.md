@@ -1,8 +1,8 @@
 # Senvara Security and Release Audit
 
-**Date:** 2026-10-19
+**Date:** 2026-10-20
 **Scope:** repository source, contract behavior model, frontend wallet/transaction code, documentation and local release checks.
-**Verdict:** **Release blocked.** The implementation is materially stronger and locally buildable, and the reviewed contract is deployed with exact source/ABI readback and a finalized Studionet receipt. A signed Rabby Wallet A/B lifecycle and retry-safety fixture are now hosted-verified; a conclusive validator outcome, remaining negative wallet paths and independent audit evidence remain open.
+**Verdict:** **Release blocked.** The historical 0.1.0 contract is preserved with exact source/ABI readback and a finalized Studionet receipt. The undeployed 0.2.0 candidate is locally hardened and linted, but a hosted conclusive validator outcome, real extension coverage, exact-head CI and independent audit evidence remain open.
 
 ## Findings and disposition
 
@@ -19,9 +19,9 @@
 | Medium | An evaluation request had no participant-bound replay nonce, and the client could reconcile against an old matching state rather than the state changed by the submitted transaction. | **Fixed.** `evaluate(number, request_nonce)` requires a fresh 64-hex nonce scoped to dossier/sender/nonce and records `last_attempt_by`; the client requires the expected actor, attempt number and recent canonical timestamp. |
 | Medium | A browser storage failure could remove the local action guard while the wallet remained able to sign, making an ambiguous or duplicate action harder to recover safely. | **Fixed.** Intent and action arguments are persisted and checked before signing; unavailable storage blocks the write. |
 | Low | The client test command used a shell glob that Windows passed literally to Node, so the declared suite failed before executing tests. | **Fixed.** Test files are listed explicitly, and the Python runner resolves common Windows interpreter layouts. |
-| Release blocker | Production frontend identity and live writes require a reviewed deployment configuration. | **Partially addressed.** The frontend is configured for `0x9668263921d88c1deaB8DA5A416a65D562cB4187`; the protected Vercel preview is ready and signed Studionet writes were executed from the browser. No production promotion was made. |
-| Release blocker | GenVM Direct Mode passed 5/5 local tests, and the deployment receipt was finalized with 5/5 validator votes agreeing, but GenVM lint, a conclusive hosted validator result and live negative-path rejection evidence remain incomplete. | **Partially addressed.** Wallet A/B proposal and response plus three finalized retryable evaluations were reconciled against canonical state. All three returned `JUDGMENT_UNAVAILABLE`; canonical state is exhausted without a false verdict. This does not replace a conclusive outcome or hosted negative-path evidence. |
-| Release blocker | Real MetaMask/Rabby extension tests and responsive manual verification were not completed. The executable Playwright harness now passes locally with Chromium 151, including route, responsive, keyboard/accessibility, RPC-recovery and fake EIP-6963 provider assertions. | **Partially addressed.** Real Rabby connection/disconnect/reconnect/injected selection/reload and signed Wallet A/B sends passed on 61999; MetaMask, account/network-change coverage, axe-specific automation, manual mobile review and independent audit remain outstanding. Hosted preview routes were read-only verified. |
+| Release blocker | Production frontend identity and live writes require a reviewed deployment configuration. | **Historical identity verified.** The frontend defaults to `0x9668263921d88c1deaB8DA5A416a65D562cB4187`; candidate identity is opt-in and undeployed. No production promotion was made. |
+| Release blocker | GenVM Direct Mode and lint evidence, a conclusive hosted validator result and live negative-path rejection evidence remain incomplete. | **Partially addressed.** Candidate Direct Mode is 8/8 and GenVM lint/schema validation passes. The historical Wallet A/B record finalized three retryable `JUDGMENT_UNAVAILABLE` evaluations and is exhausted without a false verdict. This does not replace a new conclusive hosted result. |
+| Release blocker | Real MetaMask/Rabby extension tests and responsive manual verification were not completed. | **Open.** Local browser coverage uses deterministic fake EIP-6963 providers; real extension journeys, account/network changes, axe automation and manual mobile review remain outstanding. |
 
 ## Security review conclusion
 
@@ -31,4 +31,4 @@ Residual trust remains in GitHub's reported signature verification and response 
 
 ## Evidence boundary
 
-Local checks are source/model evidence only. The contract deployment and the recorded Wallet A/B fixture are hosted-verified for the evidence stated in `docs/RELEASE_MANIFEST.json`. The overall release label must remain blocked until a conclusive application lifecycle, remaining provider/negative-path behavior and independent audit evidence are complete.
+Local checks are source/model evidence only. The historical deployment and recorded Wallet A/B fixture are hosted-verified for the evidence stated in `docs/RELEASE_MANIFEST.json`; they do not certify candidate 0.2.0. The overall release label must remain blocked until a conclusive candidate application lifecycle, remaining provider/negative-path behavior, exact-head CI and independent audit evidence are complete.

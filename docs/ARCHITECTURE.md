@@ -12,6 +12,15 @@ A single GenLayer contract owns `dossiers`, `observations`, `fingerprints`, `tot
 
 The application never writes product status to a web server, queue or external index. `/open/` queries finalized contract records by bounded pagination. `/record/?id=N` reconstructs one record directly. Contract evaluation uses nondeterministic network access and model invocation inside `run_nondet_unsafe`. No storage writes happen inside the leader or validator functions. The frontend uses GenLayerJS for finalized reads and its calldata codec, fetches the consensus contract metadata directly from the configured RPC, and sends the final transaction through the selected EIP-1193 provider; it never swaps or aliases the global `window.ethereum` object.
 
+The 0.2.0 candidate separates authenticated source retrieval from model output
+normalization. It records only bounded retry categories and a nonce fingerprint,
+and treats retryable provider/model/citation failures as diagnostics that leave the
+semantic attempt count unchanged. A conclusive observation alone advances the
+three-attempt semantic budget. The candidate's equivalence rule compares the
+decision, classifications, authenticated source hashes and signed-payload hash;
+it independently verifies each exact quote but does not require validators to select
+the same valid substring.
+
 ## Contract surface
 
 | Write | Allowed wallet | Conditions | Effect |
@@ -36,6 +45,8 @@ The Next.js application is configured with `output: 'export'`. There are no Next
 ## Known scaling limits
 
 - The global record index grows indefinitely. Pagination is bounded at 20 IDs per call. No owner-specific on-chain index is implemented in V1.
-- A record has at most three attempts. Fee costs and source retrieval can vary by validator.
+- A record has at most three semantic attempts. Candidate retryable diagnostics still
+  incur transaction/cooldown cost but do not consume that semantic budget. Fee costs
+  and source retrieval can vary by validator.
 - Binary evidence, cross-repository corroboration, file fragments, arbitrary websites and deployed-behavior proofs are not supported.
 - Exactly one named reviewer is chosen at record creation. There is no permissionless challenger market or Sybil-resistant public identity primitive.

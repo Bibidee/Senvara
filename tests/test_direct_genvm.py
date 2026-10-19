@@ -210,10 +210,12 @@ def test_direct_mode_v02_separates_malformed_output_and_citation_failures(direct
     direct_vm.mock_llm(r".*", "not JSON")
     direct_vm.sender = direct_alice
     contract.evaluate(number, "f" * 64)
-    assert json.loads(contract.get_observation(number, 1))["reason"] == "JUDGMENT_MALFORMED_OUTPUT"
+    assert json.loads(contract.get_dossier(number))["last_reason"] == "JUDGMENT_MALFORMED_OUTPUT"
 
     warp_seconds(direct_vm, 1200)
     direct_vm._llm_mocks = []
     configure_text_judgement(direct_vm, primary_quote="fabricated citation", opposing_quote="Retries require an idempotency key")
     contract.evaluate(number, "0" * 63 + "1")
-    assert json.loads(contract.get_observation(number, 2))["reason"] == "JUDGMENT_CITATION_INVALID"
+    dossier = json.loads(contract.get_dossier(number))
+    assert dossier["attempts"] == 0
+    assert dossier["last_reason"] == "JUDGMENT_CITATION_INVALID"

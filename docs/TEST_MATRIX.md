@@ -4,7 +4,7 @@ The checklist uses **executed** only for checks actually run against the current
 
 | Area | Local evidence | Live or full test required | Status |
 |---|---|---|---|
-| Proposal roles, full SHA and identity parsing | Python model tests + 5-test GenVM Direct Mode suite | 61999 lifecycle | Local tests executed; hosted open |
+| Proposal roles, full SHA and identity parsing | Python model tests + 8-test GenVM Direct Mode suite | 61999 lifecycle | Local tests executed; hosted open |
 | Immutable response and cancellation | Python model tests | Wallet A/B replay on chain | Local tests executed |
 | Duplicate fingerprint and pagination | Python model tests | Chain source/storage compatibility | Local tests executed |
 | Provider outage, unsigned revision, blob mismatch | Python mocks | Real GitHub provider 403/404/429 and signed revision | Local tests executed |
@@ -12,13 +12,13 @@ The checklist uses **executed** only for checks actually run against the current
 | Judgment availability remediation | Candidate 0.2.0 Direct Mode: realistic text JSON, malformed-output/citation diagnostics, exact-source citation checks and quote-insensitive decision equivalence | Fresh hosted 0.2.0 deployment and conclusive finalized result | Candidate executed locally; deployment intentionally not performed |
 | Malicious quote, disagreement, cooldown and exhaustion | Python mocks | GenVM hosted negative fixtures, deadline transitions | Local tests executed |
 | TypeScript proposal, wallet primitives and receipt reconciliation | Node tests after TypeScript transpile | Full TS compilation and browser E2E | Local tests executed |
-| Wallet provider selection and direct selected-provider send | Node transaction mock plus local Playwright fake EIP-6963 providers | Real MetaMask and Rabby extension sessions, including approval and selected-provider sends | Real Rabby connection, app disconnect/reconnect, injected selection, wallet switching and signed selected-provider sends passed on 61999; MetaMask unavailable |
+| Wallet provider selection and direct selected-provider send | Node transaction mock plus local Playwright fake EIP-6963 providers | Real MetaMask and Rabby extension sessions, including approval and selected-provider sends | Local fake-provider coverage; real extension evidence is not part of this branch's local run |
 | Unknown transaction, late finality and deduplication | Node transaction mock | Hosted finality and provider failure tests | Local mock executed; hosted not executed |
 | Next.js static export build | Dependency-aware production build | Hosted deployment smoke test | Local build executed |
-| Mobile and accessibility | Responsive source review + Playwright harness + local axe sweep at 390/1440px | Playwright + axe + keyboard + manual mobile | Local route, keyboard, fake-provider, RPC-recovery and axe assertions passed; hosted preview routes read in Brave; manual mobile open |
+| Mobile and accessibility | Responsive source review + Playwright harness at 390/1440px | Playwright + axe + keyboard + manual mobile | Local route, keyboard, fake-provider and RPC-recovery checks are executed; no axe package is wired into the current harness, and manual mobile review remains open |
 | Studionet deployment/source parity | Finalized deployment receipt, fetched exact source comparison, schema/version readback | Two-wallet application lifecycle, explorer-linked evidence and hosted record transactions | Deployment/source readback and Wallet A/B lifecycle executed; three finalized `JUDGMENT_UNAVAILABLE` evaluations exhausted the retry budget without a false decision |
-| GitHub Actions exact-head CI | Workflow source added | Hosted workflow on exact merge SHA | Runs 9–12 passed on the final code/documentation heads; only GitHub runner/action deprecation notices were emitted |
-| Dependency and artifact reproducibility | npm lockfiles, production audit and static build | Hosted exact-head reproducibility | Local executed; hosted not executed |
+| GitHub Actions exact-head CI | Workflow source added and locally inspected | Hosted workflow on exact pushed commit | Not yet executed for this remediation branch |
+| Dependency and artifact reproducibility | npm lockfiles, production audit and static build | Hosted exact-head reproducibility and mapping of prior full-install findings | Local production audit/build executed; prior five-high full-install report not reproduced in this environment |
 
 ## Negative-path test obligations
 
@@ -32,8 +32,8 @@ Run hosted tests for malformed GitHub JSON (including duplicate keys), invalid r
 4. Reviewer from the other wallet binds a separate source file, checks finality and canonical state.
 5. Participant requests semantic review and records leader/validator consensus, stable hashes and final result.
 6. Independently read both source fingerprints, signed-payload fingerprint, judgment categories and decision.
-7. Execute a separate inconclusive/provider-unavailable fixture, if provider access permits, without weakening safeguards. **Executed live:** three finalized retryable observations recorded `JUDGMENT_UNAVAILABLE`; the third exhausted the review budget and no false decision was emitted.
+7. Execute a separate inconclusive/provider-unavailable fixture, if provider access permits, without weakening safeguards. **Historical v0.1.0 evidence:** three finalized retryable observations recorded `JUDGMENT_UNAVAILABLE`; the third exhausted the review budget and no false decision was emitted. **Candidate 0.2.0 local evidence:** retryable diagnostics do not consume the semantic budget.
 8. Verify unauthorized writes, replay, expiry, reload recovery, wallet switching and mobile UI.
 9. Pin source SHA-256, CLI version, exact-head CI URL, deployment address, all transactions and production deployment identity in the release manifest.
 
-The deployment/source readback row is hosted evidence already recorded in `docs/RELEASE_MANIFEST.json`; the local browser row is executed against the configured static export; hosted preview navigation was read-only verified in a logged-in Brave session; the Wallet A/B lifecycle and exhausted retry-safety fixture are now executed against Studionet. A conclusive validator judgment, real MetaMask coverage and the remaining negative-path fixtures remain open.
+The deployment/source readback row is historical hosted evidence recorded in `docs/RELEASE_MANIFEST.json`; candidate identity is recorded separately in `docs/CANDIDATE_V020_MANIFEST.json`. The local browser row is executed against a static export with fake providers; hosted preview navigation was previously read-only verified. The historical Wallet A/B lifecycle and exhausted retry-safety fixture remain evidence for v0.1.0 only. A candidate conclusive validator judgment, real MetaMask coverage and the remaining negative-path fixtures remain open.

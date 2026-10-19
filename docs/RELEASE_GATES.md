@@ -4,26 +4,26 @@
 
 **LOCAL IMPLEMENTATION VERIFIED; RELEASE: BLOCKED.**
 
-The contract is deployed to Studionet 61999 and its exact source, ABI schema, version and finalized deployment receipt have been read back. The frontend is configured for that address and a protected Vercel preview is `READY`; no production promotion was made. Do not treat the deployment receipt or local browser harness as proof of the complete application lifecycle or real wallet behavior.
+The historical 0.1.0 contract is deployed to Studionet 61999 and its exact source, ABI schema, version and finalized deployment receipt have been read back. The frontend defaults to that exact identity. Candidate 0.2.0 is separately fingerprinted and remains undeployed. A protected Vercel preview exists from earlier work; no production promotion was made. Do not treat the deployment receipt or local browser harness as proof of the complete application lifecycle or real wallet behavior.
 
 ## Mandatory gates
 
 - [x] Resolve package registry access; install exact declared dependencies and generate complete npm lockfiles.
 - [x] Successful `frontend` typecheck, ESLint and production static export.
 - [x] Pin local GenLayer CLI 0.39.1; prove the repository-installed binary rather than using any global tool.
-- [x] Local GenVM Direct Mode lifecycle and adversarial cases on a supported runtime; GenVM lint remains open.
+- [x] Local GenVM Direct Mode lifecycle and adversarial candidate cases on a supported runtime; candidate GenVM lint/schema validation passes.
 - [ ] Independent third-party security review; the implementation audit and disposition are recorded in `docs/AUDIT_REPORT.md`.
-- [x] Confirm Studio endpoint browser CORS/direct RPC support for read and write integration, without inserting a proxy; hosted browser reads and signed Studionet writes succeeded.
+- [ ] Confirm candidate Studio endpoint browser CORS/direct RPC support for the new ABI, without inserting a proxy. Historical read/write evidence applies only to deployed 0.1.0.
 - [x] Deploy explicitly approved contract to Studionet 61999 and record source SHA-256 plus deployed-code readback.
-- [x] Generate and verify current ABI against exact code and version; frontend canonical preview configuration is recorded.
-- [ ] Complete two-wallet hosted lifecycle, including a conclusive verdict and live unauthorized/replay/stale-action rejection. **Partial pass:** Wallet A/B proposal and response, three finalized retryable evaluations, canonical exhausted-state readback and no-false-verdict handling are verified.
-- [ ] Complete real MetaMask and Rabby user journeys including simultaneous extensions, rejection, disconnect, switching, reboot/reload and unknown receipt recovery. **Partial pass:** Rabby connection, switching, disconnect/reconnect, injected selection and signed sends passed; MetaMask and several negative wallet paths remain unavailable.
-- [ ] Complete the Playwright browser sweep across all routes at desktop, tablet and mobile widths with axe and manual mobile review. **Partial pass:** local Chromium, keyboard, accessibility, responsive, RPC-recovery and axe assertions passed at 390px/1440px; hosted preview navigation was read-only verified; manual mobile review remains open.
-- [ ] Resolve repeated judgment unavailability with a conclusive hosted result. **Candidate prepared:** 0.2.0 Direct Mode passed with bounded diagnostics and citation-aware equivalence; the deployed 0.1.0 contract remains unchanged and no replacement deployment was made.
+- [x] Generate and verify historical ABI against exact deployed code and version; candidate ABI signatures and frontend identity checks are recorded separately.
+- [ ] Complete a fresh candidate two-wallet hosted lifecycle, including a conclusive verdict and live unauthorized/replay/stale-action rejection. **Historical partial pass:** Wallet A/B proposal and response, three finalized retryable evaluations, canonical exhausted-state readback and no-false-verdict handling are verified for 0.1.0.
+- [ ] Complete real MetaMask and Rabby user journeys including simultaneous extensions, rejection, disconnect, switching, reboot/reload and unknown receipt recovery. The local harness uses fake providers; real extension evidence is outstanding for this branch.
+- [ ] Complete the Playwright browser sweep across all routes at desktop, tablet and mobile widths with axe and manual mobile review. Local Chromium route, keyboard, responsive, fake-provider and RPC-recovery checks are the current evidence; axe integration and manual mobile review remain open.
+- [ ] Resolve repeated judgment unavailability with a conclusive hosted result. **Candidate prepared:** 0.2.0 Direct Mode and candidate lint pass with bounded diagnostics, citation-aware equivalence and non-exhausting retry diagnostics; the deployed 0.1.0 contract remains unchanged and no replacement deployment was made.
 - [x] Local production dependency vulnerability scan (0 vulnerabilities) and documented residual limitations.
-- [x] Hosted exact-head CI and hosted production dependency scan (GitHub Actions runs 8 through 12 passed).
+- [ ] Hosted exact-head CI and hosted production dependency scan for this remediation branch. Earlier historical runs do not certify this branch.
 - [x] Documentation/prod parity of source, ABI, contract ID, chain 61999, version, frontend environment and CI manifest; the executed lifecycle and transaction matrix are recorded, while conclusive and negative-path gates remain open.
-- [x] Cleanup scan for unintentional cross-project identifiers, placeholder deployment values, dangling TODOs and unverified security claims.
+- [x] Cleanup scan for unintentional cross-project identifiers, placeholder deployment values, dangling TODOs and stale candidate/historical identity claims.
 
 ## Evidence labels
 

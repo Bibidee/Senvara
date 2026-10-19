@@ -32,15 +32,15 @@ The third item is the confirmed systemic consensus fragility supported by the co
 
 `contracts/senvara_v02.py` is a separate, undeployed 0.2.0 candidate:
 
-- Source SHA-256: `68f29e26a401c2042ba5efe26e2915547f5392f88109322a79ee9928efcd13cd`
-- Source size: `22023` bytes
+- Source SHA-256: `d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2`
+- Source size: `25549` bytes
 - `exec_prompt(..., response_format="json")` remains the interface.
 - The parser accepts a bounded JSON string, including one JSON markdown fence, while still requiring one object, exact keys, duplicate-key rejection, finite JSON values, supported classifications and strict quote bounds.
 - Prompt instructions explicitly prohibit extra keys, commentary, paraphrase, fabricated citations and free-form decisions.
 - Retry diagnostics are bounded to `JUDGMENT_EXECUTION_UNAVAILABLE`, `JUDGMENT_MALFORMED_OUTPUT` and `JUDGMENT_CITATION_INVALID`, in addition to the existing provenance reason. No raw model output, exception text or source text is stored on-chain.
 - Consensus compares decision-critical classifications, derived decision, signed/source hashes and independently verified source-anchored citations. Different valid quotation spans are accepted; fabricated/short/unanchored citations and conflicting classifications are rejected.
 
-The candidate keeps the public method signatures and storage fields compatible with 0.1.0. The new retry strings are an observation-schema extension, so a future deployment requires updating the frontend/read validators and the release ABI/schema manifest. The current frontend accepts both the deployed 0.1.0 reasons and the candidate's bounded reasons without changing the canonical deployment configuration.
+The candidate keeps the public method signatures compatible with 0.1.0 but extends the dossier observation schema with `last_attempt_nonce_sha256` and bounded reason values. A future deployment therefore requires updating the frontend/read validators and the release ABI/schema manifest. The current frontend accepts both the deployed 0.1.0 reasons and the candidate's bounded reasons without silently changing the canonical deployment configuration.
 
 ## Verification matrix
 
