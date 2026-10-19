@@ -1,5 +1,5 @@
 {
-  "browser_wallet_verification": "LOCAL_PLAYWRIGHT_PASS_FAKE_EIP6963; REAL_RABBY_DETECTED_BUT_LOCKED; METAMASK_NOT_AVAILABLE; NO_REAL_CONNECTION_OR_SIGNED_WRITE",
+  "browser_wallet_verification": "LOCAL_PLAYWRIGHT_PASS_FAKE_EIP6963; REAL_RABBY_CONNECT_DISCONNECT_RECONNECT_INJECTED_RELOAD_PASS_ON_STUDIONET; METAMASK_NOT_AVAILABLE; NO_SIGNED_WRITE",
   "chain_id": 61999,
   "cli_local": "0.39.1",
   "contract_address": "0x9668263921d88c1deaB8DA5A416a65D562cB4187",
@@ -32,8 +32,8 @@
   "frontend_typecheck_and_build": "TYPECHECK_LINT_BUILD_PASSED_LOCAL",
   "dependency_audit": "PASS_0_PRODUCTION_VULNERABILITIES",
   "lockfile_reproducibility": "PASS_NPM_CI_BOTH",
-  "github_commit": null,
-  "hosted_ci_run": null,
+  "github_commit": "7bbad12bbb9b8c03e9da105923d4be52bea0f050",
+  "hosted_ci_run": "https://github.com/Bibidee/Senvara/actions/runs/39237237281",
   "live_genvm_verification": "DEPLOYMENT_FINALIZED_SOURCE_READBACK_VERIFIED",
   "product": "Senvara",
   "release_readiness": "BLOCKED",
@@ -70,6 +70,6 @@
   "vercel_preview_deployment_id": "dpl_4DV1UPFwnUxJ2jtXk423YaJey3VC",
   "vercel_status": "PREVIEW_READY_HOSTED_READ_ONLY_ROUTES_VERIFIED; CLI_PROTECTED_CURL_NOT_USED; NO_PRODUCTION_PROMOTION",
   "github_actions_workflow": ".github/workflows/quality.yml",
-  "github_actions_status": "PREPARED_NOT_EXECUTED_NO_PUBLIC_PUSH",
+  "github_actions_status": "PASS_RUN_3_LINUX_DIRECT_MODE_CHROMIUM_CLIENT_FRONTEND_CHECKS",
   "version": "0.1.0"
 }

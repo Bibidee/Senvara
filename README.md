@@ -8,7 +8,7 @@ This is **not** a proof that deployed software runs correctly, that code is secu
 
 ## Current status
 
-**Contract deployed and source-verified on Studionet; the frontend is configured for the canonical contract and a protected Vercel preview, but release remains blocked. The complete hosted lifecycle, real wallet-extension matrix and independent audit remain open.**
+**Contract deployed and source-verified on Studionet; the frontend is configured for the canonical contract and a protected Vercel preview, but release remains blocked. Real Rabby connection/recovery passed without signing; the complete hosted lifecycle, MetaMask/account-change matrix and independent audit remain open.**
 
 The contract behavior model, local GenVM Direct Mode tests, client transaction tests, dependency-aware TypeScript check, ESLint and production static export run locally. The deployed contract's exact source hash, ABI schema, version and finalized deployment receipt were read back from Studionet. Validator access against real GitHub sources, real MetaMask/Rabby testing, the two-wallet lifecycle and a production frontend deployment remain **open release gates**.
 

@@ -22,6 +22,7 @@
 | `npm run verify:deployment` | **PASS** | Local source, manifest, frontend env and chain constants match the canonical deployment |
 | `npm run test:browser` | **PASS** | Playwright Chromium 151; routes, 390/1440px layout, visible control/field labels, public read, RPC retry recovery, keyboard traversal and fake EIP-6963 provider assertions |
 | Hosted preview read-only browser sweep | **PASS; read-only** | Brave session reached `/`, `/open/`, `/method/` and `/workbench/`; no browser console warnings/errors observed. Wallet writes were not attempted. |
+| Hosted real Rabby wallet session | **PASS; no writes** | Connected on Studionet 61999, app disconnect cleared the session, reconnect and injected-provider selection succeeded, and reload silently restored the account. |
 
 ## Executed against Studionet
 
@@ -33,7 +34,7 @@
 
 ## Not executed
 
-GenVM lint, live GitHub validator retrieval, the two-wallet Studionet application lifecycle, real MetaMask/Rabby extension journeys, axe-specific automation and manual mobile-device verification remain open. The hosted preview routes were read-only verified in Brave, but real Rabby connection stopped at its locked extension notification and MetaMask was unavailable. The local browser harness is a pass; its fake providers are not real wallet extensions and its local RPC-failure route is intentionally synthetic.
+GenVM lint, live GitHub validator retrieval, the two-wallet Studionet application lifecycle, real MetaMask, account-change/network-change and signed transaction journeys, axe-specific automation and manual mobile-device verification remain open. Real Rabby connection/disconnect/reconnect/injected selection/reload passed without signing. MetaMask was unavailable. The local browser harness is a pass; its fake providers are not real wallet extensions and its local RPC-failure route is intentionally synthetic.
 
 These are release gates, not passing results. The explicitly authorized contract deployment was verified above; a Vercel preview was prepared and read-only route navigation was checked, but no frontend production setting or production promotion was changed.
 
