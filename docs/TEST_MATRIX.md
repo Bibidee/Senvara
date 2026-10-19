@@ -17,8 +17,8 @@ The checklist uses **executed** only for checks actually run against the current
 | Next.js static export build | Dependency-aware production build | Hosted deployment smoke test | Local build executed |
 | Mobile and accessibility | Responsive source review + Playwright harness at 390/1440px | Playwright + axe + keyboard + manual mobile | Local route, keyboard, fake-provider and RPC-recovery checks are executed; no axe package is wired into the current harness, and manual mobile review remains open |
 | Studionet deployment/source parity | Finalized deployment receipt, fetched exact source comparison, schema/version readback | Two-wallet application lifecycle, explorer-linked evidence and hosted record transactions | Deployment/source readback and Wallet A/B lifecycle executed; three finalized `JUDGMENT_UNAVAILABLE` evaluations exhausted the retry budget without a false decision |
-| GitHub Actions exact-head CI | Workflow source added and locally inspected | Hosted workflow on exact pushed commit | Not yet executed for this remediation branch |
-| Dependency and artifact reproducibility | npm lockfiles, production audit and static build | Hosted exact-head reproducibility and mapping of prior full-install findings | Local production audit/build executed; prior five-high full-install report not reproduced in this environment |
+| GitHub Actions exact-head CI | Workflow source added and locally inspected | Hosted workflow on exact pushed commit | **PASS:** run `39341092548` on `a05b00a28675b67c281f93941148707fbc040fec`; [run](https://github.com/Bibidee/Senvara/actions/runs/39341092548) |
+| Dependency and artifact reproducibility | npm lockfiles, production audit and static build | Hosted exact-head reproducibility and mapping of prior full-install findings | Hosted production audit/build passed; prior five-high full-install report was not reproduced in this environment and remains a mapping item |
 
 ## Negative-path test obligations
 

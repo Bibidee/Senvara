@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-20
 **Scope:** repository source, contract behavior model, frontend wallet/transaction code, documentation and local release checks.
-**Verdict:** **Release blocked.** The historical 0.1.0 contract is preserved with exact source/ABI readback and a finalized Studionet receipt. The undeployed 0.2.0 candidate is locally hardened and linted, but a hosted conclusive validator outcome, real extension coverage, exact-head CI and independent audit evidence remain open.
+**Verdict:** **Release blocked.** The historical 0.1.0 contract is preserved with exact source/ABI readback and a finalized Studionet receipt. The undeployed 0.2.0 candidate is locally hardened, linted and hosted-CI green, but a hosted conclusive validator outcome, real extension coverage and independent audit evidence remain open.
 
 ## Findings and disposition
 
@@ -31,4 +31,4 @@ Residual trust remains in GitHub's reported signature verification and response 
 
 ## Evidence boundary
 
-Local checks are source/model evidence only. The historical deployment and recorded Wallet A/B fixture are hosted-verified for the evidence stated in `docs/RELEASE_MANIFEST.json`; they do not certify candidate 0.2.0. The overall release label must remain blocked until a conclusive candidate application lifecycle, remaining provider/negative-path behavior, exact-head CI and independent audit evidence are complete.
+Local checks are source/model evidence only. The historical deployment and recorded Wallet A/B fixture are hosted-verified for the evidence stated in `docs/RELEASE_MANIFEST.json`; candidate branch CI is hosted-verified by run `39341092548`, but it does not certify candidate 0.2.0 on Studionet. The overall release label must remain blocked until a conclusive candidate application lifecycle, remaining provider/negative-path behavior and independent audit evidence are complete.

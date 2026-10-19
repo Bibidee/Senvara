@@ -21,6 +21,7 @@
 | `npm --prefix frontend run build` | **PASS** | Next.js 16.4.2 Webpack static export; 7 routes prerendered |
 | `npm run test:browser` | **PASS** | Fresh static export on Chromium; routes, 390/1440px responsive layout, keyboard traversal, RPC retry recovery and fake EIP-6963 provider assertions. It never signs or broadcasts. |
 | `npm audit --omit=dev --audit-level=high` (frontend) | **PASS locally when registry was available** | Production dependency tree reported 0 vulnerabilities; older full-install/Vercel findings remain to be reproduced and mapped |
+| GitHub Actions `Source quality` run `39341092548` | **PASS** | Linux runner verified commit `a05b00a28675b67c281f93941148707fbc040fec`; Direct Mode, GenVM lint, production audit, typecheck, lint, static build, Chromium `--with-deps`, browser smoke and client tests all passed. [Run](https://github.com/Bibidee/Senvara/actions/runs/39341092548) |
 
 ## Candidate remediation evidence
 
