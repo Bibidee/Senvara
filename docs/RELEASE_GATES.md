@@ -20,8 +20,8 @@ The contract is deployed to Studionet 61999 and its exact source, ABI schema, ve
 - [ ] Real MetaMask and Rabby user journeys including simultaneous extensions, rejection, disconnect, switching, reboot/reload and unknown receipt recovery.
 - [ ] Playwright browser sweep across all routes at desktop, tablet and mobile widths; accessibility and keyboard interactions.
 - [x] Local production dependency vulnerability scan (0 vulnerabilities) and documented residual limitations.
-- [ ] Hosted exact-head CI and hosted vulnerability scan.
-- [ ] Documentation/prod parity of source, ABI, contract ID, chain 61999, version, frontend environment, CI and explorer transaction matrix.
+- [x] Hosted exact-head CI and hosted vulnerability scan (GitHub Actions run 5).
+- [x] Documentation/prod parity of source, ABI, contract ID, chain 61999, version, frontend environment and CI manifest; explorer transaction matrix remains open until the live application lifecycle is executed.
 - [x] Cleanup scan for unintentional cross-project identifiers, placeholder deployment values, dangling TODOs and unverified security claims.
 
 ## Evidence labels

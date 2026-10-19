@@ -32,8 +32,8 @@
   "frontend_typecheck_and_build": "TYPECHECK_LINT_BUILD_PASSED_LOCAL",
   "dependency_audit": "PASS_0_ALL_FRONTEND_VULNERABILITIES_LOCAL",
   "lockfile_reproducibility": "PASS_NPM_CI_BOTH",
-  "github_commit": "7bbad12bbb9b8c03e9da105923d4be52bea0f050",
-  "hosted_ci_run": "https://github.com/Bibidee/Senvara/actions/runs/39237237281",
+  "github_commit": "74568a1fe2ffc81f6c01a3d10e2101ad64f2ff51",
+  "hosted_ci_run": "https://github.com/Bibidee/Senvara/actions/runs/39241782943",
   "live_genvm_verification": "DEPLOYMENT_FINALIZED_SOURCE_READBACK_VERIFIED",
   "product": "Senvara",
   "release_readiness": "BLOCKED",
@@ -70,6 +70,6 @@
   "vercel_preview_deployment_id": "dpl_4DV1UPFwnUxJ2jtXk423YaJey3VC",
   "vercel_status": "PREVIEW_READY_HOSTED_READ_ONLY_ROUTES_VERIFIED; CLI_PROTECTED_CURL_NOT_USED; NO_PRODUCTION_PROMOTION",
   "github_actions_workflow": ".github/workflows/quality.yml",
-  "github_actions_status": "PASS_RUN_3_LINUX_DIRECT_MODE_CHROMIUM_CLIENT_FRONTEND_CHECKS",
+  "github_actions_status": "PASS_RUN_5_LINUX_DIRECT_MODE_CHROMIUM_CLIENT_FRONTEND_CHECKS_FULL_AUDIT",
   "version": "0.1.0"
 }

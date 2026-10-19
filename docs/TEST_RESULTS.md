@@ -21,6 +21,7 @@
 | `npm ci` and `npm --prefix frontend ci` | **PASS** | Both generated lockfiles reproduce clean installs; npm emitted only dependency deprecation warnings |
 | `npm run verify:deployment` | **PASS** | Local source, manifest, frontend env and chain constants match the canonical deployment |
 | `npm run test:browser` | **PASS** | Playwright Chromium 151; routes, 390/1440px layout, visible control/field labels, public read, RPC retry recovery, keyboard traversal and fake EIP-6963 provider assertions |
+| Hosted exact-head GitHub Actions run | **PASS** | Run 5 on `74568a1fe2ffc81f6c01a3d10e2101ad64f2ff51`; Direct Mode, full frontend audit, build, Linux Chromium/Playwright and client checks passed. |
 | Hosted preview read-only browser sweep | **PASS; read-only** | Brave session reached `/`, `/open/`, `/method/` and `/workbench/`; no browser console warnings/errors observed. Wallet writes were not attempted. |
 | Hosted real Rabby wallet session | **PASS; no writes** | Connected on Studionet 61999, app disconnect cleared the session, reconnect and injected-provider selection succeeded, and reload silently restored the account. |
 
