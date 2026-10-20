@@ -30,7 +30,8 @@
     "preview_env": "Vercel Preview only"
   },
   "frontend_typecheck_and_build": "TYPECHECK_LINT_BUILD_PASSED_LOCAL",
-  "dependency_audit": "PASS_0_ALL_FRONTEND_VULNERABILITIES_LOCAL",
+  "dependency_audit": "PASS_0_FRONTEND_AND_REPOSITORY_FULL_INSTALL_VULNERABILITIES_LOCAL",
+  "dependency_remediation": "GENLAYER_SCOPED_OVERRIDES_VITEST_4_1_12_DOCKERODE_5_0_1",
   "lockfile_reproducibility": "PASS_NPM_CI_BOTH",
   "github_commit": "272a0a003e875c95902aa6f39c03458f26e4798c",
   "hosted_ci_run": "https://github.com/Bibidee/Senvara/actions/runs/39249940364",

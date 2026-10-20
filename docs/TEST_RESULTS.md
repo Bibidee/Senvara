@@ -25,7 +25,7 @@
 | Vercel production deployment | **READY** | Candidate v0.2.0 deployed to [senvara.vercel.app](https://senvara.vercel.app); deployment `dpl_HnWosGJmYZFmWzrLJt3eAVuJ4aME`; deployment URL [senvara-hm8oiry7n-bibidees-projects.vercel.app](https://senvara-hm8oiry7n-bibidees-projects.vercel.app). Production environment values were configured for chain 61999, the v0.2.0 contract and Studionet RPC. |
 | `npm audit --omit=dev --audit-level=high` (frontend) | **PASS** | Production dependency tree reported 0 vulnerabilities |
 | `npm audit --omit=dev --audit-level=high` (repository) | **PASS** | Production dependency tree reported 0 vulnerabilities |
-| `npm audit --audit-level=high` (repository full install) | **6 findings; release limitation documented** | Four moderate and two critical development-tool findings are transitive through the pinned GenLayer CLI; the forced npm fix would replace the required CLI with an incompatible `0.0.35` major downgrade |
+| `npm audit --audit-level=high` (repository full install) | **PASS** | Zero vulnerabilities after tested GenLayer-scoped overrides: `vitest@4.1.12` removes the vulnerable Vitest/tinypool path and `dockerode@5.0.1` removes the nested vulnerable UUID path; CLI remains `0.39.1` |
 | GitHub Actions `Source quality` run `39408875469` | **PASS** | Linux runner verified exact commit `73c6b4767bb390e5b1be5cc1d513165155dc2488`; Direct Mode, GenVM lint, production audit, typecheck, lint, static build, Chromium `--with-deps`, axe accessibility sweep, browser smoke and client tests all passed. [Push run](https://github.com/Bibidee/Senvara/actions/runs/39408875469) |
 
 ## Candidate remediation evidence
