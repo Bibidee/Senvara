@@ -176,6 +176,26 @@ def test_direct_mode_v02_conclusive_result_is_terminal_and_does_not_reenter_budg
     assert dossier["attempts"] == 1
 
 
+def test_direct_mode_v02_rejects_unauthorized_and_stale_evaluations(direct_vm, direct_deploy, direct_alice, direct_bob):
+    contract = direct_deploy(str(CANDIDATE_CONTRACT))
+    number = submit_ready(contract, direct_vm, direct_alice, direct_bob)
+    configure_sources(direct_vm)
+    configure_judgement(direct_vm)
+
+    direct_vm.sender = bytes.fromhex("33" * 20)
+    with direct_vm.expect_revert("only named participants can spend assessment attempts"):
+        contract.evaluate(number, "7" * 64)
+    assert json.loads(contract.get_dossier(number))["attempts"] == 0
+
+    direct_vm.sender = direct_alice
+    warp_seconds(direct_vm, 3 * 86400 + 1)
+    with direct_vm.expect_revert("record not eligible for evaluation"):
+        contract.evaluate(number, "8" * 64)
+    dossier = json.loads(contract.get_dossier(number))
+    assert dossier["status"] == "READY_FOR_REVIEW"
+    assert dossier["attempts"] == 0
+
+
 def test_direct_mode_hostile_quote_becomes_retryable_not_verdict(direct_vm, direct_deploy, direct_alice, direct_bob):
     contract = direct_deploy(str(CONTRACT))
     number = submit_ready(contract, direct_vm, direct_alice, direct_bob)

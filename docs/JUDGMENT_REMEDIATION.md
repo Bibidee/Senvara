@@ -49,7 +49,7 @@ Executed with GenLayer Direct Mode and the repository's Windows compatibility ru
 | Case | Result |
 |---|---|
 | Existing 0.1.0 Direct Mode suite | **PASS: 5/5** |
-| Candidate 0.2.0 Direct Mode suite | **PASS: 6/6** additional tests, 11/11 total |
+| Candidate 0.2.0 Direct Mode suite | **PASS: 7/7** additional tests, 12/12 total |
 | Realistic text JSON with fenced response | **PASS** |
 | Malformed JSON category | **PASS: `JUDGMENT_MALFORMED_OUTPUT`** |
 | Fabricated/invalid citation category | **PASS: `JUDGMENT_CITATION_INVALID`** |

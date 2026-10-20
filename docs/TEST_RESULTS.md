@@ -10,7 +10,7 @@
 |---|---|---|
 | `npx --no-install genlayer --version` | **0.39.1** | Repository-local CLI resolution; no hosted transaction |
 | `node scripts/run-python.cjs -m unittest discover -s tests -p 'test_*.py' -v` | **37/37 passed** | Python model and candidate behavior tests; mocked GitHub/model/GenLayer dependencies |
-| `python scripts/run-direct-pytest.py tests/test_direct_genvm.py -q` | **11/11 passed** | Actual installed GenVM Direct Mode under local Python 3.13; 5 historical compatibility tests plus 6 candidate tests. The runner does not execute hosted `run_nondet_unsafe` consensus. |
+| `python scripts/run-direct-pytest.py tests/test_direct_genvm.py -q` | **12/12 passed** | Actual installed GenVM Direct Mode under local Python 3.13; 5 historical compatibility tests plus 7 candidate tests, including unauthorized-evaluation and stale-window rejection. The runner does not execute hosted `run_nondet_unsafe` consensus. |
 | `genvm-lint check contracts/senvara_v02.py --json` | **PASS** | GenVM linter 0.11.0; 3 checks and 11 public methods validated |
 | `npm run test:client` | **28/28 passed** | Transpiled client/transaction logic with mocked SDK/provider/RPC, including candidate dossier states, retryable finality, cooldown, nonce/actor mismatch, stale writes and expiration transitions; not a real wallet or chain |
 | `npm run check:source` | **PASS** | Historical source integrity and backendless/configuration guards |

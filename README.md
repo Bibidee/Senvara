@@ -127,7 +127,7 @@ python -m pip install -r requirements-direct.txt
 python scripts/run-direct-pytest.py tests/test_direct_genvm.py -q
 ```
 
-The current local run passes 11/11 Direct Mode tests, including candidate retry-budget, malformed-output, citation, duplicate-key and equivalence cases. This is local GenVM evidence; it does not replace hosted `run_nondet_unsafe` consensus or a live application lifecycle. The browser harness is `tests/browser-smoke.cjs`; it uses deterministic fake EIP-6963 providers and never signs or broadcasts.
+The current local run passes 12/12 Direct Mode tests, including candidate retry-budget, malformed-output, citation, duplicate-key, equivalence, unauthorized-evaluation and stale-window cases. This is local GenVM evidence; it does not replace hosted `run_nondet_unsafe` consensus or a live application lifecycle. The browser harness is `tests/browser-smoke.cjs`; it uses deterministic fake EIP-6963 providers and never signs or broadcasts.
 
 ## Documentation
 
