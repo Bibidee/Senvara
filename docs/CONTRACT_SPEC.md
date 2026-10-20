@@ -2,12 +2,21 @@
 
 ## Deployment identity
 
-- Intelligent Contract: contracts/senvara.py
+- Historical Intelligent Contract: contracts/senvara.py
 - Contract version: 0.1.0
 - Network: GenLayer Studionet
 - Chain ID: 61999 / 0xf22f
 - RPC: https://studio.genlayer.com/api
 - Custody: none; all methods are nonpayable
+
+The historical deployed identity is `0x9668263921d88c1deaB8DA5A416a65D562cB4187`, source SHA-256
+`33385d0283d67cd7c13f0cdafe79ba06c3466a20a35356032afe7c9d32fc797c`, and version
+`0.1.0`. It is preserved unchanged. The reviewed remediation is deployed separately
+at `0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C`, version `0.2.0`, source SHA-256
+`d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2`; its exact
+readback is recorded in `docs/CANDIDATE_V020_MANIFEST.json`. The active frontend uses
+this candidate identity in the explicitly authorized production deployment; the
+historical identity remains available only as the preserved compatibility reference.
 
 ## Public methods
 
@@ -27,15 +36,18 @@
 
 ## Bounds
 
-Claims are 24–420 characters, source paths are repository-relative and traversal-free, files are at most 8 KiB decoded UTF-8, API responses are at most 30 KiB, response windows are 1–14 days, review windows are 3 days, and evaluation attempts are capped at 3 with a 10-minute retry cooldown.
+Claims are 24–420 characters, source paths are repository-relative and traversal-free, files are at most 8 KiB decoded UTF-8, API responses are at most 30 KiB, response windows are 1–14 days, and the retry cooldown is 10 minutes. In deployed 0.1.0, every finalized retryable observation consumes one of the three committed-attempt slots and can end in `REVIEW_EXHAUSTED`. In deployed candidate 0.2.0, bounded retryable provider/model/citation diagnostics retain nonce replay protection and cooldown state but do not consume `attempts`; a conclusive observation moves directly to terminal `DECIDED`, and a retryable record stays `READY_FOR_REVIEW` until it is resolved or expires. `MAX_ATTEMPTS` remains a defensive guard for incompatible/corrupt state and is not reachable through the normal v0.2.0 lifecycle.
 
 ## Decision rule
 
 Validators classify each file as SUPPORTS, CONTRADICTS, IRRELEVANT or AMBIGUOUS. The contract derives SUPPORTED, CONTRADICTED, MIXED, INSUFFICIENT; no free-form model verdict is stored. A source/provenance/model failure is RETRYABLE, never a documentary decision.
 
-Every evaluation request carries a 64-hex-character nonce. A successful retryable or
-conclusive evaluation stores the nonce with the named participant and rejects that
-exact replay. The record also stores `last_attempt_by`, so a frontend cannot reconcile
-an evaluation against an older attempt by count alone.
+Every evaluation request carries a 64-hex-character nonce. The deployed contract
+stores the nonce with the named participant after a successful evaluation. Candidate
+0.2.0 additionally stores `last_attempt_nonce_sha256` for bounded reconciliation;
+it stores the nonce fingerprint for both retryable diagnostics and conclusive
+evaluations, and rejects the exact replay. The record also stores `last_attempt_by`,
+so a frontend cannot reconcile an evaluation against an older attempt by count alone.
 
-The deployed ABI and source readback must be generated and compared to this exact source after an authorized deployment. No address is currently configured.
+The deployed ABI and source readback are recorded in `docs/RELEASE_MANIFEST.json`.
+Candidate ABI/source identity is recorded separately in `docs/CANDIDATE_V020_MANIFEST.json`.

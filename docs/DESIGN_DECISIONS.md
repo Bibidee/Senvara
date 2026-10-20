@@ -16,9 +16,9 @@ Using a shared revision intentionally narrows the claim to one documentary snaps
 
 The commit's GitHub `verification` metadata must report a verified valid signature, with a signed payload and signature present. This excludes unsigned revisions and requires explicit limitations: the contract consumes GitHub's reported verification, not a locally recomputed signature verification. The policy can restrict participation and is subject to GitHub availability.
 
-## Deterministic result and strict consensus equivalence
+## Deterministic result and authenticated consensus equivalence
 
-The language model cannot submit arbitrary top-level outcomes. It classifies each file in a closed vocabulary, provides an exact in-text decisive quotation, and the contract derives the four possible results. The validator independently refetches and reclassifies. Full agreement is required on documentary fingerprints, signed-payload fingerprint, all classifications, citations and derived result. This is conservative and can reduce liveness when models quote different valid passages; hosted testing must calibrate this boundary before changing it.
+The language model cannot submit arbitrary top-level outcomes. It classifies each file in a closed vocabulary, provides an exact in-text decisive quotation, and the contract derives the four possible results. The validator independently refetches and reclassifies. The 0.2.0 candidate requires agreement on the documentary fingerprints, signed-payload fingerprint, classifications and derived result, while independently checking that each quote is an exact, relevant substring of its authenticated source. It does not require identical quote spans, avoiding disagreement over harmless wording differences without accepting fabricated citations.
 
 ## No custody in initial version
 

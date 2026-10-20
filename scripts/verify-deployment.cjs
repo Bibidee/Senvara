@@ -34,9 +34,9 @@ if (manifest.deployed_contract_readback?.schema_evaluate !== "evaluate(number:in
 
 const constants = fs.readFileSync(`${root}/frontend/lib/constants.ts`, "utf8");
 if (!constants.includes(`export const CHAIN_ID = ${expected.chainId};`) || !constants.includes(`export const CHAIN_HEX = "0xf22f";`) || !constants.includes(`https://studio.genlayer.com/api`)) fail("frontend chain constants are stale");
-for (const envPath of [`${root}/frontend/.env.example`, `${root}/frontend/.env.local`]) {
+for (const envPath of [`${root}/frontend/.env.historical.example`]) {
   const env = readEnv(envPath);
-  if (Object.keys(env).length && (env.NEXT_PUBLIC_SENVARA_CONTRACT !== expected.address || env.NEXT_PUBLIC_SENVARA_RPC !== expected.rpc)) fail(`${envPath} is stale`);
+  if (Object.keys(env).length && (env.NEXT_PUBLIC_SENVARA_CONTRACT !== expected.address || env.NEXT_PUBLIC_SENVARA_RPC !== expected.rpc || env.NEXT_PUBLIC_SENVARA_CONTRACT_VERSION !== expected.version || env.NEXT_PUBLIC_SENVARA_SOURCE_SHA256 !== expected.sourceSha256)) fail(`${envPath} is stale`);
 }
 
 console.log(`deployment consistency: PASS (${expected.address}, Studionet ${expected.chainId}, ${expected.sourceBytes} bytes, ${expected.sourceSha256})`);

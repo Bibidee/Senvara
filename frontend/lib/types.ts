@@ -8,7 +8,7 @@ export type Dossier = {
   repository: string; commit: string; primary_path: string; opposing_path: string;
   reviewer_note: string; created_at: number; response_deadline: number;
   review_deadline: number; updated_at: number; last_attempt_at: number;
-  last_attempt_by: string; attempts: number; status: RecordStatus;
+  last_attempt_by: string; last_attempt_nonce_sha256?: string; attempts: number; status: RecordStatus;
   decision: ReviewDecision; last_reason: string;
 };
 export type Observation = {
@@ -26,8 +26,10 @@ export type EIP1193Provider = {
   removeListener?: (event: string, handler: (...args: unknown[]) => void) => void;
 };
 export type WalletOption = { id: string; name: string; rdns: string; icon: string; provider: EIP1193Provider };
-export type TxPhase = "SIGNING" | "SUBMITTED" | "ACCEPTED_PROVISIONAL" | "IN_PROGRESS" | "FINALIZED_UNVERIFIED" | "VERIFYING" | "VERIFIED" | "FAILED" | "UNDETERMINED" | "UNKNOWN" | "REJECTED" | "GUARD_RELEASED";
+export type TxPhase = "SIGNING" | "SUBMITTED" | "ACCEPTED_PROVISIONAL" | "IN_PROGRESS" | "FINALIZED_UNVERIFIED" | "VERIFYING" | "VERIFIED" | "RETRYABLE" | "FAILED" | "UNDETERMINED" | "UNKNOWN" | "REJECTED" | "GUARD_RELEASED";
 export type TxReceipt = {
   id: string; action: string; recordId?: number; account: string; walletId: string;
   createdAt: number; hash: string; phase: TxPhase; message: string; argsDigest: string; expectedAttempt?: number;
+  chainId: number; contractAddress: string; contractVersion: string; evaluationGuardKey?: string;
+  expectedPreviousStatus?: string; expectedPreviousUpdatedAt?: number;
 };

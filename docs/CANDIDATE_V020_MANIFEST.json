@@ -1,0 +1,162 @@
+{
+  "product": "Senvara",
+  "candidate_version": "0.2.0",
+  "status": "DEPLOYED_VERIFIED",
+  "network": {
+    "name": "GenLayer Studionet",
+    "chain_id": 61999,
+    "rpc": "https://studio.genlayer.com/api"
+  },
+  "contract_path": "contracts/senvara_v02.py",
+  "source_sha256": "d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2",
+  "source_size_bytes": 25549,
+  "contract_address": "0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C",
+  "deployment_transaction": "0xeabdd3db0a1648a6a02928161ceb715bddb79718ba0c4353898feeb4a63896f1",
+  "public_abi": [
+    "propose(assertion:string, repository:string, commit_sha:string, primary_path:string, reviewer:string, response_seconds:u256)",
+    "respond(number:u256, opposing_path:string, context:string)",
+    "decline(number:u256)",
+    "withdraw(number:u256)",
+    "close_expired(number:u256)",
+    "evaluate(number:u256, request_nonce:string)",
+    "get_version() -> string",
+    "get_total() -> u256",
+    "get_dossier(number:u256) -> string",
+    "get_observation(number:u256, attempt:u256) -> string",
+    "list_dossiers(offset:u256, limit:u256) -> string"
+  ],
+  "public_abi_schema": {
+    "close_expired": {"params": [["number", "int"]], "kwparams": {}, "readonly": false, "ret": "any", "payable": false},
+    "decline": {"params": [["number", "int"]], "kwparams": {}, "readonly": false, "ret": "any", "payable": false},
+    "evaluate": {"params": [["number", "int"], ["request_nonce", "string"]], "kwparams": {}, "readonly": false, "ret": "any", "payable": false},
+    "get_dossier": {"params": [["number", "int"]], "kwparams": {}, "readonly": true, "ret": "string", "payable": false},
+    "get_observation": {"params": [["number", "int"], ["attempt", "int"]], "kwparams": {}, "readonly": true, "ret": "string", "payable": false},
+    "get_total": {"params": [], "kwparams": {}, "readonly": true, "ret": "int", "payable": false},
+    "get_version": {"params": [], "kwparams": {}, "readonly": true, "ret": "string", "payable": false},
+    "list_dossiers": {"params": [["offset", "int"], ["limit", "int"]], "kwparams": {}, "readonly": true, "ret": "string", "payable": false},
+    "propose": {"params": [["assertion", "string"], ["repository", "string"], ["commit_sha", "string"], ["primary_path", "string"], ["reviewer", "string"], ["response_seconds", "int"]], "kwparams": {}, "readonly": false, "ret": "any", "payable": false},
+    "respond": {"params": [["number", "int"], ["opposing_path", "string"], ["context", "string"]], "kwparams": {}, "readonly": false, "ret": "any", "payable": false},
+    "withdraw": {"params": [["number", "int"]], "kwparams": {}, "readonly": false, "ret": "any", "payable": false}
+  },
+  "compatibility": {
+    "method_signatures_unchanged_from_v010": true,
+    "new_observation_reasons": [
+      "PROVENANCE_UNAVAILABLE",
+      "SOURCE_RETRIEVAL_UNAVAILABLE",
+      "JUDGMENT_EXECUTION_UNAVAILABLE",
+      "JUDGMENT_MALFORMED_OUTPUT",
+      "JUDGMENT_CITATION_INVALID"
+    ],
+    "new_dossier_field": "last_attempt_nonce_sha256"
+  },
+  "historical_deployment_preserved": true,
+  "release_head": "b428ba6549abaf970139465740bffb52f385fcdb",
+  "deployment_receipt": {
+    "status": "FINALIZED",
+    "from": "0x527dA5f7022f14f7105e5f06cEc1a8EFf53556b5",
+    "tx_execution_hash": "0xa6741c743530674f89d18c38d9b6578d134920c1afcafddb82f25e31eec8a9d6",
+    "consensus_result": "MAJORITY_AGREE",
+    "consensus_rounds": 1,
+    "votes_committed": 5,
+    "votes_revealed": 5,
+    "validator_votes": ["AGREE", "AGREE", "AGREE", "AGREE", "AGREE"],
+    "genvm_execution": "SUCCESS",
+    "evm_receipt_status": "0x1"
+  },
+  "deployed_code_readback": {
+    "encoding": "base64 decoded by gen_getContractCode",
+    "source_bytes": 25549,
+    "source_sha256": "d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2",
+    "exact_local_source_match": true,
+    "get_version": "0.2.0",
+    "get_total": 0,
+    "abi_schema_parity": "PASS"
+  },
+  "frontend_preview": {
+    "url": "https://senvara-41ex6g1wy-bibidees-projects.vercel.app",
+    "deployment_id": "dpl_D5ZZ7D8JgTugswyhWWxQVLWqrGoU",
+    "target": "preview",
+    "status": "READY",
+    "environment": "Preview candidate identity; production deployment recorded separately",
+    "protected_browser_routes": ["/", "/method/", "/open/", "/workbench/"],
+    "protected_browser_viewports": ["390x844", "1440x900"],
+    "protected_browser_result": "PASS; no failed requests or console errors"
+  },
+  "frontend_production": {
+    "url": "https://senvara.vercel.app",
+    "deployment_url": "https://senvara-hm8oiry7n-bibidees-projects.vercel.app",
+    "deployment_id": "dpl_HnWosGJmYZFmWzrLJt3eAVuJ4aME",
+    "target": "production",
+    "status": "READY",
+    "environment": "Candidate v0.2.0; explicitly authorized production deployment",
+    "contract": "0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C",
+    "chain_id": 61999,
+    "rpc": "https://studio.genlayer.com/api",
+    "browser_result": "Production record page read-only verified; after one explicit Rabby reconnect, two consecutive reloads silently restored Wallet B and preserved DECISION RECORDED / SUPPORTED"
+  },
+  "live_two_wallet_lifecycle": {
+    "network": "GenLayer Studionet 61999",
+    "record": 1,
+    "signed_commit": "272a0a003e875c95902aa6f39c03458f26e4798c",
+    "wallet_a": "0x4a7d76b8c4668a3426d6d54ec24b41fa87b532f5",
+    "wallet_b": "0xff203bb65942f50cb81a8af98c5f5bd9d8a79b54",
+    "propose_transaction": "0x003cb9d95ca902ddb23b18360abbaf9e7ef13d617b7c93f838e3361d97f08b71",
+    "respond_transaction": "0x8d742581322cb6ec5561d63c8d4777df4064aa56b53c4f23023551d8c61c3e8f",
+    "evaluate_transaction": "0xa067be9406c12f2d009484a0157c5ba84f3bc70f7ec47ef80cc8baf786c17553",
+    "transaction_statuses": ["FINALIZED", "FINALIZED", "FINALIZED"],
+    "consensus_result": "MAJORITY_AGREE",
+    "canonical_state": {
+      "status": "DECIDED",
+      "decision": "SUPPORTED",
+      "attempts": 1,
+      "last_attempt_by": "0xff203bb65942f50cb81a8af98c5f5bd9d8a79b54",
+      "last_reason": "",
+      "last_attempt_nonce_sha256": "73b2202c15b98b4b448c096ea9d5dca2c5055ccf81bf0fe4d1ef13b7d4b345e6"
+    },
+    "canonical_observation": {
+      "kind": "EVALUATED",
+      "primary": "SUPPORTS",
+      "opposing": "SUPPORTS",
+      "primary_sha256": "3db378e9de1da30612c95b77f6d6df91ab92b1d820f266f34691bf232d8fdec6",
+      "opposing_sha256": "edfbfc0916142a9e2184044e9cc3080bab03dcbb1fa8f666a4167b92c0a3f290",
+      "signed_payload_sha256": "c97518376d4714921d633ec60cdca2f7a0cbf520f646d1c34c1e84814f280927"
+    },
+    "browser_record_result": "DECISION RECORDED / SUPPORTED; all three transaction traces VERIFIED",
+    "negative_path_coverage": "PARTIAL PASS: one fresh-nonce evaluation against already-decided record #1 finalized as a bounded rejection; record #2 finalized a retryable citation diagnostic without consuming an attempt; unauthorized, exact replay and stale-action writes remain open"
+  },
+  "negative_path": {
+    "record": 1,
+    "actor": "0x4a7d76b8c4668a3426d6d54ec24b41fa87b532f5",
+    "transaction": "0x3389e48ec7c91f7021b3445c3580e9dff4ed30f12a83730e55bdab9bf0fca645",
+    "status": "FINALIZED",
+    "consensus_result": "MAJORITY_AGREE",
+    "validator_votes": ["AGREE", "AGREE", "AGREE", "AGREE", "AGREE"],
+    "execution_result": "ERROR",
+    "bounded_result": "record not eligible for evaluation",
+    "pre_state": {"status": "DECIDED", "decision": "SUPPORTED", "attempts": 1},
+    "post_state": {"status": "DECIDED", "decision": "SUPPORTED", "attempts": 1, "last_reason": ""},
+    "canonical_state_unchanged": true,
+    "evidence_boundary": "The wallet-signed request was finalized and rejected before any second observation was committed. This does not cover unauthorized, exact replay or stale-action rejection."
+  },
+  "live_record_2_citation_validation": {
+    "record": 2,
+    "signed_commit": "272a0a003e875c95902aa6f39c03458f26e4798c",
+    "wallet_a": "0x4a7d76b8c4668a3426d6d54ec24b41fa87b532f5",
+    "wallet_b": "0xff203bb65942f50cb81a8af98c5f5bd9d8a79b54",
+    "propose_transaction": "0x879a84c5a690049f2bf1c3be32ea9574dc53bb973ae40ca3e9a3b33097f57709",
+    "respond_transaction": "0xdf0fc54542c21a5cb1a389cfd6d1ff6679d41f8de30c0c3b7e8dbe032eb34856",
+    "evaluate_transaction": "0x6584fc344ade4055e01947a5d6b54e7d9725351e62bb334aa2931e95a74a49a9",
+    "transaction_statuses": ["FINALIZED", "FINALIZED", "FINALIZED"],
+    "consensus_result": "MAJORITY_AGREE",
+    "genvm_execution": "SUCCESS",
+    "canonical_state": {
+      "status": "READY_FOR_REVIEW",
+      "attempts": 0,
+      "last_reason": "JUDGMENT_CITATION_INVALID"
+    },
+    "diagnostic": "The public receipt exposes the bounded citation-validation category, not raw model output or the specific quote subcase. The RPC does not implement gen_dbg_traceTransaction.",
+    "semantic_judgment": "NONE",
+    "evidence_boundary": "Sources were accepted and the assessment finalized with successful GenVM execution and validator consensus. No conclusive documentary decision was written."
+  },
+  "verification_command": "node scripts/verify-deployed-v020.cjs"
+}

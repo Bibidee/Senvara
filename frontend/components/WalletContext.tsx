@@ -13,8 +13,36 @@ type ContextType = {
 const WalletContext = createContext<ContextType | null>(null);
 const uniqueId = (name: string) => name.toLowerCase().replace(/[^a-z0-9.:-]/g, "-");
 const WALLET_PREFERENCE_KEY = "senvara.wallet.preference.v1";
-const readWalletPreference = () => {try {return window.localStorage.getItem(WALLET_PREFERENCE_KEY)} catch {return null}};
-const writeWalletPreference = (value: string | null) => {try {if(value) window.localStorage.setItem(WALLET_PREFERENCE_KEY,value);else window.localStorage.removeItem(WALLET_PREFERENCE_KEY)} catch {/* local recovery state is optional */}};
+type WalletPreference = {id?: string; rdns?: string; name?: string};
+const readWalletPreference = (): WalletPreference | null => {
+  try {
+    const raw = window.localStorage.getItem(WALLET_PREFERENCE_KEY);
+    if (!raw) return null;
+    try {
+      const parsed = JSON.parse(raw) as unknown;
+      if (parsed && typeof parsed === "object") {
+        const value = parsed as Record<string, unknown>;
+        return {id: typeof value.id === "string" ? value.id : undefined,
+          rdns: typeof value.rdns === "string" ? value.rdns : undefined,
+          name: typeof value.name === "string" ? value.name : undefined};
+      }
+    } catch { /* Legacy installs stored only the provider id. */ }
+    return {id: raw};
+  } catch {return null;}
+};
+const writeWalletPreference = (value: WalletOption | null) => {
+  try {
+    if (value) window.localStorage.setItem(WALLET_PREFERENCE_KEY, JSON.stringify({version:1,id:value.id,rdns:value.rdns,name:value.name}));
+    else window.localStorage.removeItem(WALLET_PREFERENCE_KEY);
+  } catch {/* local recovery state is optional */}
+};
+const preferenceMatches = (candidate: WalletOption, preference: WalletPreference | null) => {
+  if (!preference) return false;
+  if (preference.id && preference.id === candidate.id) return true;
+  if (preference.rdns && candidate.rdns) return preference.rdns === candidate.rdns;
+  return Boolean(preference.name && !preference.rdns && preference.name === candidate.name);
+};
+const pause = (milliseconds: number) => new Promise<void>(resolve => window.setTimeout(resolve, milliseconds));
 
 export function WalletProvider({children}: {children: ReactNode}) {
   const [wallets, setWallets] = useState<WalletOption[]>([]);
@@ -34,16 +62,24 @@ export function WalletProvider({children}: {children: ReactNode}) {
   useEffect(() => {
     const restore = async (candidate: WalletOption) => {
       if (restoreInProgress.current.has(candidate.id) || sessionRef.current) return;
-      if (readWalletPreference() !== candidate.id) return;
+      if (!preferenceMatches(candidate, readWalletPreference())) return;
       restoreInProgress.current.add(candidate.id);
       try {
-        const rawAccounts = await candidate.provider.request({method:"eth_accounts"});
-        const account = Array.isArray(rawAccounts) ? rawAccounts[0] : undefined;
-        if (!validAccount(account) || sessionRef.current) return;
-        const chainId = chainNumber(await candidate.provider.request({method:"eth_chainId"}));
-        epoch.current += 1;
-        update({provider:candidate.provider, walletId:candidate.id, name:candidate.name,
-          account:account.toLowerCase(), chainId, epoch:epoch.current});
+        // Extensions can announce before their site permission/account state is
+        // ready. Retry only read-only calls; never open a wallet prompt here.
+        for (const delay of [0, 150, 450, 900]) {
+          if (delay) await pause(delay);
+          if (sessionRef.current) return;
+          const rawAccounts = await candidate.provider.request({method:"eth_accounts"});
+          const account = Array.isArray(rawAccounts) ? rawAccounts[0] : undefined;
+          if (!validAccount(account)) continue;
+          const chainId = chainNumber(await candidate.provider.request({method:"eth_chainId"}));
+          if (sessionRef.current) return;
+          epoch.current += 1;
+          update({provider:candidate.provider, walletId:candidate.id, name:candidate.name,
+            account:account.toLowerCase(), chainId, epoch:epoch.current});
+          return;
+        }
       } catch {
         // Passive restoration must never open a wallet prompt or block the app.
       } finally {
@@ -126,7 +162,7 @@ export function WalletProvider({children}: {children: ReactNode}) {
       const chainId = chainNumber(await chosen.provider.request({method:"eth_chainId"}));
       epoch.current += 1;
       update({provider:chosen.provider, walletId:id, name:chosen.name, account:account.toLowerCase(), chainId, epoch:epoch.current});
-      writeWalletPreference(id);
+      writeWalletPreference(chosen);
     } catch(cause) {setError(walletError(cause));}
     finally {setConnecting("");requestInProgress.current=false;}
   };

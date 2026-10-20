@@ -2,9 +2,12 @@ const path = require("node:path");
 
 const playwrightRoot = process.env.SENVARA_PLAYWRIGHT_ROOT;
 const { chromium } = playwrightRoot ? require(playwrightRoot) : require("playwright");
+const axePath = require.resolve("axe-core/axe.min.js", { paths: [path.join(__dirname, "..", "frontend")] });
 
 const baseURL = process.env.SENVARA_BASE_URL || "http://127.0.0.1:3000";
 const executablePath = process.env.SENVARA_CHROMIUM || "";
+const rpcURL = process.env.NEXT_PUBLIC_SENVARA_RPC || "https://studio.genlayer.com/api";
+const isolateExternalRpc = process.env.SENVARA_BROWSER_LIVE_RPC !== "1";
 const routes = ["/", "/open/", "/record/", "/workbench/", "/method/"];
 const alice = "0x1111111111111111111111111111111111111111";
 const bob = "0x2222222222222222222222222222222222222222";
@@ -13,14 +16,30 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+async function checkA11y(page, route, viewport) {
+  await page.addScriptTag({ path: axePath });
+  const violations = await page.evaluate(async () => {
+    const result = await window.axe.run(document, { resultTypes: ["violations"] });
+    return result.violations.map(violation => ({
+      id: violation.id,
+      impact: violation.impact,
+      help: violation.help,
+      nodes: violation.nodes.length,
+    }));
+  });
+  assert(violations.length === 0, `axe violations at ${route} (${viewport.width}px): ${JSON.stringify(violations)}`);
+}
+
 async function installWalletHarness(page) {
   await page.addInitScript(({ alice, bob }) => {
     const calls = [];
     const listeners = new WeakMap();
     const makeProvider = (name, account, initialChain, rejectRequest = false) => {
       let chain = initialChain;
-      let authorized = false;
+      const authorizationKey = `senvara.harness.authorized.${name}`;
+      let authorized = window.sessionStorage.getItem(authorizationKey) === "1";
       let rejectNextRequest = rejectRequest;
+      const persistAuthorization = () => window.sessionStorage.setItem(authorizationKey, authorized ? "1" : "0");
       const provider = {
         name,
         calls,
@@ -30,6 +49,7 @@ async function installWalletHarness(page) {
           if (method === "eth_requestAccounts") {
             if (rejectNextRequest) { rejectNextRequest = false; const error = new Error("User rejected"); error.code = 4001; throw error; }
             authorized = true;
+            persistAuthorization();
             return [account];
           }
           if (method === "eth_chainId") return chain;
@@ -50,10 +70,10 @@ async function installWalletHarness(page) {
           current?.set(event, handlers.filter(candidate => candidate !== handler));
         },
         emit(event, value) {
-          if (event === "accountsChanged") authorized = Array.isArray(value) && value.length > 0;
+          if (event === "accountsChanged") { authorized = Array.isArray(value) && value.length > 0; persistAuthorization(); }
           for (const handler of listeners.get(provider)?.get(event) || []) handler(value);
         },
-        authorize() { authorized = true; },
+        authorize() { authorized = true; persistAuthorization(); },
         rejectNext() { rejectNextRequest = true; },
       };
       return provider;
@@ -70,11 +90,20 @@ async function installWalletHarness(page) {
 }
 
 async function checkRoutes(browser) {
-  for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000 }]) {
+  for (const viewport of [
+    { width: 390, height: 844 },
+    { width: 768, height: 1024 },
+    { width: 1440, height: 1000 },
+  ]) {
     const page = await browser.newPage({ viewport });
     const errors = [];
+    if (isolateExternalRpc) await page.route(rpcURL, route => route.abort("failed").catch(() => {}));
     page.on("pageerror", error => errors.push(`pageerror: ${error.message}`));
-    page.on("console", message => { if (message.type() === "error") errors.push(`console: ${message.text()}`); });
+    page.on("console", message => {
+      const text = message.text();
+      const expectedRpcFailure = /Access to fetch|Failed to load resource|GenLayer RPC error|Failed to initialize consensus smart contract|Failed to fetch/i.test(text);
+      if (message.type() === "error" && !(isolateExternalRpc && expectedRpcFailure)) errors.push(`console: ${text}`);
+    });
     page.on("response", response => { if (response.status() >= 400) errors.push(`http ${response.status()}: ${response.url()}`); });
     for (const route of routes) {
       const response = await page.goto(baseURL + route, { waitUntil: "networkidle" });
@@ -82,6 +111,10 @@ async function checkRoutes(browser) {
       await page.waitForTimeout(150);
       const result = await page.evaluate(() => ({
         title: document.title,
+        configured: document.body.dataset.senvaraConfigured,
+        contract: document.body.dataset.senvaraContract,
+        contractVersion: document.body.dataset.senvaraContractVersion,
+        sourceSha256: document.body.dataset.senvaraSourceSha256,
         body: document.body.innerText.trim(),
         overflow: document.documentElement.scrollWidth - window.innerWidth,
         appError: /Application error|Unhandled Runtime Error|Internal Server Error/i.test(document.body.innerText),
@@ -96,12 +129,17 @@ async function checkRoutes(browser) {
         unlabeledFields: [...document.querySelectorAll("input,textarea,select")].filter(element => !element.getAttribute("aria-label") && !element.labels?.length).length,
       }));
       assert(result.title.length > 0, `${route} has no document title`);
+      assert(result.configured === "true", `${route} did not expose an active release identity`);
+      assert(result.contract?.toLowerCase() === "0xf563d381c3ec5bda61f166bb1fff781de6b81b8c", `${route} exposed the wrong active contract`);
+      assert(result.contractVersion === "0.2.0", `${route} exposed the wrong active contract version`);
+      assert(result.sourceSha256 === "d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2", `${route} exposed the wrong active source fingerprint`);
       assert(result.body.length > 100, `${route} has unexpectedly empty body`);
       assert(!result.appError, `${route} rendered an application error`);
       assert(result.overflow <= 1, `${route} overflows viewport by ${result.overflow}px at ${viewport.width}px`);
       assert(result.controls > 0, `${route} has no interactive controls`);
       assert(result.unlabeledControls === 0, `${route} has ${result.unlabeledControls} unlabeled links/buttons`);
       assert(result.unlabeledFields === 0, `${route} has ${result.unlabeledFields} unlabeled form fields`);
+      await checkA11y(page, route, viewport);
       if (viewport.width === 390) {
         await page.getByRole("button", { name: "Toggle navigation" }).click();
         assert(await page.getByRole("navigation", { name: "Mobile navigation" }).isVisible(), `${route} mobile navigation did not open`);
@@ -114,6 +152,14 @@ async function checkRoutes(browser) {
 
 async function checkPublicRead(browser) {
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  if (isolateExternalRpc) {
+    await page.route(rpcURL, route => route.abort("failed").catch(() => {}));
+    await page.goto(baseURL + "/open/", { waitUntil: "networkidle" });
+    await page.locator('.inline-error[role="alert"]').waitFor({ state: "visible" });
+    assert(await page.getByRole("button", { name: "Refresh records" }).isVisible(), "public read failure did not expose retry recovery");
+    await page.close();
+    return;
+  }
   await page.goto(baseURL + "/open/", { waitUntil: "networkidle" });
   await page.getByText(/public questions recorded/).waitFor({ state: "visible" });
   const body = await page.locator("body").innerText();
@@ -166,9 +212,12 @@ async function checkWalletHarness(browser) {
   await page.getByRole("button", { name: /MetaMask/ }).click();
   await page.waitForTimeout(100);
   assert(await page.getByText("0x1111", { exact: false }).first().isVisible(), "MetaMask connection did not establish a session");
+  await page.reload({ waitUntil: "networkidle" });
+  assert(await page.getByText("0x1111", { exact: false }).first().isVisible(), "authorized wallet session was not passively restored after reload");
   await page.evaluate(() => window.__senvaraWalletHarness.meta.emit("accountsChanged", [window.__senvaraWalletHarness.bob]));
   await page.waitForTimeout(50);
   assert(await page.getByText("0x2222", { exact: false }).first().isVisible(), "active wallet account change was not reflected");
+  await page.locator(".wallet-pill").click();
   await page.getByRole("button", { name: /Disconnect from this app/ }).click();
   await page.getByRole("button", { name: /Connect wallet/ }).click();
   await page.getByRole("button", { name: /Rabby/ }).click();
@@ -195,7 +244,7 @@ async function main() {
     await checkKeyboardAndRecovery(browser);
     await checkRpcFailureRecovery(browser);
     await checkWalletHarness(browser);
-    console.log("browser smoke: routes, responsive layout, keyboard traversal, recovery, EIP-6963 discovery, rejection, account change, and network switch passed");
+    console.log("browser smoke: routes, responsive layout, axe accessibility, keyboard traversal, recovery, EIP-6963 discovery, rejection, account change, and network switch passed");
   } finally {
     await browser.close();
   }

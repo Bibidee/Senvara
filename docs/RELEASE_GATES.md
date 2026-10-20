@@ -2,28 +2,30 @@
 
 ## Current verdict
 
-**LOCAL IMPLEMENTATION VERIFIED; RELEASE: BLOCKED.**
+**V0.2.0 DEPLOYMENT VERIFIED; RELEASE: BLOCKED.**
 
-The contract is deployed to Studionet 61999 and its exact source, ABI schema, version and finalized deployment receipt have been read back. The frontend is configured for that address and a protected Vercel preview is `READY`; no production promotion was made. Do not treat the deployment receipt or local browser harness as proof of the complete application lifecycle or real wallet behavior.
+The historical 0.1.0 contract is preserved on Studionet 61999. Reviewed 0.2.0 is deployed at `0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C`, with exact decoded source, ABI schema, version and finalized deployment receipt readback recorded in `docs/CANDIDATE_V020_MANIFEST.json`. The frontend is deployed to production at `https://senvara.vercel.app` with the v0.2.0 identity and Studionet configuration. Do not treat deployment receipt or local browser harness as proof of the complete application lifecycle or real wallet behavior.
 
 ## Mandatory gates
 
 - [x] Resolve package registry access; install exact declared dependencies and generate complete npm lockfiles.
 - [x] Successful `frontend` typecheck, ESLint and production static export.
 - [x] Pin local GenLayer CLI 0.39.1; prove the repository-installed binary rather than using any global tool.
-- [x] Local GenVM Direct Mode lifecycle and adversarial cases on a supported runtime; GenVM lint remains open.
+- [x] Local GenVM Direct Mode lifecycle and adversarial candidate cases on a supported runtime; candidate GenVM lint/schema validation passes.
 - [ ] Independent third-party security review; the implementation audit and disposition are recorded in `docs/AUDIT_REPORT.md`.
-- [x] Confirm Studio endpoint browser CORS/direct RPC support for read and write integration, without inserting a proxy; hosted browser reads and signed Studionet writes succeeded.
+- [x] Confirm candidate Studio endpoint browser CORS/direct RPC support for the new ABI, without inserting a proxy. Read-only RPC/schema/version evidence and the hosted candidate write/lifecycle pass on Studionet 61999.
+- [x] Candidate Vercel preview is **READY** at [senvara-41ex6g1wy-bibidees-projects.vercel.app](https://senvara-41ex6g1wy-bibidees-projects.vercel.app); protected browser route checks pass at 390px and 1440px with no failed requests or console errors. This is a preview-only read/navigation check.
 - [x] Deploy explicitly approved contract to Studionet 61999 and record source SHA-256 plus deployed-code readback.
-- [x] Generate and verify current ABI against exact code and version; frontend canonical preview configuration is recorded.
-- [ ] Complete two-wallet hosted lifecycle, including a conclusive verdict and live unauthorized/replay/stale-action rejection. **Partial pass:** Wallet A/B proposal and response, three finalized retryable evaluations, canonical exhausted-state readback and no-false-verdict handling are verified.
-- [ ] Complete real MetaMask and Rabby user journeys including simultaneous extensions, rejection, disconnect, switching, reboot/reload and unknown receipt recovery. **Partial pass:** Rabby connection, switching, disconnect/reconnect, injected selection and signed sends passed; MetaMask and several negative wallet paths remain unavailable.
-- [ ] Complete the Playwright browser sweep across all routes at desktop, tablet and mobile widths with axe and manual mobile review. **Partial pass:** local Chromium, keyboard, accessibility, responsive, RPC-recovery and axe assertions passed at 390px/1440px; hosted preview navigation was read-only verified; manual mobile review remains open.
-- [ ] Resolve repeated judgment unavailability with a conclusive hosted result. **Candidate prepared:** 0.2.0 Direct Mode passed with bounded diagnostics and citation-aware equivalence; the deployed 0.1.0 contract remains unchanged and no replacement deployment was made.
-- [x] Local production dependency vulnerability scan (0 vulnerabilities) and documented residual limitations.
-- [x] Hosted exact-head CI and hosted production dependency scan (GitHub Actions runs 8 through 12 passed).
-- [x] Documentation/prod parity of source, ABI, contract ID, chain 61999, version, frontend environment and CI manifest; the executed lifecycle and transaction matrix are recorded, while conclusive and negative-path gates remain open.
-- [x] Cleanup scan for unintentional cross-project identifiers, placeholder deployment values, dangling TODOs and unverified security claims.
+- [x] Generate and verify historical ABI against exact deployed code and version; candidate ABI signatures and frontend identity checks are recorded separately.
+- [x] Complete a fresh candidate two-wallet hosted lifecycle with a conclusive verdict. **PASS:** Wallet A proposed, Wallet B responded, and Wallet B evaluated candidate record `#1`; all three finalized transactions and canonical `SUPPORTED` state are recorded in `docs/CANDIDATE_V020_MANIFEST.json`. Record `#2` separately finalized `JUDGMENT_CITATION_INVALID` with `attempts=0` and no semantic decision.
+- [ ] Complete hosted unauthorized, exact-replay and stale-action rejection. **Partial negative-path PASS:** a fresh-nonce evaluation against already-decided record `#1` finalized with the bounded rejection `record not eligible for evaluation`, and canonical state remained unchanged. Unauthorized, exact-replay and stale-action rejection remain open. **Historical partial pass:** Wallet A/B proposal and response, three finalized retryable evaluations, canonical exhausted-state readback and no-false-verdict handling are verified for 0.1.0.
+- [ ] Complete real MetaMask and Rabby user journeys including simultaneous extensions, rejection, disconnect, switching, reboot/reload and unknown receipt recovery. **Rabby reload and one hosted rejection path now pass for the tested flow:** after one explicit reconnect, two consecutive production reloads silently restored Wallet B and preserved the canonical record; Wallet A's signed evaluation against the already-decided record finalized as a rejection without changing record #1. MetaMask was not installed in the tested browser, and reboot, unknown-receipt, unauthorized, exact-replay and stale-action coverage remain open.
+- [ ] Complete the Playwright browser sweep across all routes at desktop, tablet and mobile widths with axe and manual mobile review. Automated axe-core 4.14.0, route, keyboard, 390px mobile, 768px tablet and 1440px desktop checks pass with zero violations; manual mobile/assistive-technology review remains open.
+- [x] Resolve repeated judgment unavailability with a conclusive hosted result. Candidate record `#1` on 0.2.0 finalized `SUPPORTED` with `primary=SUPPORTS`, `opposing=SUPPORTS`, `attempts=1`, bounded diagnostics and verified source fingerprints. Historical v0.1.0 remains preserved with its exhausted `JUDGMENT_UNAVAILABLE` record.
+- [x] Local full-install and production dependency vulnerability scans (0 vulnerabilities). The six historical GenLayer CLI findings were remediated with tested npm overrides for `vitest@4.1.12` and `dockerode@5.0.1`; the unsafe `genlayer@0.0.35` downgrade was not used.
+- [x] Hosted exact-head CI and hosted full-install/production dependency scans: [push run 39434760261](https://github.com/Bibidee/Senvara/actions/runs/39434760261) on commit `452d501afe48931972ccda709662005f650f27e3`. This certifies branch checks, including active candidate identity, full ABI readback, Linux Chromium dependencies and the 390/768/1440px browser sweep, not the completeness of live wallet or semantic coverage.
+- [x] Documentation/prod parity of source, ABI, contract ID, chain 61999, version, frontend environment and CI manifest; both hosted lifecycle records, the citation-validation disclosure and one hosted negative-path rejection are recorded, while unauthorized/replay/stale-action, MetaMask, manual mobile/tablet and independent-audit gates remain open.
+- [x] Cleanup scan for unintentional cross-project identifiers, placeholder deployment values, dangling TODOs and stale candidate/historical identity claims.
 
 ## Evidence labels
 

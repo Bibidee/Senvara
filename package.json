@@ -12,12 +12,23 @@
     "preflight": "npm run check:source && npm run test",
     "test:browser": "node tests/browser-smoke.cjs",
     "verify:deployment": "node scripts/verify-deployment.cjs",
+    "verify:candidate": "node scripts/verify-candidate-v020.cjs",
+    "verify:frontend-config": "node scripts/verify-frontend-config.cjs",
+    "verify:deployed-v020": "node scripts/verify-deployed-v020.cjs",
     "web:dev": "npm --prefix frontend run dev",
     "web:build": "npm --prefix frontend run build",
     "test:client": "node scripts/transpile-for-tests.cjs && node --test tests/client.test.cjs tests/transaction.test.cjs"
   },
   "devDependencies": {
+    "axe-core": "4.14.0",
+    "esbuild": "0.28.2",
     "genlayer": "0.39.1",
     "playwright": "^1.62.1"
+  },
+  "overrides": {
+    "genlayer": {
+      "dockerode": "5.0.1",
+      "vitest": "4.1.12"
+    }
   }
 }
