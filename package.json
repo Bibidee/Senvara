@@ -19,6 +19,7 @@
     "test:client": "node scripts/transpile-for-tests.cjs && node --test tests/client.test.cjs tests/transaction.test.cjs"
   },
   "devDependencies": {
+    "axe-core": "4.14.0",
     "genlayer": "0.39.1",
     "playwright": "^1.62.1"
   }

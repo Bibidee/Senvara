@@ -2,6 +2,7 @@ const path = require("node:path");
 
 const playwrightRoot = process.env.SENVARA_PLAYWRIGHT_ROOT;
 const { chromium } = playwrightRoot ? require(playwrightRoot) : require("playwright");
+const axePath = require.resolve("axe-core/axe.min.js", { paths: [path.join(__dirname, "..", "frontend")] });
 
 const baseURL = process.env.SENVARA_BASE_URL || "http://127.0.0.1:3000";
 const executablePath = process.env.SENVARA_CHROMIUM || "";
@@ -11,6 +12,20 @@ const bob = "0x2222222222222222222222222222222222222222";
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
+}
+
+async function checkA11y(page, route, viewport) {
+  await page.addScriptTag({ path: axePath });
+  const violations = await page.evaluate(async () => {
+    const result = await window.axe.run(document, { resultTypes: ["violations"] });
+    return result.violations.map(violation => ({
+      id: violation.id,
+      impact: violation.impact,
+      help: violation.help,
+      nodes: violation.nodes.length,
+    }));
+  });
+  assert(violations.length === 0, `axe violations at ${route} (${viewport.width}px): ${JSON.stringify(violations)}`);
 }
 
 async function installWalletHarness(page) {
@@ -105,6 +120,7 @@ async function checkRoutes(browser) {
       assert(result.controls > 0, `${route} has no interactive controls`);
       assert(result.unlabeledControls === 0, `${route} has ${result.unlabeledControls} unlabeled links/buttons`);
       assert(result.unlabeledFields === 0, `${route} has ${result.unlabeledFields} unlabeled form fields`);
+      await checkA11y(page, route, viewport);
       if (viewport.width === 390) {
         await page.getByRole("button", { name: "Toggle navigation" }).click();
         assert(await page.getByRole("navigation", { name: "Mobile navigation" }).isVisible(), `${route} mobile navigation did not open`);
@@ -201,7 +217,7 @@ async function main() {
     await checkKeyboardAndRecovery(browser);
     await checkRpcFailureRecovery(browser);
     await checkWalletHarness(browser);
-    console.log("browser smoke: routes, responsive layout, keyboard traversal, recovery, EIP-6963 discovery, rejection, account change, and network switch passed");
+    console.log("browser smoke: routes, responsive layout, axe accessibility, keyboard traversal, recovery, EIP-6963 discovery, rejection, account change, and network switch passed");
   } finally {
     await browser.close();
   }
