@@ -14,8 +14,9 @@ The historical deployed identity is `0x9668263921d88c1deaB8DA5A416a65D562cB4187`
 `0.1.0`. It is preserved unchanged. The reviewed remediation is deployed separately
 at `0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C`, version `0.2.0`, source SHA-256
 `d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2`; its exact
-readback is recorded in `docs/CANDIDATE_V020_MANIFEST.json` and it remains opt-in in
-the frontend until preview/lifecycle verification is complete.
+readback is recorded in `docs/CANDIDATE_V020_MANIFEST.json`. The active frontend uses
+this candidate identity in the explicitly authorized production deployment; the
+historical identity remains available only as the preserved compatibility reference.
 
 ## Public methods
 

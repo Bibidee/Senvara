@@ -1,6 +1,6 @@
 # Judgment availability investigation
 
-Status: **0.2.0 remediation deployed and source/ABI verified; historical 0.1.0 remains unchanged. No record lifecycle transaction has yet been run against 0.2.0.**
+Status: **0.2.0 remediation deployed and source/ABI verified; historical 0.1.0 remains unchanged. The candidate lifecycle, conclusive judgment and one hosted negative path are now verified on Studionet.**
 
 ## Confirmed live evidence
 
@@ -40,7 +40,7 @@ The third item is the confirmed systemic consensus fragility supported by the co
 - Retry diagnostics are bounded to `JUDGMENT_EXECUTION_UNAVAILABLE`, `JUDGMENT_MALFORMED_OUTPUT` and `JUDGMENT_CITATION_INVALID`, in addition to the existing provenance reason. No raw model output, exception text or source text is stored on-chain.
 - Consensus compares decision-critical classifications, derived decision, signed/source hashes and independently verified source-anchored citations. Different valid quotation spans are accepted; fabricated/short/unanchored citations and conflicting classifications are rejected.
 
-The deployment keeps the public method signatures compatible with 0.1.0 but extends the dossier observation schema with `last_attempt_nonce_sha256` and bounded reason values. The frontend/read validators and release ABI/schema manifest now record that deployed identity. The historical frontend default remains unchanged; candidate use is explicit and opt-in.
+The deployment keeps the public method signatures compatible with 0.1.0 but extends the dossier observation schema with `last_attempt_nonce_sha256` and bounded reason values. The frontend/read validators and release ABI/schema manifest now record that deployed identity. The explicitly authorized production frontend uses the candidate identity; the historical frontend identity remains preserved as a compatibility reference.
 
 ## Verification matrix
 
@@ -57,7 +57,8 @@ Executed with GenLayer Direct Mode and the repository's Windows compatibility ru
 | Conflicting classifications | **PASS: rejected** |
 | Fabricated quote during equivalence | **PASS: rejected** |
 | Source hash/citation binding | **PASS in candidate Direct Mode** |
-| Live conclusive validator result | **NOT RUN: deployment was authorized and verified, but no candidate record transaction has been approved/executed yet** |
+| Live conclusive validator result | **PASS: candidate record #1 finalized `SUPPORTED`; Wallet A proposed, Wallet B responded and evaluated; canonical observation and fingerprints were read back** |
+| Live already-decided rejection | **PASS: Wallet A evaluation `0x3389e48ec7c91f7021b3445c3580e9dff4ed30f12a83730e55bdab9bf0fca645` finalized with bounded result `record not eligible for evaluation`; record #1 remained `DECIDED / SUPPORTED / attempts=1`** |
 
 The minimal successful semantic fixture is the candidate Direct Mode test that returns JSON text for `SUPPORTS`/`SUPPORTS` with literal source excerpts. It persists `DECIDED` with `SUPPORTED`; it is a real Direct Mode execution, not a source-only mock assertion. It is not evidence of a hosted Studionet result.
 
@@ -65,4 +66,4 @@ The minimal successful semantic fixture is the candidate Direct Mode test that r
 
 The current deployed contract remains immutable and record #1 remains exhausted. A contract change is necessary to obtain the improved diagnostics and quote-insensitive equivalence on-chain; frontend configuration alone cannot change validator behavior. No supported runtime-only configuration can remove the deployed exact-observation comparison or its broad exception collapse.
 
-After the verified 0.2.0 deployment, run: source preflight, ABI/readback, real Direct Mode, hosted CI, a fresh two-wallet lifecycle using a new record, a conclusive finalized observation, negative-path checks, and exact source-hash/contract-address verification. Do not retry record #1 or infer a semantic result from the deployment receipt.
+After the verified 0.2.0 deployment, the source preflight, ABI/readback, real Direct Mode, hosted CI, fresh two-wallet lifecycle, conclusive finalized observation, already-decided negative path and exact source-hash/contract-address verification are recorded above. Do not retry record #1 for a semantic judgment or infer a semantic result from a deployment receipt. Unauthorized, exact-replay, stale-action, MetaMask, manual responsive and independent-audit checks remain release work.

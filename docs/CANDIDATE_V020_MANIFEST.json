@@ -109,7 +109,21 @@
       "signed_payload_sha256": "c97518376d4714921d633ec60cdca2f7a0cbf520f646d1c34c1e84814f280927"
     },
     "browser_record_result": "DECISION RECORDED / SUPPORTED; all three transaction traces VERIFIED",
-    "negative_path_coverage": "UNVERIFIED: unauthorized, exact replay and stale-action hosted writes remain open"
+    "negative_path_coverage": "PASS: one fresh-nonce evaluation against already-decided record #1 finalized as a bounded rejection; unauthorized, exact replay and stale-action writes remain open"
+  },
+  "negative_path": {
+    "record": 1,
+    "actor": "0x4a7d76b8c4668a3426d6d54ec24b41fa87b532f5",
+    "transaction": "0x3389e48ec7c91f7021b3445c3580e9dff4ed30f12a83730e55bdab9bf0fca645",
+    "status": "FINALIZED",
+    "consensus_result": "MAJORITY_AGREE",
+    "validator_votes": ["AGREE", "AGREE", "AGREE", "AGREE", "AGREE"],
+    "execution_result": "ERROR",
+    "bounded_result": "record not eligible for evaluation",
+    "pre_state": {"status": "DECIDED", "decision": "SUPPORTED", "attempts": 1},
+    "post_state": {"status": "DECIDED", "decision": "SUPPORTED", "attempts": 1, "last_reason": ""},
+    "canonical_state_unchanged": true,
+    "evidence_boundary": "The wallet-signed request was finalized and rejected before any second observation was committed. This does not cover unauthorized, exact replay or stale-action rejection."
   },
   "verification_command": "node scripts/verify-deployed-v020.cjs"
 }
