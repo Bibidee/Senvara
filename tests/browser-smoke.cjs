@@ -19,8 +19,10 @@ async function installWalletHarness(page) {
     const listeners = new WeakMap();
     const makeProvider = (name, account, initialChain, rejectRequest = false) => {
       let chain = initialChain;
-      let authorized = false;
+      const authorizationKey = `senvara.harness.authorized.${name}`;
+      let authorized = window.sessionStorage.getItem(authorizationKey) === "1";
       let rejectNextRequest = rejectRequest;
+      const persistAuthorization = () => window.sessionStorage.setItem(authorizationKey, authorized ? "1" : "0");
       const provider = {
         name,
         calls,
@@ -30,6 +32,7 @@ async function installWalletHarness(page) {
           if (method === "eth_requestAccounts") {
             if (rejectNextRequest) { rejectNextRequest = false; const error = new Error("User rejected"); error.code = 4001; throw error; }
             authorized = true;
+            persistAuthorization();
             return [account];
           }
           if (method === "eth_chainId") return chain;
@@ -50,10 +53,10 @@ async function installWalletHarness(page) {
           current?.set(event, handlers.filter(candidate => candidate !== handler));
         },
         emit(event, value) {
-          if (event === "accountsChanged") authorized = Array.isArray(value) && value.length > 0;
+          if (event === "accountsChanged") { authorized = Array.isArray(value) && value.length > 0; persistAuthorization(); }
           for (const handler of listeners.get(provider)?.get(event) || []) handler(value);
         },
-        authorize() { authorized = true; },
+        authorize() { authorized = true; persistAuthorization(); },
         rejectNext() { rejectNextRequest = true; },
       };
       return provider;
@@ -166,9 +169,12 @@ async function checkWalletHarness(browser) {
   await page.getByRole("button", { name: /MetaMask/ }).click();
   await page.waitForTimeout(100);
   assert(await page.getByText("0x1111", { exact: false }).first().isVisible(), "MetaMask connection did not establish a session");
+  await page.reload({ waitUntil: "networkidle" });
+  assert(await page.getByText("0x1111", { exact: false }).first().isVisible(), "authorized wallet session was not passively restored after reload");
   await page.evaluate(() => window.__senvaraWalletHarness.meta.emit("accountsChanged", [window.__senvaraWalletHarness.bob]));
   await page.waitForTimeout(50);
   assert(await page.getByText("0x2222", { exact: false }).first().isVisible(), "active wallet account change was not reflected");
+  await page.locator(".wallet-pill").click();
   await page.getByRole("button", { name: /Disconnect from this app/ }).click();
   await page.getByRole("button", { name: /Connect wallet/ }).click();
   await page.getByRole("button", { name: /Rabby/ }).click();
