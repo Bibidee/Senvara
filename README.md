@@ -8,9 +8,9 @@ This is **not** a proof that deployed software runs correctly, that code is secu
 
 ## Current status
 
-**The historical 0.1.0 contract is deployed and source-verified on Studionet; the frontend is configured for that exact identity, but release remains blocked. The undeployed 0.2.0 candidate contains the judgment-remediation changes and has only local evidence. Real extension coverage, a fresh hosted conclusive lifecycle and independent audit remain open.**
+**The historical 0.1.0 contract remains preserved, and the reviewed 0.2.0 remediation is now deployed and source-verified on Studionet. The frontend still defaults to the historical identity; release remains blocked pending a fresh hosted conclusive lifecycle, real extension coverage and independent audit.**
 
-The contract behavior model, candidate GenVM Direct Mode tests, client transaction tests, dependency-aware TypeScript check, ESLint, candidate lint/schema validation and production static export run locally. The deployed contract's exact source hash, ABI schema, version and finalized deployment receipt were read back from Studionet. A new 0.2.0 deployment, conclusive hosted judgment, real MetaMask/Rabby extension coverage and a production frontend promotion remain **open release gates**.
+The contract behavior model, candidate GenVM Direct Mode tests, client transaction tests, dependency-aware TypeScript check, ESLint, candidate lint/schema validation and production static export run locally. Both deployed identities have exact source, ABI/schema, version and finalized receipt readback. A conclusive hosted judgment, real MetaMask/Rabby extension coverage and a production frontend promotion remain **open release gates**.
 
 ## Product loop
 
@@ -66,6 +66,8 @@ There is **no application backend**, private relay, API route, centralized datab
 
 The frontend is configured for reads and writes against this historical identity on Studionet. Candidate 0.2.0 configuration is opt-in and requires a matching candidate address, expected address, version and source hash; it is not silently mixed with the deployed contract. No production Vercel promotion was made. The earlier preview is protected by Vercel deployment protection, and only read-only route navigation was verified there.
 
+The reviewed 0.2.0 candidate is deployed at `0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C` by transaction `0xeabdd3db0a1648a6a02928161ceb715bddb79718ba0c4353898feeb4a63896f1`. Its decoded source is 25,549 bytes with SHA-256 `d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2`; readback is recorded in `docs/CANDIDATE_V020_MANIFEST.json`. This does not authorize production promotion or prove a conclusive semantic judgment.
+
 ## Start locally
 
 ```sh
@@ -86,11 +88,11 @@ The default frontend identity is the source-verified 0.1.0 deployment. A release
 # frontend/.env.local
 NEXT_PUBLIC_SENVARA_CONTRACT=0x<verified_40_digit_contract_address>
 NEXT_PUBLIC_SENVARA_RPC=https://studio.genlayer.com/api
-# For an authorized 0.2.0 deployment only:
-NEXT_PUBLIC_SENVARA_V020_CONTRACT=0x<candidate_address>
-NEXT_PUBLIC_SENVARA_V020_EXPECTED_ADDRESS=0x<candidate_address>
+# For an authorized 0.2.0 preview:
+NEXT_PUBLIC_SENVARA_V020_CONTRACT=0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C
+NEXT_PUBLIC_SENVARA_V020_EXPECTED_ADDRESS=0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C
 NEXT_PUBLIC_SENVARA_CONTRACT_VERSION=0.2.0
-NEXT_PUBLIC_SENVARA_SOURCE_SHA256=<candidate_source_sha256>
+NEXT_PUBLIC_SENVARA_SOURCE_SHA256=d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2
 ```
 
 Use the repository-local versioned CLI via `npx --no-install genlayer --version` after root installation. No deployment or transaction-submission script is included; deployments require a separate reviewed deployment procedure and authorization. The frontend does not temporarily replace `window.ethereum`: it uses the selected EIP-1193 provider for the final `eth_sendTransaction` call, so simultaneous injected wallets remain isolated.

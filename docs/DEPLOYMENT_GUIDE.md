@@ -36,7 +36,7 @@ This document is procedural guidance only. Do not deploy, sign, spend GEN or cha
     NEXT_PUBLIC_SENVARA_CONTRACT=0x9668263921d88c1deaB8DA5A416a65D562cB4187
     NEXT_PUBLIC_SENVARA_RPC=https://studio.genlayer.com/api
 
-5. Re-run the frontend build. A protected Vercel preview was prepared earlier without production promotion. For a future candidate, use the candidate identity fields from `frontend/.env.example` only after its address and source hash are verified. Then execute the two-wallet lifecycle in docs/TEST_MATRIX.md: propose, finalize/read back, respond, finalize/read back, evaluate, verify the observation and test at least one unavailable-evidence retry without weakening safeguards.
+5. Re-run the frontend build. The reviewed candidate identity is now verified at `0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C`; use the candidate identity fields from `frontend/.env.example` only for an explicitly labeled preview. Then execute the two-wallet lifecycle in docs/TEST_MATRIX.md: propose, finalize/read back, respond, finalize/read back, evaluate, verify the observation and test at least one unavailable-evidence retry without weakening safeguards.
 6. Test MetaMask and Rabby separately and together: EIP-6963 selection, reconnect after refresh, disconnect, 4902 add/switch, wrong-chain rejection, account/network changes, signature rejection, RPC failure, pending/unknown/finalized/error receipts and duplicate-click guards.
 7. Update docs/RELEASE_MANIFEST.json with the exact deployed address, source hash, ABI parity evidence, transaction hashes and hosted test links. Keep release_readiness blocked until every gate is evidenced.
 
@@ -52,4 +52,4 @@ The explicitly authorized deployment was finalized on Studionet 61999:
 - **Exact source readback:** 19,552 bytes; SHA-256 `33385d0283d67cd7c13f0cdafe79ba06c3466a20a35356032afe7c9d32fc797c`
 - **Schema/version readback:** `evaluate(number:int, request_nonce:string)`; `get_version() = 0.1.0`
 
-The source readback exactly matches `contracts/senvara.py`. Frontend environment configuration is set to the historical canonical deployment and a preview was published without production promotion; the candidate remains undeployed. The remaining hosted lifecycle gates are tracked in `docs/RELEASE_GATES.md`.
+The historical source readback exactly matches `contracts/senvara.py`. The v0.2.0 source readback exactly matches `contracts/senvara_v02.py` and is recorded in `docs/CANDIDATE_V020_MANIFEST.json`. Frontend environment configuration defaults to the historical canonical deployment; candidate preview configuration remains opt-in and no production promotion was made. The remaining hosted lifecycle gates are tracked in `docs/RELEASE_GATES.md`.

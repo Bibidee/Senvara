@@ -1,6 +1,6 @@
 # Judgment availability investigation
 
-Status: **candidate remediation prepared; the deployed 0.1.0 contract is unchanged and no new transaction or deployment was made.**
+Status: **0.2.0 remediation deployed and source/ABI verified; historical 0.1.0 remains unchanged. No record lifecycle transaction has yet been run against 0.2.0.**
 
 ## Confirmed live evidence
 
@@ -30,7 +30,7 @@ The third item is the confirmed systemic consensus fragility supported by the co
 
 ## Candidate remediation
 
-`contracts/senvara_v02.py` is a separate, undeployed 0.2.0 candidate:
+`contracts/senvara_v02.py` is the separately deployed and verified 0.2.0 remediation:
 
 - Source SHA-256: `d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2`
 - Source size: `25549` bytes
@@ -40,7 +40,7 @@ The third item is the confirmed systemic consensus fragility supported by the co
 - Retry diagnostics are bounded to `JUDGMENT_EXECUTION_UNAVAILABLE`, `JUDGMENT_MALFORMED_OUTPUT` and `JUDGMENT_CITATION_INVALID`, in addition to the existing provenance reason. No raw model output, exception text or source text is stored on-chain.
 - Consensus compares decision-critical classifications, derived decision, signed/source hashes and independently verified source-anchored citations. Different valid quotation spans are accepted; fabricated/short/unanchored citations and conflicting classifications are rejected.
 
-The candidate keeps the public method signatures compatible with 0.1.0 but extends the dossier observation schema with `last_attempt_nonce_sha256` and bounded reason values. A future deployment therefore requires updating the frontend/read validators and the release ABI/schema manifest. The current frontend accepts both the deployed 0.1.0 reasons and the candidate's bounded reasons without silently changing the canonical deployment configuration.
+The deployment keeps the public method signatures compatible with 0.1.0 but extends the dossier observation schema with `last_attempt_nonce_sha256` and bounded reason values. The frontend/read validators and release ABI/schema manifest now record that deployed identity. The historical frontend default remains unchanged; candidate use is explicit and opt-in.
 
 ## Verification matrix
 
@@ -57,7 +57,7 @@ Executed with GenLayer Direct Mode and the repository's Windows compatibility ru
 | Conflicting classifications | **PASS: rejected** |
 | Fabricated quote during equivalence | **PASS: rejected** |
 | Source hash/citation binding | **PASS in candidate Direct Mode** |
-| Live conclusive validator result | **NOT RUN: no new live transaction authorized by this investigation** |
+| Live conclusive validator result | **NOT RUN: deployment was authorized and verified, but no candidate record transaction has been approved/executed yet** |
 
 The minimal successful semantic fixture is the candidate Direct Mode test that returns JSON text for `SUPPORTS`/`SUPPORTS` with literal source excerpts. It persists `DECIDED` with `SUPPORTED`; it is a real Direct Mode execution, not a source-only mock assertion. It is not evidence of a hosted Studionet result.
 
@@ -65,4 +65,4 @@ The minimal successful semantic fixture is the candidate Direct Mode test that r
 
 The current deployed contract remains immutable and record #1 remains exhausted. A contract change is necessary to obtain the improved diagnostics and quote-insensitive equivalence on-chain; frontend configuration alone cannot change validator behavior. No supported runtime-only configuration can remove the deployed exact-observation comparison or its broad exception collapse.
 
-Before any future 0.2.0 Studionet deployment, obtain explicit authorization and run: source preflight, ABI generation/readback, real Direct Mode, hosted CI, a fresh two-wallet lifecycle using a new record, a conclusive finalized observation, negative-path checks, and exact source-hash/contract-address verification. Do not retry record #1.
+After the verified 0.2.0 deployment, run: source preflight, ABI/readback, real Direct Mode, hosted CI, a fresh two-wallet lifecycle using a new record, a conclusive finalized observation, negative-path checks, and exact source-hash/contract-address verification. Do not retry record #1 or infer a semantic result from the deployment receipt.

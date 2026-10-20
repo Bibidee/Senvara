@@ -9,11 +9,13 @@
 - RPC: https://studio.genlayer.com/api
 - Custody: none; all methods are nonpayable
 
-The deployed identity is `0x9668263921d88c1deaB8DA5A416a65D562cB4187`, source SHA-256
+The historical deployed identity is `0x9668263921d88c1deaB8DA5A416a65D562cB4187`, source SHA-256
 `33385d0283d67cd7c13f0cdafe79ba06c3466a20a35356032afe7c9d32fc797c`, and version
-`0.1.0`. It is preserved unchanged. The proposed remediation is a separate,
-undeployed `contracts/senvara_v02.py` candidate; it must not be addressed or
-selected by the frontend until a separately authorized deployment is verified.
+`0.1.0`. It is preserved unchanged. The reviewed remediation is deployed separately
+at `0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C`, version `0.2.0`, source SHA-256
+`d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2`; its exact
+readback is recorded in `docs/CANDIDATE_V020_MANIFEST.json` and it remains opt-in in
+the frontend until preview/lifecycle verification is complete.
 
 ## Public methods
 

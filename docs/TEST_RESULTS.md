@@ -1,7 +1,7 @@
 # Senvara Verification Record
 
 **Date:** 2026-10-20
-**Build state:** v0.2.0 remediation implemented locally; historical 0.1.0 deployed contract preserved; release blocked
+**Build state:** v0.2.0 remediation deployed and source/ABI verified; historical 0.1.0 preserved; release blocked
 **Network target:** GenLayer Studionet 61999 exclusively
 
 ## Executed locally on the remediation branch
@@ -16,6 +16,7 @@
 | `npm run check:source` | **PASS** | Historical source integrity and backendless/configuration guards |
 | `npm run verify:deployment` | **PASS** | Historical address, chain, RPC, version, source hash/size and manifest parity |
 | `npm run verify:candidate` | **PASS** | Candidate 0.2.0 source hash/size, ABI markers, frontend identity and historical preservation |
+| `node scripts/verify-deployed-v020.cjs` | **PASS** | Read-only Studionet receipt, five validator votes, GenVM execution success, decoded exact source, ABI schema and historical identity manifest |
 | `npm --prefix frontend run typecheck` | **PASS** | Dependency-aware TypeScript check |
 | `npm --prefix frontend run lint` | **PASS** | ESLint core, React/hooks and JSX accessibility rules |
 | `npm --prefix frontend run build` | **PASS** | Next.js 16.4.2 Webpack static export; 7 routes prerendered |
@@ -37,7 +38,7 @@
 | Conflicting classifications or source fingerprints | **PASS; rejected without state write** |
 | Retryable diagnostic accounting | **PASS; nonce/cooldown recorded, semantic `attempts` remains 0** |
 | Conclusive semantic fixture | **PASS locally; candidate reaches `DECIDED`/`SUPPORTED` in Direct Mode** |
-| Hosted conclusive validator judgment | **NOT EXECUTED; no new deployment or live transaction authorized** |
+| Hosted conclusive validator judgment | **NOT EXECUTED; deployment is verified, but no candidate record lifecycle or live semantic transaction has been run** |
 
 The conclusive fixture is an actual candidate Direct Mode execution with model-like JSON text and literal source excerpts. It is not a hosted Studionet result and does not prove external LLM/provider reliability.
 
@@ -57,7 +58,7 @@ Evaluation transactions: `0x7106ba897365d5b4336ca5cb0f7e8fca0fa06f9b60bf053b3299
 
 - The local browser harness is a fake-provider test and must not be described as MetaMask/Rabby extension validation or a signed lifecycle.
 - The earlier protected Vercel preview and read-only route checks do not authorize a new deployment or production promotion.
-- Real MetaMask extension testing, account/network-change testing in real extensions, a fresh candidate hosted lifecycle, independent security review and hosted exact-head CI remain open.
+- Real MetaMask extension testing, account/network-change testing in real extensions, a fresh candidate hosted lifecycle and independent security review remain open. Hosted exact-head CI passes on commit `4189258e3dff1df7a14347dd43b29133e78690b4`.
 - The current local full-install audit is reproducible and no longer an unexplained Vercel-only report: the six findings are confined to the development CLI dependency graph; the frontend and repository production audits are clean. This is not treated as a production-runtime vulnerability, but it remains a supply-chain limitation.
 - The trace RPC method `gen_dbg_traceTransaction` was unavailable for the historical evaluations, so the exact hidden exception inside v0.1.0's broad catch remains unresolved.
-- No claim of submission readiness is justified until a newly authorized 0.2.0 deployment produces a conclusive finalized result and the complete negative-path matrix is evidenced.
+- No claim of submission readiness is justified until the verified 0.2.0 deployment produces a conclusive finalized result and the complete negative-path matrix is evidenced.

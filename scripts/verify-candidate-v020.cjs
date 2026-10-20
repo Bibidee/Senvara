@@ -12,9 +12,14 @@ function fail(message) { throw new Error(`candidate verification failed: ${messa
 function expect(condition, message) { if (!condition) fail(message); }
 
 expect(manifest.candidate_version === "0.2.0", "manifest version is not 0.2.0");
-expect(manifest.status === "UNDEPLOYED_CANDIDATE", "candidate is marked as deployed");
+expect(["UNDEPLOYED_CANDIDATE", "DEPLOYED_VERIFIED"].includes(manifest.status), "candidate status is invalid");
 expect(manifest.network?.chain_id === 61999 && manifest.network.rpc === "https://studio.genlayer.com/api", "candidate network is not Studionet 61999");
-expect(manifest.contract_address === null && manifest.deployment_transaction === null, "undeployed candidate contains deployment identity");
+if (manifest.status === "UNDEPLOYED_CANDIDATE") {
+  expect(manifest.contract_address === null && manifest.deployment_transaction === null, "undeployed candidate contains deployment identity");
+} else {
+  expect(/^0x[0-9a-f]{40}$/i.test(manifest.contract_address), "deployed candidate address is invalid");
+  expect(/^0x[0-9a-f]{64}$/i.test(manifest.deployment_transaction), "deployed candidate transaction is invalid");
+}
 expect(sha256 === manifest.source_sha256, `source SHA-256 is ${sha256}, not manifest value`);
 expect(source.length === manifest.source_size_bytes, `source size is ${source.length}, not manifest value`);
 expect(text.includes('VERSION = "0.2.0"'), "candidate source version marker is missing");

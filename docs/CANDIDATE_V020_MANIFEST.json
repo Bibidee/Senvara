@@ -1,7 +1,7 @@
 {
   "product": "Senvara",
   "candidate_version": "0.2.0",
-  "status": "UNDEPLOYED_CANDIDATE",
+  "status": "DEPLOYED_VERIFIED",
   "network": {
     "name": "GenLayer Studionet",
     "chain_id": 61999,
@@ -10,8 +10,8 @@
   "contract_path": "contracts/senvara_v02.py",
   "source_sha256": "d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2",
   "source_size_bytes": 25549,
-  "contract_address": null,
-  "deployment_transaction": null,
+  "contract_address": "0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C",
+  "deployment_transaction": "0xeabdd3db0a1648a6a02928161ceb715bddb79718ba0c4353898feeb4a63896f1",
   "public_abi": [
     "propose(assertion:string, repository:string, commit_sha:string, primary_path:string, reviewer:string, response_seconds:u256)",
     "respond(number:u256, opposing_path:string, context:string)",
@@ -37,6 +37,27 @@
     "new_dossier_field": "last_attempt_nonce_sha256"
   },
   "historical_deployment_preserved": true,
-  "release_head": null,
-  "verification_command": "node scripts/verify-candidate-v020.cjs"
+  "release_head": "4189258e3dff1df7a14347dd43b29133e78690b4",
+  "deployment_receipt": {
+    "status": "FINALIZED",
+    "from": "0x527dA5f7022f14f7105e5f06cEc1a8EFf53556b5",
+    "tx_execution_hash": "0xa6741c743530674f89d18c38d9b6578d134920c1afcafddb82f25e31eec8a9d6",
+    "consensus_result": "MAJORITY_AGREE",
+    "consensus_rounds": 1,
+    "votes_committed": 5,
+    "votes_revealed": 5,
+    "validator_votes": ["AGREE", "AGREE", "AGREE", "AGREE", "AGREE"],
+    "genvm_execution": "SUCCESS",
+    "evm_receipt_status": "0x1"
+  },
+  "deployed_code_readback": {
+    "encoding": "base64 decoded by gen_getContractCode",
+    "source_bytes": 25549,
+    "source_sha256": "d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2",
+    "exact_local_source_match": true,
+    "get_version": "0.2.0",
+    "get_total": 0,
+    "abi_schema_parity": "PASS"
+  },
+  "verification_command": "node scripts/verify-deployed-v020.cjs"
 }
