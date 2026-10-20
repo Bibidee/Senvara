@@ -2,7 +2,7 @@ import { abi, createClient } from "genlayer-js";
 import { simulator } from "genlayer-js/chains";
 import { TransactionStatus } from "genlayer-js/types";
 import { encodeFunctionData } from "viem";
-import { CHAIN_ID, CONFIGURED, CONTRACT_ADDRESS, HISTORICAL_CONTRACT_ADDRESS, RPC } from "./constants";
+import { CANDIDATE_CONTRACT_VERSION, CHAIN_ID, CONFIGURED, CONTRACT_ADDRESS, CONTRACT_VERSION, HISTORICAL_CONTRACT_ADDRESS, HISTORICAL_CONTRACT_VERSION, RPC } from "./constants";
 import { parseJsonString, validPath } from "./validation";
 import { STATUS_LABEL } from "./format";
 import type { Dossier, EIP1193Provider, Observation, TxPhase } from "./types";
@@ -30,7 +30,7 @@ const genlayerAbi = abi as unknown as {
 };
 
 function configured(): `0x${string}` {
-  if (!CONFIGURED) throw new Error("The Senvara contract is not configured. This is a predeployment frontend.");
+  if (!CONFIGURED) throw new Error("The Senvara contract is not configured with a verified release identity.");
   return CONTRACT_ADDRESS as `0x${string}`;
 }
 function reader() {return createClient({chain:RPC_CHAIN, endpoint:RPC, account:READ_ONLY_ACCOUNT});}
@@ -70,7 +70,7 @@ function derivedDecision(primary: string, opposing: string) {
   return "INSUFFICIENT";
 }
 
-function validateDossier(rec: Dossier, id: number): Dossier {
+export function validateDossier(rec: Dossier, id: number, contractVersion = CONTRACT_VERSION): Dossier {
   if (!rec || typeof rec !== "object" || rec.id !== id || !Object.hasOwn(STATUS_LABEL, rec.status)) throw new Error("Canonical record has an invalid identity or status.");
   if (typeof rec.assertion !== "string" || rec.assertion.trim() !== rec.assertion || rec.assertion.length < 24 || rec.assertion.length > 420 || rec.assertion.includes("\0")) throw new Error("Canonical record has an invalid assertion.");
   if (typeof rec.repository !== "string" || !/^[a-z0-9-]{1,39}\/[a-z0-9_.-]{1,100}$/.test(rec.repository) || rec.repository.includes("..")) throw new Error("Canonical record has an invalid repository.");
@@ -82,15 +82,29 @@ function validateDossier(rec: Dossier, id: number): Dossier {
   if (typeof rec.reviewer_note !== "string" || rec.reviewer_note.length > 300 || rec.reviewer_note.includes("\0")) throw new Error("Canonical reviewer note is malformed.");
   if (typeof rec.last_attempt_by !== "string" || (rec.last_attempt_by !== "" && !/^0x[a-f0-9]{40}$/.test(rec.last_attempt_by))) throw new Error("Canonical evaluator identity is malformed.");
   if (rec.last_attempt_by && ![rec.proposer, rec.reviewer].includes(rec.last_attempt_by)) throw new Error("Canonical evaluator is not a named participant.");
-  if (rec.last_attempt_nonce_sha256 !== undefined && (typeof rec.last_attempt_nonce_sha256 !== "string" || !/^[a-f0-9]{64}$/.test(rec.last_attempt_nonce_sha256))) throw new Error("Canonical evaluation nonce fingerprint is malformed.");
+  const hasNonceFingerprint = Object.hasOwn(rec, "last_attempt_nonce_sha256");
+  const candidateSchema = contractVersion === CANDIDATE_CONTRACT_VERSION;
+  if (candidateSchema && !hasNonceFingerprint) throw new Error("Candidate record is missing its evaluation nonce fingerprint field.");
+  if (!candidateSchema && contractVersion !== HISTORICAL_CONTRACT_VERSION) throw new Error("Canonical contract version is unsupported.");
+  if (!candidateSchema && hasNonceFingerprint) throw new Error("Historical record has an unexpected candidate-only nonce fingerprint field.");
+  const nonceFingerprint = hasNonceFingerprint ? rec.last_attempt_nonce_sha256 : undefined;
+  if (candidateSchema && (typeof nonceFingerprint !== "string" || (nonceFingerprint !== "" && !/^[a-f0-9]{64}$/.test(nonceFingerprint)))) throw new Error("Canonical evaluation nonce fingerprint is malformed.");
   if (!Number.isSafeInteger(rec.attempts) || rec.attempts < 0 || rec.attempts > 3) throw new Error("Canonical attempt count is invalid.");
-  const retryableDiagnostic = rec.attempts === 0 && rec.last_attempt_by !== "" && rec.last_attempt_at > 0 &&
-    RETRYABLE_REASONS.has(rec.last_reason) && Boolean(rec.last_attempt_nonce_sha256);
-  if ((rec.attempts === 0) !== (rec.last_attempt_by === "" && rec.last_attempt_at === 0) && !retryableDiagnostic) throw new Error("Canonical attempt identity is inconsistent.");
+  const noEvaluation = rec.status !== "DECIDED" && rec.decision === "" && rec.attempts === 0 && rec.last_attempt_by === "" && rec.last_attempt_at === 0 && rec.last_reason === "" && (!candidateSchema || nonceFingerprint === "");
+  const retryableCandidate = candidateSchema && rec.attempts === 0 && rec.status === "READY_FOR_REVIEW" && rec.last_attempt_by !== "" &&
+    rec.last_attempt_at > 0 && RETRYABLE_REASONS.has(rec.last_reason) && typeof nonceFingerprint === "string" && nonceFingerprint !== "";
+  const conclusiveCandidate = candidateSchema && rec.attempts > 0 && rec.status === "DECIDED" && rec.last_attempt_by !== "" &&
+    rec.last_attempt_at > 0 && rec.last_reason === "" && typeof nonceFingerprint === "string" && nonceFingerprint !== "";
+  const historicalConclusive = !candidateSchema && rec.attempts > 0 && rec.status === "DECIDED" && rec.last_attempt_by !== "" &&
+    rec.last_attempt_at > 0 && rec.last_reason === "";
+  const historicalRetryable = !candidateSchema && rec.attempts > 0 &&
+    (rec.status === "READY_FOR_REVIEW" || rec.status === "REVIEW_EXHAUSTED") && rec.last_attempt_by !== "" &&
+    rec.last_attempt_at > 0 && RETRYABLE_REASONS.has(rec.last_reason);
+  if (!noEvaluation && !retryableCandidate && !conclusiveCandidate && !historicalConclusive && !historicalRetryable) throw new Error("Canonical attempt identity is inconsistent.");
   if (rec.status === "DECIDED" ? !DECISIONS.has(rec.decision) : rec.decision !== "") throw new Error("Canonical decision does not match record status.");
   if (OPPOSING_STATES.has(rec.status) !== Boolean(rec.opposing_path)) throw new Error("Canonical source state is inconsistent.");
   timestamp(rec.created_at, "creation time", false);timestamp(rec.response_deadline, "response deadline", false);timestamp(rec.review_deadline, "review deadline");timestamp(rec.updated_at, "update time", false);timestamp(rec.last_attempt_at, "last attempt time");
-  if (rec.response_deadline < rec.created_at || rec.updated_at < rec.created_at || (rec.last_attempt_at && rec.last_attempt_at < rec.created_at)) throw new Error("Canonical record timeline is inconsistent.");
+  if (rec.response_deadline < rec.created_at || rec.updated_at < rec.created_at || (rec.last_attempt_at && rec.last_attempt_at < rec.created_at) || (rec.last_attempt_at && rec.updated_at < rec.last_attempt_at)) throw new Error("Canonical record timeline is inconsistent.");
   if (rec.status === "AWAITING_REVIEWER" && rec.review_deadline !== 0 || rec.status !== "AWAITING_REVIEWER" && rec.status !== "WITHDRAWN" && rec.status !== "DECLINED" && rec.status !== "EXPIRED_UNANSWERED" && rec.review_deadline === 0) throw new Error("Canonical review deadline is inconsistent.");
   if (typeof rec.last_reason !== "string" || rec.last_reason.length > 100) throw new Error("Canonical diagnostic is malformed.");
   return rec;

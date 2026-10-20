@@ -26,9 +26,10 @@ export type EIP1193Provider = {
   removeListener?: (event: string, handler: (...args: unknown[]) => void) => void;
 };
 export type WalletOption = { id: string; name: string; rdns: string; icon: string; provider: EIP1193Provider };
-export type TxPhase = "SIGNING" | "SUBMITTED" | "ACCEPTED_PROVISIONAL" | "IN_PROGRESS" | "FINALIZED_UNVERIFIED" | "VERIFYING" | "VERIFIED" | "FAILED" | "UNDETERMINED" | "UNKNOWN" | "REJECTED" | "GUARD_RELEASED";
+export type TxPhase = "SIGNING" | "SUBMITTED" | "ACCEPTED_PROVISIONAL" | "IN_PROGRESS" | "FINALIZED_UNVERIFIED" | "VERIFYING" | "VERIFIED" | "RETRYABLE" | "FAILED" | "UNDETERMINED" | "UNKNOWN" | "REJECTED" | "GUARD_RELEASED";
 export type TxReceipt = {
   id: string; action: string; recordId?: number; account: string; walletId: string;
   createdAt: number; hash: string; phase: TxPhase; message: string; argsDigest: string; expectedAttempt?: number;
   chainId: number; contractAddress: string; contractVersion: string; evaluationGuardKey?: string;
+  expectedPreviousStatus?: string; expectedPreviousUpdatedAt?: number;
 };

@@ -10,9 +10,9 @@
 |---|---|---|
 | `npx --no-install genlayer --version` | **0.39.1** | Repository-local CLI resolution; no hosted transaction |
 | `node scripts/run-python.cjs -m unittest discover -s tests -p 'test_*.py' -v` | **35/35 passed** | Python model and candidate behavior tests; mocked GitHub/model/GenLayer dependencies |
-| `python scripts/run-direct-pytest.py tests/test_direct_genvm.py -q` | **8/8 passed** | Actual installed GenVM Direct Mode; 5 historical compatibility tests plus 3 candidate tests. The runner does not execute hosted `run_nondet_unsafe` consensus. |
+| `python scripts/run-direct-pytest.py tests/test_direct_genvm.py -q` | **8/8 passed** | Actual installed GenVM Direct Mode under isolated Python 3.12; 5 historical compatibility tests plus 3 candidate tests. The runner does not execute hosted `run_nondet_unsafe` consensus. |
 | `genvm-lint check contracts/senvara_v02.py --json` | **PASS** | GenVM linter 0.11.0; 3 checks and 11 public methods validated |
-| `npm run test:client` | **19/19 passed** | Transpiled client/transaction logic with mocked SDK/provider/RPC; not a real wallet or chain |
+| `npm run test:client` | **28/28 passed** | Transpiled client/transaction logic with mocked SDK/provider/RPC, including candidate dossier states, retryable finality, cooldown, nonce/actor mismatch, stale writes and expiration transitions; not a real wallet or chain |
 | `npm run check:source` | **PASS** | Historical source integrity and backendless/configuration guards |
 | `npm run verify:deployment` | **PASS** | Historical address, chain, RPC, version, source hash/size and manifest parity |
 | `npm run verify:candidate` | **PASS** | Candidate 0.2.0 source hash/size, ABI markers, frontend identity and historical preservation |
@@ -20,7 +20,9 @@
 | `npm --prefix frontend run lint` | **PASS** | ESLint core, React/hooks and JSX accessibility rules |
 | `npm --prefix frontend run build` | **PASS** | Next.js 16.4.2 Webpack static export; 7 routes prerendered |
 | `npm run test:browser` | **PASS** | Fresh static export on Chromium; routes, 390/1440px responsive layout, keyboard traversal, RPC retry recovery and fake EIP-6963 provider assertions. It never signs or broadcasts. |
-| `npm audit --omit=dev --audit-level=high` (frontend) | **PASS locally when registry was available** | Production dependency tree reported 0 vulnerabilities; older full-install/Vercel findings remain to be reproduced and mapped |
+| `npm audit --omit=dev --audit-level=high` (frontend) | **PASS** | Production dependency tree reported 0 vulnerabilities |
+| `npm audit --omit=dev --audit-level=high` (repository) | **PASS** | Production dependency tree reported 0 vulnerabilities |
+| `npm audit --audit-level=high` (repository full install) | **6 findings; release limitation documented** | Four moderate and two critical development-tool findings are transitive through the pinned GenLayer CLI; the forced npm fix would replace the required CLI with an incompatible `0.0.35` major downgrade |
 | GitHub Actions `Source quality` run `39341092548` | **PASS** | Linux runner verified commit `a05b00a28675b67c281f93941148707fbc040fec`; Direct Mode, GenVM lint, production audit, typecheck, lint, static build, Chromium `--with-deps`, browser smoke and client tests all passed. [Run](https://github.com/Bibidee/Senvara/actions/runs/39341092548) |
 
 ## Candidate remediation evidence
@@ -56,5 +58,6 @@ Evaluation transactions: `0x7106ba897365d5b4336ca5cb0f7e8fca0fa06f9b60bf053b3299
 - The local browser harness is a fake-provider test and must not be described as MetaMask/Rabby extension validation or a signed lifecycle.
 - The earlier protected Vercel preview and read-only route checks do not authorize a new deployment or production promotion.
 - Real MetaMask extension testing, account/network-change testing in real extensions, a fresh candidate hosted lifecycle, independent security review and hosted exact-head CI remain open.
+- The current local full-install audit is reproducible and no longer an unexplained Vercel-only report: the six findings are confined to the development CLI dependency graph; the frontend and repository production audits are clean. This is not treated as a production-runtime vulnerability, but it remains a supply-chain limitation.
 - The trace RPC method `gen_dbg_traceTransaction` was unavailable for the historical evaluations, so the exact hidden exception inside v0.1.0's broad catch remains unresolved.
 - No claim of submission readiness is justified until a newly authorized 0.2.0 deployment produces a conclusive finalized result and the complete negative-path matrix is evidenced.
