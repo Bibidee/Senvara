@@ -4,18 +4,13 @@ import { TransactionStatus } from "genlayer-js/types";
 import { encodeFunctionData } from "viem";
 import { CANDIDATE_CONTRACT_VERSION, CHAIN_ID, CONFIGURED, CONTRACT_ADDRESS, CONTRACT_VERSION, HISTORICAL_CONTRACT_ADDRESS, HISTORICAL_CONTRACT_VERSION, RPC } from "./constants";
 import { parseJsonString, validPath } from "./validation";
-import { STATUS_LABEL } from "./format";
+import { RETRYABLE_REASONS, STATUS_LABEL } from "./format";
 import type { Dossier, EIP1193Provider, Observation, TxPhase } from "./types";
 
 type Result = Record<string, unknown>;
 const MAX_PAGE = 20;
 const CATEGORIES = new Set(["SUPPORTS", "CONTRADICTS", "IRRELEVANT", "AMBIGUOUS"]);
 const DECISIONS = new Set(["SUPPORTED", "CONTRADICTED", "MIXED", "INSUFFICIENT"]);
-const RETRYABLE_REASONS = new Set([
-  "PROVIDER_OR_PROVENANCE_UNAVAILABLE", "JUDGMENT_UNAVAILABLE",
-  "PROVENANCE_UNAVAILABLE", "SOURCE_RETRIEVAL_UNAVAILABLE", "JUDGMENT_EXECUTION_UNAVAILABLE",
-  "JUDGMENT_MALFORMED_OUTPUT", "JUDGMENT_CITATION_INVALID",
-]);
 const OPPOSING_STATES = new Set(["READY_FOR_REVIEW", "DECIDED", "EXPIRED_UNRESOLVED", "REVIEW_EXHAUSTED"]);
 const READ_ONLY_ACCOUNT = {address: "0x0000000000000000000000000000000000000000"} as never;
 const RPC_CHAIN = {...simulator, name: "GenLayer Studionet", id: CHAIN_ID,
@@ -91,7 +86,7 @@ export function validateDossier(rec: Dossier, id: number, contractVersion = CONT
   if (candidateSchema && (typeof nonceFingerprint !== "string" || (nonceFingerprint !== "" && !/^[a-f0-9]{64}$/.test(nonceFingerprint)))) throw new Error("Canonical evaluation nonce fingerprint is malformed.");
   if (!Number.isSafeInteger(rec.attempts) || rec.attempts < 0 || rec.attempts > 3) throw new Error("Canonical attempt count is invalid.");
   const noEvaluation = rec.status !== "DECIDED" && rec.decision === "" && rec.attempts === 0 && rec.last_attempt_by === "" && rec.last_attempt_at === 0 && rec.last_reason === "" && (!candidateSchema || nonceFingerprint === "");
-  const retryableCandidate = candidateSchema && rec.attempts === 0 && rec.status === "READY_FOR_REVIEW" && rec.last_attempt_by !== "" &&
+  const retryableCandidate = candidateSchema && rec.attempts === 0 && (rec.status === "READY_FOR_REVIEW" || rec.status === "EXPIRED_UNRESOLVED") && rec.last_attempt_by !== "" &&
     rec.last_attempt_at > 0 && RETRYABLE_REASONS.has(rec.last_reason) && typeof nonceFingerprint === "string" && nonceFingerprint !== "";
   const conclusiveCandidate = candidateSchema && rec.attempts > 0 && rec.status === "DECIDED" && rec.last_attempt_by !== "" &&
     rec.last_attempt_at > 0 && rec.last_reason === "" && typeof nonceFingerprint === "string" && nonceFingerprint !== "";

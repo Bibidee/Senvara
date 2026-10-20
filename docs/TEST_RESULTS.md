@@ -12,7 +12,7 @@
 | `node scripts/run-python.cjs -m unittest discover -s tests -p 'test_*.py' -v` | **37/37 passed** | Python model and candidate behavior tests; mocked GitHub/model/GenLayer dependencies |
 | `py -3.13 scripts/run-direct-pytest.py tests/test_direct_genvm.py -q` | **12/12 passed** | Actual installed GenVM Direct Mode under local Python 3.13; 5 historical compatibility tests plus 7 candidate tests, including unauthorized-evaluation and stale-window rejection. The runner does not execute hosted `run_nondet_unsafe` consensus. |
 | `genvm-lint check contracts/senvara_v02.py --json` | **PASS** | GenVM linter 0.11.0; 3 checks and 11 public methods validated |
-| `npm run test:client` | **28/28 passed** | Transpiled client/transaction logic with mocked SDK/provider/RPC, including candidate dossier states, retryable finality, cooldown, nonce/actor mismatch, stale writes and expiration transitions; not a real wallet or chain |
+| `npm run test:client` | **30/30 passed** | Transpiled client/transaction logic with mocked SDK/provider/RPC, including candidate dossier states, retryable finality, cooldown, nonce/actor mismatch, stale writes, expired retryable readback and expiration transitions; not a real wallet or chain |
 | `npm run check:source` | **PASS** | Historical source integrity and backendless/configuration guards |
 | `npm run verify:deployment` | **PASS** | Historical address, chain, RPC, version, source hash/size and manifest parity |
 | `npm run verify:candidate` | **PASS** | Candidate 0.2.0 source hash/size, ABI markers, frontend identity and historical preservation |
@@ -26,7 +26,7 @@
 | Vercel production deployment | **READY** | Candidate v0.2.0 deployed to [senvara.vercel.app](https://senvara.vercel.app); deployment `dpl_HnWosGJmYZFmWzrLJt3eAVuJ4aME`; deployment URL [senvara-hm8oiry7n-bibidees-projects.vercel.app](https://senvara-hm8oiry7n-bibidees-projects.vercel.app). Production environment values were configured for chain 61999, the v0.2.0 contract and Studionet RPC. |
 | `npm audit --omit=dev --audit-level=high` (frontend) | **PASS** | Production dependency tree reported 0 vulnerabilities |
 | `npm audit --omit=dev --audit-level=high` (repository) | **PASS** | Production dependency tree reported 0 vulnerabilities |
-| `npm audit --audit-level=high` (repository full install) | **PASS** | Zero vulnerabilities after tested GenLayer-scoped overrides: `vitest@4.1.12` removes the vulnerable Vitest/tinypool path and `dockerode@5.0.1` removes the nested vulnerable UUID path; CLI remains `0.39.1` |
+| `npm audit --audit-level=high` (repository full install) | **PASS** | 0 vulnerabilities in the current lockfile; the frontend production audit and repository production audit also report 0 vulnerabilities |
 | GitHub Actions `Source quality` run `39434760261` | **PASS** | Linux runner verified exact commit `452d501afe48931972ccda709662005f650f27e3`; full-install audit, Direct Mode, GenVM lint, production audit, typecheck, lint, static build, Chromium `--with-deps`, axe accessibility sweep, 390/768/1440px browser smoke and client tests all passed. [Push run](https://github.com/Bibidee/Senvara/actions/runs/39434760261) |
 
 ## Candidate remediation evidence
@@ -44,6 +44,10 @@
 | Hosted conclusive validator judgment | **PASS;** candidate record `#1` finalized with `SUPPORTED` after Wallet A proposal, Wallet B response and Wallet B evaluation; all three transactions were reconciled to canonical state |
 
 The conclusive fixture is an actual candidate Direct Mode execution with model-like JSON text and literal source excerpts. It is not a hosted Studionet result and does not prove external LLM/provider reliability.
+
+### Expired retryable frontend regression
+
+The v0.2.0 contract preserves `last_attempt_at`, `last_attempt_by`, `last_attempt_nonce_sha256` and the bounded retry reason when `close_expired` changes `READY_FOR_REVIEW` to `EXPIRED_UNRESOLVED` without consuming a semantic attempt. The frontend now accepts that canonical terminal state, reconciles the expiration transaction only from the expected pre-state, and renders the diagnostic as historical execution metadata rather than a documentary verdict. This is covered by the focused client tests and the full browser/build checks above. No new live transaction was submitted to manufacture an expired record.
 
 ### Hosted candidate lifecycle (Studionet 61999)
 

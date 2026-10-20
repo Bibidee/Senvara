@@ -1,5 +1,6 @@
 import { CHAIN_ID, CONFIGURED, CONTRACT_ADDRESS, CONTRACT_IDENTITY, CONTRACT_VERSION } from "./constants";
 import { dossierById, listDossiers, observationById, transactionState, writeContract } from "./chain";
+import { RETRYABLE_REASONS } from "./format";
 import { claimEvaluationGuard, clearEvaluationGuard, clearIntent, digestIntent, getIntent, putIntent, readActionArgs, saveActionArgs, saveLocalTransaction, storageAvailable } from "./tx-store";
 import { walletError } from "./wallet-errors";
 import type { Dossier, TxPhase, TxReceipt, WalletSession } from "./types";
@@ -44,8 +45,7 @@ async function confirmCanonical(tx:TxReceipt, method:string, args:unknown[]):Pro
       const observation=await observationById(id,rec.attempts);
       return observation.kind==="EVALUATED" && observation.decision===rec.decision ? verified(id) : unverified(id);
     }
-    const retryable = new Set(["PROVIDER_OR_PROVENANCE_UNAVAILABLE","JUDGMENT_UNAVAILABLE","PROVENANCE_UNAVAILABLE","SOURCE_RETRIEVAL_UNAVAILABLE","JUDGMENT_EXECUTION_UNAVAILABLE","JUDGMENT_MALFORMED_OUTPUT","JUDGMENT_CITATION_INVALID"]);
-    if(rec.attempts===tx.expectedAttempt-1 && rec.status==="READY_FOR_REVIEW" && rec.decision==="" && retryable.has(rec.last_reason)) return {outcome:"RETRYABLE",id,reason:rec.last_reason};
+    if(rec.attempts===tx.expectedAttempt-1 && rec.status==="READY_FOR_REVIEW" && rec.decision==="" && RETRYABLE_REASONS.has(rec.last_reason)) return {outcome:"RETRYABLE",id,reason:rec.last_reason};
     return unverified(id);
   }
   if(method==="close_expired"){

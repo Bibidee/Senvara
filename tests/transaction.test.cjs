@@ -22,6 +22,7 @@ Module._load=function(request,parent,isMain){
 };
 const chain=require('../.test-dist/chain.js');
 const {classifyTransaction,validateDossier}=chain;
+const format=require('../.test-dist/format.js');
 const store=require('../.test-dist/tx-store.js');
 const transactions=require('../.test-dist/transactions.js');
 const map=new Map();
@@ -122,6 +123,17 @@ test('retryable evaluation finality is reconciled without consuming the semantic
   assert.equal(store.getEvaluationGuard(6,actor),null);
   assert.equal(store.getIntent(tx.id),null);
 });
+test('expired retryable evaluation finality is reconciled without claiming a verdict',async()=>{
+  map.clear();
+  chain.transactionState=async()=>({phase:'VERIFYING',description:'Finalized and successful'});
+  let reads=0;
+  const retryable={status:'READY_FOR_REVIEW',opposing_path:'docs/counter.md',review_deadline:300,updated_at:200,last_attempt_at:200,last_attempt_by:actor,last_attempt_nonce_sha256:nonceFingerprint,last_reason:'JUDGMENT_CITATION_INVALID'};
+  chain.dossierById=async()=>reads++===0?dossier({id:11,...retryable}):dossier({id:11,...retryable,status:'EXPIRED_UNRESOLVED',updated_at:400});
+  const tx=await transactions.sendAction(participant,check,'close_expired',[11n],11);
+  const result=await transactions.refreshStoredTransaction(tx);
+  assert.equal(result.phase,'VERIFIED');
+  assert.match(result.message,/reconciled/i);
+});
 test('evaluation retry is blocked during the canonical cooldown',async()=>{
   map.clear();
   chain.dossierById=async()=>dossier({id:7,status:'READY_FOR_REVIEW',opposing_path:'docs/counter.md',review_deadline:400,last_attempt_at:Math.floor(Date.now()/1000)-1,last_attempt_by:actor,last_attempt_nonce_sha256:nonceFingerprint,last_reason:'JUDGMENT_UNAVAILABLE',updated_at:200});
@@ -183,10 +195,23 @@ test('v0.2 dossier validation accepts retryable and conclusive evaluation state'
   assert.doesNotThrow(()=>validateDossier(dossier({status:'READY_FOR_REVIEW',opposing_path:'docs/counter.md',review_deadline:300,updated_at:200,last_attempt_at:200,last_attempt_by:actor,last_attempt_nonce_sha256:nonceFingerprint,last_reason:'JUDGMENT_UNAVAILABLE'}),1,'0.2.0'));
   assert.doesNotThrow(()=>validateDossier(dossier({status:'DECIDED',opposing_path:'docs/counter.md',review_deadline:300,updated_at:200,last_attempt_at:200,last_attempt_by:actor,last_attempt_nonce_sha256:nonceFingerprint,attempts:1,decision:'SUPPORTED'}),1,'0.2.0'));
 });
+test('v0.2 validation accepts retryable metadata after expiration and presents it as non-semantic history',()=>{
+  const retryableExpired=dossier({status:'EXPIRED_UNRESOLVED',opposing_path:'docs/counter.md',review_deadline:300,updated_at:400,last_attempt_at:200,last_attempt_by:actor,last_attempt_nonce_sha256:nonceFingerprint,last_reason:'JUDGMENT_CITATION_INVALID'});
+  assert.doesNotThrow(()=>validateDossier(retryableExpired,1,'0.2.0'));
+  assert.equal(format.hasRetryableDiagnostic(retryableExpired),true);
+  assert.match(format.recordOutcomeSummary(retryableExpired),/expired after a retryable assessment diagnostic/i);
+  const expiredUnanswered=dossier({status:'EXPIRED_UNRESOLVED',opposing_path:'docs/counter.md',review_deadline:300,updated_at:400});
+  assert.doesNotThrow(()=>validateDossier(expiredUnanswered,1,'0.2.0'));
+  assert.equal(format.hasRetryableDiagnostic(expiredUnanswered),false);
+  assert.match(format.recordOutcomeSummary(expiredUnanswered),/expired without a documentary verdict/i);
+});
 test('dossier validation rejects malformed or inconsistent attempt identity',()=>{
   assert.throws(()=>validateDossier(dossier({last_attempt_nonce_sha256:'not-a-fingerprint'}),1,'0.2.0'),/nonce fingerprint/i);
   assert.throws(()=>validateDossier(dossier({status:'DECIDED',opposing_path:'docs/counter.md',review_deadline:300,updated_at:200,attempts:0,decision:'SUPPORTED'}),1,'0.2.0'),/attempt identity/i);
   assert.throws(()=>validateDossier(dossier({status:'READY_FOR_REVIEW',opposing_path:'docs/counter.md',review_deadline:300,updated_at:200,last_attempt_at:200,last_attempt_by:reviewer,last_attempt_nonce_sha256:nonceFingerprint,last_reason:'JUDGMENT_UNAVAILABLE',proposer:reviewer}),1,'0.2.0'),/participant wallets|named participant/i);
+  assert.throws(()=>validateDossier(dossier({status:'EXPIRED_UNRESOLVED',opposing_path:'docs/counter.md',review_deadline:300,updated_at:400,last_attempt_at:200,last_attempt_by:actor,last_attempt_nonce_sha256:nonceFingerprint,last_reason:'JUDGMENT_UNAVAILABLE',attempts:1}),1,'0.2.0'),/attempt identity/i);
+  assert.throws(()=>validateDossier(dossier({status:'EXPIRED_UNRESOLVED',opposing_path:'docs/counter.md',review_deadline:300,updated_at:400,last_attempt_at:200,last_attempt_by:actor,last_attempt_nonce_sha256:nonceFingerprint,last_reason:'not-a-retryable-reason'}),1,'0.2.0'),/attempt identity/i);
+  assert.throws(()=>validateDossier(dossier({status:'EXPIRED_UNRESOLVED',opposing_path:'docs/counter.md',review_deadline:300,updated_at:400,decision:'SUPPORTED'}),1,'0.2.0'),/attempt identity/i);
   assert.throws(()=>validateDossier(dossier({attempts:4}),1,'0.2.0'),/attempt count/i);
 });
 test('historical v0.1 dossiers omit the candidate nonce field',()=>{
