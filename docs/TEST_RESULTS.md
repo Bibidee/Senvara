@@ -25,7 +25,7 @@
 | `npm audit --omit=dev --audit-level=high` (frontend) | **PASS** | Production dependency tree reported 0 vulnerabilities |
 | `npm audit --omit=dev --audit-level=high` (repository) | **PASS** | Production dependency tree reported 0 vulnerabilities |
 | `npm audit --audit-level=high` (repository full install) | **6 findings; release limitation documented** | Four moderate and two critical development-tool findings are transitive through the pinned GenLayer CLI; the forced npm fix would replace the required CLI with an incompatible `0.0.35` major downgrade |
-| GitHub Actions `Source quality` run `39349659429` | **PASS** | Linux runner verified exact commit `7f0a8fe1c000c8a0330877609b99ce64bca623ad`; Direct Mode, GenVM lint, production audit, typecheck, lint, static build, Chromium `--with-deps`, browser smoke and client tests all passed. [Push run](https://github.com/Bibidee/Senvara/actions/runs/39349659429) · [PR run](https://github.com/Bibidee/Senvara/actions/runs/39349663850) |
+| GitHub Actions `Source quality` run `39402924924` | **PASS** | Linux runner verified exact commit `4fd08b81bdd6b8280042cd9426e1bfaccd85cf56`; Direct Mode, GenVM lint, production audit, typecheck, lint, static build, Chromium `--with-deps`, browser smoke and client tests all passed. [Push run](https://github.com/Bibidee/Senvara/actions/runs/39402924924) |
 
 ## Candidate remediation evidence
 
@@ -69,7 +69,7 @@ Evaluation transactions: `0x7106ba897365d5b4336ca5cb0f7e8fca0fa06f9b60bf053b3299
 
 - The local browser harness is a fake-provider test and must not be described as MetaMask/Rabby extension validation or a signed lifecycle.
 - The protected candidate Vercel preview is read-only route/browser evidence only; it does not authorize production promotion or prove wallet signing.
-- Real MetaMask extension testing, account/network-change testing in real extensions, hosted unauthorized/replay/stale-action rejection and independent security review remain open. Hosted exact-head CI passes on commit `4189258e3dff1df7a14347dd43b29133e78690b4`.
+- Real Rabby testing is **partial**: connection, disconnect/reconnect, provider selection and account switching were observed in the production browser session, but a full-page reload returned the app to `Connect wallet` and required reconnecting; silent reload recovery therefore failed. MetaMask was not available in the browser extension inventory, so no MetaMask test is claimed. Hosted unauthorized/replay/stale-action rejection and independent security review remain open. The exact-head CI run is [39402924924](https://github.com/Bibidee/Senvara/actions/runs/39402924924) on commit `4fd08b81bdd6b8280042cd9426e1bfaccd85cf56`.
 - The current local full-install audit is reproducible and no longer an unexplained Vercel-only report: the six findings are confined to the development CLI dependency graph; the frontend and repository production audits are clean. This is not treated as a production-runtime vulnerability, but it remains a supply-chain limitation.
 - The trace RPC method `gen_dbg_traceTransaction` was unavailable for the historical evaluations, so the exact hidden exception inside v0.1.0's broad catch remains unresolved.
-- The candidate deployment now has a conclusive finalized result, but submission readiness remains blocked by the open negative-path, real MetaMask/account-change and independent-audit gates.
+- The candidate deployment now has a conclusive finalized result, but submission readiness remains blocked by the open negative-path, MetaMask, Rabby reload-recovery, accessibility/mobile and independent-audit gates.
