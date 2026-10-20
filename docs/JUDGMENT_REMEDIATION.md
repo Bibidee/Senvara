@@ -1,6 +1,6 @@
 # Judgment availability investigation
 
-Status: **0.2.0 remediation deployed and source/ABI verified; historical 0.1.0 remains unchanged. The candidate lifecycle, conclusive judgment and one hosted negative path are now verified on Studionet.**
+Status: **0.2.0 remediation deployed and source/ABI verified; historical 0.1.0 remains unchanged. Candidate record #1 has a conclusive hosted judgment, while record #2 independently demonstrates a finalized retryable citation-validation outcome with no semantic decision.**
 
 ## Confirmed live evidence
 
@@ -62,8 +62,12 @@ Executed with GenLayer Direct Mode and the repository's Windows compatibility ru
 
 The minimal successful semantic fixture is the candidate Direct Mode test that returns JSON text for `SUPPORTS`/`SUPPORTS` with literal source excerpts. It persists `DECIDED` with `SUPPORTED`; it is a real Direct Mode execution, not a source-only mock assertion. It is not evidence of a hosted Studionet result.
 
+### Fresh hosted record #2
+
+Wallet A proposed record `#2` in transaction `0x879a84c5a690049f2bf1c3be32ea9574dc53bb973ae40ca3e9a3b33097f57709`; Wallet B responded in `0xdf0fc54542c21a5cb1a389cfd6d1ff6679d41f8de30c0c3b7e8dbe032eb34856`; and Wallet B requested assessment in `0x6584fc344ade4055e01947a5d6b54e7d9725351e62bb334aa2931e95a74a49a9`. All three transactions finalized. The assessment receipt reports successful GenVM execution, validator consensus and the bounded return `{"kind":"RETRYABLE","reason":"JUDGMENT_CITATION_INVALID"}`. Canonical state remains `READY_FOR_REVIEW`, `attempts=0`, with no semantic decision. The public RPC does not expose raw model output or a finer citation subcategory, and `gen_dbg_traceTransaction` is unsupported.
+
 ## Deployment decision
 
-The current deployed contract remains immutable and record #1 remains exhausted. A contract change is necessary to obtain the improved diagnostics and quote-insensitive equivalence on-chain; frontend configuration alone cannot change validator behavior. No supported runtime-only configuration can remove the deployed exact-observation comparison or its broad exception collapse.
+The deployed contracts remain immutable. Historical v0.1.0 record #1 remains exhausted; candidate v0.2.0 record #1 is terminal `DECIDED / SUPPORTED`, while candidate record #2 remains retryable with no semantic attempt consumed. A contract change is necessary to obtain the improved diagnostics and quote-insensitive equivalence on-chain; frontend configuration alone cannot change validator behavior. No supported runtime-only configuration can remove the deployed exact-observation comparison or its broad exception collapse.
 
-After the verified 0.2.0 deployment, the source preflight, ABI/readback, real Direct Mode, hosted CI, fresh two-wallet lifecycle, conclusive finalized observation, already-decided negative path and exact source-hash/contract-address verification are recorded above. Do not retry record #1 for a semantic judgment or infer a semantic result from a deployment receipt. Unauthorized, exact-replay, stale-action, MetaMask, manual responsive and independent-audit checks remain release work.
+After the verified 0.2.0 deployment, the source preflight, ABI/readback, real Direct Mode, hosted CI, record #1 conclusive lifecycle, record #2 citation-validation outcome, already-decided negative path and exact source-hash/contract-address verification are recorded above. Do not retry record #1 for a semantic judgment or infer a semantic result from a deployment receipt. Unauthorized, exact-replay, stale-action, MetaMask, manual responsive and independent-audit checks remain release work.

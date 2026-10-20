@@ -8,9 +8,9 @@ This is **not** a proof that deployed software runs correctly, that code is secu
 
 ## Current status
 
-**The historical 0.1.0 contract remains preserved, and the reviewed 0.2.0 remediation is now deployed and source-verified on Studionet. The frontend still defaults to the historical identity; release remains blocked pending a fresh hosted conclusive lifecycle, real extension coverage and independent audit.**
+**The historical 0.1.0 contract remains preserved, and the reviewed 0.2.0 remediation is deployed and source-verified on Studionet. The active frontend and production site use the v0.2.0 identity. Release remains blocked only by the documented hosted negative-path, wallet/recovery, manual responsive and independent-review gates.**
 
-The contract behavior model, candidate GenVM Direct Mode tests, client transaction tests, dependency-aware TypeScript check, ESLint, candidate lint/schema validation and production static export run locally. Both deployed identities have exact source, ABI/schema, version and finalized receipt readback. A conclusive hosted judgment, real MetaMask/Rabby extension coverage and a production frontend promotion remain **open release gates**.
+The contract behavior model, candidate GenVM Direct Mode tests, client transaction tests, dependency-aware TypeScript check, ESLint, candidate lint/schema validation and production static export run locally. Both deployed identities have exact source, ABI/schema, version and finalized receipt readback. Candidate record #1 has a conclusive hosted `SUPPORTED` judgment; record #2 is separately disclosed as a finalized `JUDGMENT_CITATION_INVALID` retryable outcome. Hosted unauthorized/exact-replay/stale-action coverage, full wallet/recovery coverage, manual responsive review and independent review remain **open release gates**.
 
 ## Product loop
 

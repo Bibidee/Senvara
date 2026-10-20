@@ -122,7 +122,7 @@
       "signed_payload_sha256": "c97518376d4714921d633ec60cdca2f7a0cbf520f646d1c34c1e84814f280927"
     },
     "browser_record_result": "DECISION RECORDED / SUPPORTED; all three transaction traces VERIFIED",
-    "negative_path_coverage": "PASS: one fresh-nonce evaluation against already-decided record #1 finalized as a bounded rejection; unauthorized, exact replay and stale-action writes remain open"
+    "negative_path_coverage": "PARTIAL PASS: one fresh-nonce evaluation against already-decided record #1 finalized as a bounded rejection; record #2 finalized a retryable citation diagnostic without consuming an attempt; unauthorized, exact replay and stale-action writes remain open"
   },
   "negative_path": {
     "record": 1,
@@ -137,6 +137,26 @@
     "post_state": {"status": "DECIDED", "decision": "SUPPORTED", "attempts": 1, "last_reason": ""},
     "canonical_state_unchanged": true,
     "evidence_boundary": "The wallet-signed request was finalized and rejected before any second observation was committed. This does not cover unauthorized, exact replay or stale-action rejection."
+  },
+  "live_record_2_citation_validation": {
+    "record": 2,
+    "signed_commit": "272a0a003e875c95902aa6f39c03458f26e4798c",
+    "wallet_a": "0x4a7d76b8c4668a3426d6d54ec24b41fa87b532f5",
+    "wallet_b": "0xff203bb65942f50cb81a8af98c5f5bd9d8a79b54",
+    "propose_transaction": "0x879a84c5a690049f2bf1c3be32ea9574dc53bb973ae40ca3e9a3b33097f57709",
+    "respond_transaction": "0xdf0fc54542c21a5cb1a389cfd6d1ff6679d41f8de30c0c3b7e8dbe032eb34856",
+    "evaluate_transaction": "0x6584fc344ade4055e01947a5d6b54e7d9725351e62bb334aa2931e95a74a49a9",
+    "transaction_statuses": ["FINALIZED", "FINALIZED", "FINALIZED"],
+    "consensus_result": "MAJORITY_AGREE",
+    "genvm_execution": "SUCCESS",
+    "canonical_state": {
+      "status": "READY_FOR_REVIEW",
+      "attempts": 0,
+      "last_reason": "JUDGMENT_CITATION_INVALID"
+    },
+    "diagnostic": "The public receipt exposes the bounded citation-validation category, not raw model output or the specific quote subcase. The RPC does not implement gen_dbg_traceTransaction.",
+    "semantic_judgment": "NONE",
+    "evidence_boundary": "Sources were accepted and the assessment finalized with successful GenVM execution and validator consensus. No conclusive documentary decision was written."
   },
   "verification_command": "node scripts/verify-deployed-v020.cjs"
 }
