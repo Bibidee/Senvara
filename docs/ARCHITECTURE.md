@@ -15,8 +15,10 @@ The application never writes product status to a web server, queue or external i
 The 0.2.0 candidate separates authenticated source retrieval from model output
 normalization. It records only bounded retry categories and a nonce fingerprint,
 and treats retryable provider/model/citation failures as diagnostics that leave the
-semantic attempt count unchanged. A conclusive observation alone advances the
-three-attempt semantic budget. The candidate's equivalence rule compares the
+semantic attempt count unchanged. A conclusive observation is terminal: the normal
+v0.2.0 path advances `attempts` to one and moves the record to `DECIDED`; the
+legacy exhaustion guard remains defensive compatibility state, not a retry target.
+The candidate's equivalence rule compares the
 decision, classifications, authenticated source hashes and signed-payload hash;
 it independently verifies each exact quote but does not require validators to select
 the same valid substring.
@@ -45,8 +47,10 @@ The Next.js application is configured with `output: 'export'`. There are no Next
 ## Known scaling limits
 
 - The global record index grows indefinitely. Pagination is bounded at 20 IDs per call. No owner-specific on-chain index is implemented in V1.
-- A record has at most three semantic attempts. Candidate retryable diagnostics still
-  incur transaction/cooldown cost but do not consume that semantic budget. Fee costs
-  and source retrieval can vary by validator.
+- Historical 0.1.0 records can exhaust after three committed retryable observations.
+  Candidate 0.2.0 retryable diagnostics retain nonce/cooldown accounting without
+  incrementing `attempts`; a conclusive result is terminal at `DECIDED`, while an
+  unresolved retry remains `READY_FOR_REVIEW` until its deadline. Fee costs and
+  source retrieval can vary by validator.
 - Binary evidence, cross-repository corroboration, file fragments, arbitrary websites and deployed-behavior proofs are not supported.
 - Exactly one named reviewer is chosen at record creation. There is no permissionless challenger market or Sybil-resistant public identity primitive.

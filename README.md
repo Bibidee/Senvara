@@ -64,11 +64,11 @@ There is **no application backend**, private relay, API route, centralized datab
 - **Readback:** 19,552 bytes and SHA-256 `33385d0283d67cd7c13f0cdafe79ba06c3466a20a35356032afe7c9d32fc797c`, exactly matching the reviewed local source
 - **Interface:** `evaluate(number:int, request_nonce:string)` and `get_version() = 0.1.0`
 
-The frontend is configured for reads and writes against this historical identity on Studionet. Candidate 0.2.0 configuration is opt-in and requires a matching candidate address, expected address, version and source hash; it is not silently mixed with the deployed contract. No production Vercel promotion was made. The earlier preview is protected by Vercel deployment protection, and only read-only route navigation was verified there.
+The historical identity remains preserved for compatibility and read-only evidence. The active frontend release is candidate 0.2.0, and it requires the exact candidate address, version and source hash as one identity tuple; it is never silently mixed with the historical contract.
 
-The reviewed 0.2.0 candidate is deployed at `0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C` by transaction `0xeabdd3db0a1648a6a02928161ceb715bddb79718ba0c4353898feeb4a63896f1`. Its decoded source is 25,549 bytes with SHA-256 `d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2`; readback is recorded in `docs/CANDIDATE_V020_MANIFEST.json`. This does not authorize production promotion or prove a conclusive semantic judgment.
+The reviewed 0.2.0 candidate is deployed at `0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C` by transaction `0xeabdd3db0a1648a6a02928161ceb715bddb79718ba0c4353898feeb4a63896f1`. Its decoded source is 25,549 bytes with SHA-256 `d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2`; readback is recorded in `docs/CANDIDATE_V020_MANIFEST.json`. Deployment identity alone does not prove a conclusive semantic judgment or complete wallet/browser coverage.
 
-Candidate preview: [senvara-41ex6g1wy-bibidees-projects.vercel.app](https://senvara-41ex6g1wy-bibidees-projects.vercel.app). It is protected, preview-only, and configured with the candidate identity; production remains on the historical default.
+Candidate preview: [senvara-41ex6g1wy-bibidees-projects.vercel.app](https://senvara-41ex6g1wy-bibidees-projects.vercel.app). It is protected and configured with the candidate identity. The authorized production frontend is [senvara.vercel.app](https://senvara.vercel.app) and uses the same v0.2.0 identity.
 
 ## Start locally
 
@@ -84,15 +84,13 @@ npm run web:dev
 
 The preflight command checks source and mock-based model tests; it does not substitute for hosted validation. To test the frontend independently, run `npm --prefix frontend run typecheck`, `npm --prefix frontend run lint` and `npm run web:build` after installing dependencies.
 
-The default frontend identity is the source-verified 0.1.0 deployment. A release candidate must set all candidate identity fields together; otherwise the frontend refuses signed actions rather than mixing ABIs or state:
+The default frontend identity is the source-verified v0.2.0 deployment. The preserved historical configuration is kept in `frontend/.env.historical.example`. Any override must set a complete verified identity tuple; otherwise the frontend refuses signed actions rather than mixing ABIs or state:
 
 ```sh
 # frontend/.env.local
 NEXT_PUBLIC_SENVARA_CONTRACT=0x<verified_40_digit_contract_address>
 NEXT_PUBLIC_SENVARA_RPC=https://studio.genlayer.com/api
-# For an authorized 0.2.0 preview:
 NEXT_PUBLIC_SENVARA_V020_CONTRACT=0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C
-NEXT_PUBLIC_SENVARA_V020_EXPECTED_ADDRESS=0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C
 NEXT_PUBLIC_SENVARA_CONTRACT_VERSION=0.2.0
 NEXT_PUBLIC_SENVARA_SOURCE_SHA256=d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2
 ```
@@ -129,7 +127,7 @@ python -m pip install -r requirements-direct.txt
 python scripts/run-direct-pytest.py tests/test_direct_genvm.py -q
 ```
 
-The current local run passes 8/8 Direct Mode tests, including candidate malformed-output, citation and equivalence cases. This is local GenVM evidence; it does not replace hosted `run_nondet_unsafe` consensus or a live application lifecycle. The browser harness is `tests/browser-smoke.cjs`; it uses deterministic fake EIP-6963 providers and never signs or broadcasts.
+The current local run passes 11/11 Direct Mode tests, including candidate retry-budget, malformed-output, citation, duplicate-key and equivalence cases. This is local GenVM evidence; it does not replace hosted `run_nondet_unsafe` consensus or a live application lifecycle. The browser harness is `tests/browser-smoke.cjs`; it uses deterministic fake EIP-6963 providers and never signs or broadcasts.
 
 ## Documentation
 

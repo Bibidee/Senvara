@@ -31,12 +31,14 @@ This document is procedural guidance only. Do not deploy, sign, spend GEN or cha
     npx --no-install genlayer schema 0x<address> --rpc https://studio.genlayer.com/api
     npx --no-install genlayer call 0x<address> get_version --rpc https://studio.genlayer.com/api
 
-4. After source, ABI, version and chain identity match, create `frontend/.env.local` for the historical canonical preview configuration:
+4. After source, ABI, version and chain identity match, use the active v0.2.0 tuple from `frontend/.env.example` for normal builds. The preserved historical compatibility tuple is kept separately in `frontend/.env.historical.example` and must not be mixed with active values:
 
-    NEXT_PUBLIC_SENVARA_CONTRACT=0x9668263921d88c1deaB8DA5A416a65D562cB4187
+    NEXT_PUBLIC_SENVARA_CONTRACT=0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C
     NEXT_PUBLIC_SENVARA_RPC=https://studio.genlayer.com/api
+    NEXT_PUBLIC_SENVARA_CONTRACT_VERSION=0.2.0
+    NEXT_PUBLIC_SENVARA_SOURCE_SHA256=d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2
 
-5. Re-run the frontend build. The reviewed candidate identity is verified at `0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C` and is recorded in `docs/CANDIDATE_V020_MANIFEST.json`; use the candidate identity fields from `frontend/.env.example` for explicitly labeled candidate testing. The authorized production frontend already uses this identity. Then execute the two-wallet lifecycle in docs/TEST_MATRIX.md: propose, finalize/read back, respond, finalize/read back, evaluate, verify the observation and test at least one unavailable-evidence retry without weakening safeguards.
+5. Re-run the frontend build. The reviewed candidate identity is verified at `0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C` and is recorded in `docs/CANDIDATE_V020_MANIFEST.json`; the active frontend configuration is pinned to this identity. Then execute the two-wallet lifecycle in docs/TEST_MATRIX.md: propose, finalize/read back, respond, finalize/read back, evaluate, verify the observation and test at least one unavailable-evidence retry without weakening safeguards.
 6. Test MetaMask and Rabby separately and together: EIP-6963 selection, reconnect after refresh, disconnect, 4902 add/switch, wrong-chain rejection, account/network changes, signature rejection, RPC failure, pending/unknown/finalized/error receipts and duplicate-click guards.
 7. Update docs/RELEASE_MANIFEST.json with the exact deployed address, source hash, ABI parity evidence, transaction hashes and hosted test links. Keep release_readiness blocked until every gate is evidenced.
 

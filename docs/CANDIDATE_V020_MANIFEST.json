@@ -25,6 +25,19 @@
     "get_observation(number:u256, attempt:u256) -> string",
     "list_dossiers(offset:u256, limit:u256) -> string"
   ],
+  "public_abi_schema": {
+    "close_expired": {"params": [["number", "int"]], "kwparams": {}, "readonly": false, "ret": "any", "payable": false},
+    "decline": {"params": [["number", "int"]], "kwparams": {}, "readonly": false, "ret": "any", "payable": false},
+    "evaluate": {"params": [["number", "int"], ["request_nonce", "string"]], "kwparams": {}, "readonly": false, "ret": "any", "payable": false},
+    "get_dossier": {"params": [["number", "int"]], "kwparams": {}, "readonly": true, "ret": "string", "payable": false},
+    "get_observation": {"params": [["number", "int"], ["attempt", "int"]], "kwparams": {}, "readonly": true, "ret": "string", "payable": false},
+    "get_total": {"params": [], "kwparams": {}, "readonly": true, "ret": "int", "payable": false},
+    "get_version": {"params": [], "kwparams": {}, "readonly": true, "ret": "string", "payable": false},
+    "list_dossiers": {"params": [["offset", "int"], ["limit", "int"]], "kwparams": {}, "readonly": true, "ret": "string", "payable": false},
+    "propose": {"params": [["assertion", "string"], ["repository", "string"], ["commit_sha", "string"], ["primary_path", "string"], ["reviewer", "string"], ["response_seconds", "int"]], "kwparams": {}, "readonly": false, "ret": "any", "payable": false},
+    "respond": {"params": [["number", "int"], ["opposing_path", "string"], ["context", "string"]], "kwparams": {}, "readonly": false, "ret": "any", "payable": false},
+    "withdraw": {"params": [["number", "int"]], "kwparams": {}, "readonly": false, "ret": "any", "payable": false}
+  },
   "compatibility": {
     "method_signatures_unchanged_from_v010": true,
     "new_observation_reasons": [

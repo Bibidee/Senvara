@@ -38,6 +38,20 @@ async function main() {
   const methodNames = Object.keys(schema.methods || {}).sort();
   const expectedMethodNames = manifest.public_abi.map((entry) => entry.slice(0, entry.indexOf("("))).sort();
   expect(JSON.stringify(methodNames) === JSON.stringify(expectedMethodNames), "deployed ABI method set differs from manifest");
+  expect(manifest.public_abi_schema && typeof manifest.public_abi_schema === "object", "full ABI schema is missing from manifest");
+  const comparable = (value) => ({
+    params: value.params || [],
+    kwparams: value.kwparams || {},
+    readonly: value.readonly === true,
+    ret: value.ret,
+    payable: value.payable === true,
+  });
+  for (const methodName of expectedMethodNames) {
+    const actual = schema.methods[methodName];
+    const expected = manifest.public_abi_schema[methodName];
+    expect(actual && expected, `ABI schema entry is missing for ${methodName}`);
+    expect(JSON.stringify(comparable(actual)) === JSON.stringify(comparable(expected)), `deployed ABI schema differs for ${methodName}`);
+  }
   expect(schema.methods.evaluate?.params?.[1]?.[0] === "request_nonce", "evaluate nonce parameter is missing");
 
   const transaction = await request("eth_getTransactionByHash", [manifest.deployment_transaction]);

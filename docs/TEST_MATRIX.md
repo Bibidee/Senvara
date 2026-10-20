@@ -4,21 +4,21 @@ The checklist uses **executed** only for checks actually run against the current
 
 | Area | Local evidence | Live or full test required | Status |
 |---|---|---|---|
-| Proposal roles, full SHA and identity parsing | Python model tests + 8-test GenVM Direct Mode suite | 61999 lifecycle | Local tests executed; hosted open |
+| Proposal roles, full SHA and identity parsing | Python model tests + 11-test GenVM Direct Mode suite | 61999 lifecycle | Local tests executed; hosted open |
 | Immutable response and cancellation | Python model tests | Wallet A/B replay on chain | Local tests executed |
 | Duplicate fingerprint and pagination | Python model tests | Chain source/storage compatibility | Local tests executed |
 | Provider outage, unsigned revision, blob mismatch | Python mocks | Real GitHub provider 403/404/429 and signed revision | Local tests executed |
 | Independent validator and semantic vector | Python leader/validator model + Direct Mode fixtures | Live consensus | Local tests executed; hosted open |
 | Judgment availability remediation | Candidate 0.2.0 Direct Mode: realistic text JSON, malformed-output/citation diagnostics, exact-source citation checks and quote-insensitive decision equivalence | Fresh hosted 0.2.0 lifecycle and conclusive finalized result | **Hosted PASS:** record #1 finalized `SUPPORTED`; evaluation `0xa067be9406c12f2d009484a0157c5ba84f3bc70f7ec47ef80cc8baf786c17553` |
-| Malicious quote, disagreement, cooldown and exhaustion | Python mocks | GenVM hosted negative fixtures, deadline transitions | Local tests executed |
+| Malicious quote, disagreement, cooldown and exhaustion | Python mocks + Direct Mode retry-budget regression | GenVM hosted negative fixtures, deadline transitions | Local tests executed; v0.2 retryable diagnostics remain non-exhausting |
 | TypeScript proposal, wallet primitives and receipt reconciliation | Node tests after TypeScript transpile | Full TS compilation and browser E2E | Local tests executed |
 | Wallet provider selection and direct selected-provider send | Node transaction mock plus local Playwright fake EIP-6963 providers, including authorized-session restoration after reload | Real MetaMask and Rabby extension sessions, including approval, selected-provider sends, account switching and reload recovery | **Hosted Rabby partial PASS:** production connection, reconnect, provider selection, selected-provider lifecycle sends, account switching, two consecutive silent reload recoveries and one finalized already-decided rejection verified; MetaMask was unavailable, and reboot, unknown-receipt, unauthorized, exact-replay and stale-action cases remain open |
 | Unknown transaction, late finality and deduplication | Node transaction mock | Hosted finality and provider failure tests | Local mock executed; hosted not executed |
 | Next.js static export build | Dependency-aware production build | Hosted deployment smoke test | Local build executed |
-| Mobile and accessibility | Responsive source review + Playwright harness at 390/1440px with axe-core 4.14.0 | Playwright + axe + keyboard + manual mobile | **Automated PASS:** all five routes at 390px and 1440px have zero axe violations, plus keyboard/focus and overflow checks; tablet-width and manual mobile review remain open |
+| Mobile and accessibility | Responsive source review + Playwright harness at 390/1440px with axe-core 4.14.0 and candidate identity assertions | Playwright + axe + keyboard + manual mobile | **Automated PASS:** all five routes at 390px and 1440px have zero axe violations, active v0.2.0 identity, plus keyboard/focus and overflow checks; tablet-width and manual mobile review remain open |
 | Studionet deployment/source parity | Historical 0.1.0 and candidate 0.2.0 finalized receipts, exact decoded source comparison, schema/version readback | Two-wallet application lifecycle, explorer-linked evidence and hosted record transactions | **PASS:** candidate record #1 Wallet A/B lifecycle and conclusive judgment verified on chain |
-| GitHub Actions exact-head CI | Workflow source added and locally inspected | Hosted workflow on exact pushed commit | **PASS:** push run `39416229941` on `4be09df8160d7cf62cb2d02fd313085aafff4bd4`; [push run](https://github.com/Bibidee/Senvara/actions/runs/39416229941) |
-| Dependency and artifact reproducibility | npm lockfiles, production audit and static build | Hosted exact-head reproducibility and mapping of prior full-install findings | Hosted production audit/build passed; prior five-high full-install report was not reproduced in this environment and remains a mapping item |
+| GitHub Actions exact-head CI | Workflow source added and locally inspected | Hosted workflow on exact pushed commit | **PASS:** push run `39416804474` on `10af3c554445af5b8dbdc9018d8253720a9a4efe`; [push run](https://github.com/Bibidee/Senvara/actions/runs/39416804474) |
+| Dependency and artifact reproducibility | npm lockfiles, full and production audits and static build | Hosted exact-head reproducibility and independent supply-chain review | Hosted full-install and production audits pass after tested GenLayer-scoped overrides; independent supply-chain review remains open |
 
 ## Negative-path test obligations
 

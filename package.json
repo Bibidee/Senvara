@@ -13,6 +13,7 @@
     "test:browser": "node tests/browser-smoke.cjs",
     "verify:deployment": "node scripts/verify-deployment.cjs",
     "verify:candidate": "node scripts/verify-candidate-v020.cjs",
+    "verify:frontend-config": "node scripts/verify-frontend-config.cjs",
     "verify:deployed-v020": "node scripts/verify-deployed-v020.cjs",
     "web:dev": "npm --prefix frontend run dev",
     "web:build": "npm --prefix frontend run build",

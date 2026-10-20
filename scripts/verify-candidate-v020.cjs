@@ -42,8 +42,11 @@ for (const pattern of methodPatterns) expect(pattern.test(text), `public method 
 
 const constants = fs.readFileSync(`${root}/frontend/lib/constants.ts`, "utf8");
 expect(constants.includes(`CANDIDATE_SOURCE_SHA256 = "${manifest.source_sha256}"`), "frontend candidate source identity differs");
+expect(constants.includes(`CANDIDATE_EXPECTED_ADDRESS = "${manifest.contract_address}"`), "frontend candidate expected address differs");
+expect(constants.includes(`CANDIDATE_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_SENVARA_V020_CONTRACT || CANDIDATE_EXPECTED_ADDRESS`), "frontend candidate override is not pinned");
 expect(constants.includes("HISTORICAL_CONTRACT_ADDRESS = \"0x9668263921d88c1deaB8DA5A416a65D562cB4187\""), "historical address identity was removed");
 expect(constants.includes("CHAIN_ID = 61999") && constants.includes("https://studio.genlayer.com/api"), "frontend network identity differs");
 expect(manifest.historical_deployment_preserved === true, "historical preservation flag is absent");
+expect(manifest.public_abi_schema && Object.keys(manifest.public_abi_schema).length === manifest.public_abi.length, "full candidate ABI schema is absent");
 
 console.log(`candidate verification: PASS (${manifest.candidate_version}, ${source.length} bytes, ${sha256})`);

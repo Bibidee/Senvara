@@ -100,6 +100,10 @@ async function checkRoutes(browser) {
       await page.waitForTimeout(150);
       const result = await page.evaluate(() => ({
         title: document.title,
+        configured: document.body.dataset.senvaraConfigured,
+        contract: document.body.dataset.senvaraContract,
+        contractVersion: document.body.dataset.senvaraContractVersion,
+        sourceSha256: document.body.dataset.senvaraSourceSha256,
         body: document.body.innerText.trim(),
         overflow: document.documentElement.scrollWidth - window.innerWidth,
         appError: /Application error|Unhandled Runtime Error|Internal Server Error/i.test(document.body.innerText),
@@ -114,6 +118,10 @@ async function checkRoutes(browser) {
         unlabeledFields: [...document.querySelectorAll("input,textarea,select")].filter(element => !element.getAttribute("aria-label") && !element.labels?.length).length,
       }));
       assert(result.title.length > 0, `${route} has no document title`);
+      assert(result.configured === "true", `${route} did not expose an active release identity`);
+      assert(result.contract?.toLowerCase() === "0xf563d381c3ec5bda61f166bb1fff781de6b81b8c", `${route} exposed the wrong active contract`);
+      assert(result.contractVersion === "0.2.0", `${route} exposed the wrong active contract version`);
+      assert(result.sourceSha256 === "d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2", `${route} exposed the wrong active source fingerprint`);
       assert(result.body.length > 100, `${route} has unexpectedly empty body`);
       assert(!result.appError, `${route} rendered an application error`);
       assert(result.overflow <= 1, `${route} overflows viewport by ${result.overflow}px at ${viewport.width}px`);

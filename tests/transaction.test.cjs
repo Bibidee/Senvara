@@ -1,8 +1,10 @@
 const {test,before}=require('node:test');
 const assert=require('node:assert/strict');
 const Module=require('node:module');
-// Fixture-only contract address, never configured in the application.
+// Fixture-only historical identity, never used as the active application default.
 process.env.NEXT_PUBLIC_SENVARA_CONTRACT='0x9668263921d88c1deaB8DA5A416a65D562cB4187';
+process.env.NEXT_PUBLIC_SENVARA_CONTRACT_VERSION='0.1.0';
+process.env.NEXT_PUBLIC_SENVARA_SOURCE_SHA256='33385d0283d67cd7c13f0cdafe79ba06c3466a20a35356032afe7c9d32fc797c';
 const crypto=require('node:crypto');
 const originalLoad=Module._load;
 const sampleHash='0x'+'f'.repeat(64);

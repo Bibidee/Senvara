@@ -3,8 +3,11 @@ on:
   push:
   pull_request:
 env:
-  NEXT_PUBLIC_SENVARA_CONTRACT: "0x9668263921d88c1deaB8DA5A416a65D562cB4187"
+  NEXT_PUBLIC_SENVARA_CONTRACT: "0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C"
   NEXT_PUBLIC_SENVARA_RPC: "https://studio.genlayer.com/api"
+  NEXT_PUBLIC_SENVARA_CONTRACT_VERSION: "0.2.0"
+  NEXT_PUBLIC_SENVARA_SOURCE_SHA256: "d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2"
+  NEXT_PUBLIC_SENVARA_V020_CONTRACT: "0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C"
   SENVARA_GENVM_VERSION: "v0.2.12"
 jobs:
   source-and-web:
@@ -27,8 +30,12 @@ jobs:
         run: python scripts/preflight.py
       - name: Verify canonical deployment consistency
         run: npm run verify:deployment
-      - name: Verify undeployed v0.2.0 candidate identity
+      - name: Verify active v0.2.0 candidate identity
         run: npm run verify:candidate
+      - name: Verify frontend release identity matrix
+        run: npm run verify:frontend-config
+      - name: Verify deployed v0.2.0 code, ABI and receipt readback
+        run: npm run verify:deployed-v020
       - name: Contract behavior model
         run: python -m unittest discover -s tests -p 'test_*_model.py' -v
       - name: Install Direct Mode runtime

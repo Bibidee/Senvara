@@ -36,7 +36,7 @@ historical identity remains available only as the preserved compatibility refere
 
 ## Bounds
 
-Claims are 24–420 characters, source paths are repository-relative and traversal-free, files are at most 8 KiB decoded UTF-8, API responses are at most 30 KiB, response windows are 1–14 days, review windows are 3 days, and semantic evaluation attempts are capped at 3 with a 10-minute retry cooldown. In deployed 0.1.0, every finalized retryable observation consumes an attempt. In candidate 0.2.0, bounded retryable provider/model/citation diagnostics retain nonce replay protection and cooldown state but do not consume a semantic attempt.
+Claims are 24–420 characters, source paths are repository-relative and traversal-free, files are at most 8 KiB decoded UTF-8, API responses are at most 30 KiB, response windows are 1–14 days, and the retry cooldown is 10 minutes. In deployed 0.1.0, every finalized retryable observation consumes one of the three committed-attempt slots and can end in `REVIEW_EXHAUSTED`. In deployed candidate 0.2.0, bounded retryable provider/model/citation diagnostics retain nonce replay protection and cooldown state but do not consume `attempts`; a conclusive observation moves directly to terminal `DECIDED`, and a retryable record stays `READY_FOR_REVIEW` until it is resolved or expires. `MAX_ATTEMPTS` remains a defensive guard for incompatible/corrupt state and is not reachable through the normal v0.2.0 lifecycle.
 
 ## Decision rule
 

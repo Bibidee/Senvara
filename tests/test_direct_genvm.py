@@ -147,6 +147,35 @@ def test_direct_mode_provider_failure_is_retryable_and_nonce_replay_is_rejected(
         contract.evaluate(number, "b" * 64)
 
 
+def test_direct_mode_v02_retryable_failures_keep_semantic_budget_available(direct_vm, direct_deploy, direct_alice, direct_bob):
+    contract = direct_deploy(str(CANDIDATE_CONTRACT))
+    number = submit_ready(contract, direct_vm, direct_alice, direct_bob)
+    direct_vm.mock_web(r"api\.github\.com/repos/example/registry$", {"status": 503, "body": "unavailable"})
+    direct_vm.sender = direct_alice
+    for index, nonce in enumerate(("1" * 64, "2" * 64, "3" * 64), start=1):
+        contract.evaluate(number, nonce)
+        dossier = json.loads(contract.get_dossier(number))
+        assert dossier["status"] == "READY_FOR_REVIEW"
+        assert dossier["attempts"] == 0
+        assert dossier["decision"] == ""
+        assert dossier["last_reason"] == "PROVENANCE_UNAVAILABLE"
+        warp_seconds(direct_vm, 1200 * (index + 1))
+
+
+def test_direct_mode_v02_conclusive_result_is_terminal_and_does_not_reenter_budget(direct_vm, direct_deploy, direct_alice, direct_bob):
+    contract = direct_deploy(str(CANDIDATE_CONTRACT))
+    number = submit_ready(contract, direct_vm, direct_alice, direct_bob)
+    configure_sources(direct_vm)
+    configure_judgement(direct_vm)
+    direct_vm.sender = direct_alice
+    contract.evaluate(number, "4" * 64)
+    with direct_vm.expect_revert("record not eligible for evaluation"):
+        contract.evaluate(number, "5" * 64)
+    dossier = json.loads(contract.get_dossier(number))
+    assert dossier["status"] == "DECIDED"
+    assert dossier["attempts"] == 1
+
+
 def test_direct_mode_hostile_quote_becomes_retryable_not_verdict(direct_vm, direct_deploy, direct_alice, direct_bob):
     contract = direct_deploy(str(CONTRACT))
     number = submit_ready(contract, direct_vm, direct_alice, direct_bob)
@@ -219,3 +248,16 @@ def test_direct_mode_v02_separates_malformed_output_and_citation_failures(direct
     dossier = json.loads(contract.get_dossier(number))
     assert dossier["attempts"] == 0
     assert dossier["last_reason"] == "JUDGMENT_CITATION_INVALID"
+
+
+def test_direct_mode_v02_rejects_missing_json_keys(direct_vm, direct_deploy, direct_alice, direct_bob):
+    contract = direct_deploy(str(CANDIDATE_CONTRACT))
+    number = submit_ready(contract, direct_vm, direct_alice, direct_bob)
+    configure_sources(direct_vm)
+    direct_vm.mock_llm(r".*", '{"primary":"SUPPORTS","opposing":"SUPPORTS","primary_quote":"supports safe retries"}')
+    direct_vm.sender = direct_alice
+    contract.evaluate(number, "6" * 64)
+    dossier = json.loads(contract.get_dossier(number))
+    assert dossier["status"] == "READY_FOR_REVIEW"
+    assert dossier["attempts"] == 0
+    assert dossier["last_reason"] == "JUDGMENT_MALFORMED_OUTPUT"

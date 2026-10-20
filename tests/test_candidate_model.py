@@ -24,6 +24,18 @@ class CandidateBehavior(unittest.TestCase):
         self.assertEqual(len(self.t.api_reads), 8)  # 4 leader + 4 validator, no equivalence refetch
         self.assertEqual(self.t.prompt_count, 2)
 
+    def test_retryable_diagnostics_do_not_exhaust_v020_semantic_budget(self):
+        self.t.ready()
+        self.t.provider_outage = True
+        for index, nonce in enumerate(("a" * 64, "b" * 64, "c" * 64), start=1):
+            self.t.contract.evaluate(1, nonce)
+            state = self.t.state()
+            self.assertEqual(state["status"], "READY_FOR_REVIEW")
+            self.assertEqual(state["attempts"], 0)
+            self.assertEqual(state["decision"], "")
+            self.assertEqual(state["last_reason"], "PROVENANCE_UNAVAILABLE")
+            self.t.as_wallet(ADDR1, minutes=10 * index)
+
     def test_failure_categories_are_bounded_and_distinct(self):
         self.t.ready()
         self.t.signed = False
@@ -59,6 +71,17 @@ class CandidateBehavior(unittest.TestCase):
         self.t.gl.nondet.exec_prompt = self.t.prompt
         self.t.contract.evaluate(1, "b" * 64)
         self.assertEqual(self.t.state()["last_reason"], "JUDGMENT_CITATION_INVALID")
+
+    def test_duplicate_json_keys_are_malformed(self):
+        self.t.ready()
+        self.t.gl.nondet.exec_prompt = lambda *_args, **_kwargs: (
+            '{"primary":"SUPPORTS","primary":"CONTRADICTS",'
+            '"opposing":"SUPPORTS","primary_quote":"supports retrying failed requests safely",'
+            '"opposing_quote":"requires a client-generated idempotency key"}'
+        )
+        self.t.contract.evaluate(1, "d" * 64)
+        self.assertEqual(self.t.state()["status"], "READY_FOR_REVIEW")
+        self.assertEqual(self.t.state()["last_reason"], "JUDGMENT_MALFORMED_OUTPUT")
 
     def test_validator_accepts_different_valid_quote_spans(self):
         self.t.ready()
