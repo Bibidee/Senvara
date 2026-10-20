@@ -88,7 +88,11 @@ async function installWalletHarness(page) {
 }
 
 async function checkRoutes(browser) {
-  for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000 }]) {
+  for (const viewport of [
+    { width: 390, height: 844 },
+    { width: 768, height: 1024 },
+    { width: 1440, height: 1000 },
+  ]) {
     const page = await browser.newPage({ viewport });
     const errors = [];
     page.on("pageerror", error => errors.push(`pageerror: ${error.message}`));

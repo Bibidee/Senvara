@@ -11,4 +11,4 @@ The first screen asks a question rather than displaying fake network activity. N
 - The transaction desk preserves meaningful result phases and source hashes without turning local storage into a protocol state.
 - Responsive breakpoints preserve header wallet access, reduce large compositions for mobile, prevent horizontal overflow where CSS permits, and honor reduced-motion preferences.
 
-The local Chromium smoke verifies visible labels, keyboard traversal, responsive layouts at 390px and 1440px, and an automated axe-core 4.14.0 sweep across all routes with zero reported violations. This is not a complete accessibility certification: tablet-width and assistive-technology/manual mobile review remain mandatory before release.
+The local Chromium smoke verifies visible labels, keyboard traversal, responsive layouts at 390px, 768px and 1440px, and an automated axe-core 4.14.0 sweep across all routes with zero reported violations. This is not a complete accessibility certification: assistive-technology/manual mobile review remains mandatory before release.
