@@ -6,6 +6,8 @@ const axePath = require.resolve("axe-core/axe.min.js", { paths: [path.join(__dir
 
 const baseURL = process.env.SENVARA_BASE_URL || "http://127.0.0.1:3000";
 const executablePath = process.env.SENVARA_CHROMIUM || "";
+const rpcURL = process.env.NEXT_PUBLIC_SENVARA_RPC || "https://studio.genlayer.com/api";
+const isolateExternalRpc = process.env.SENVARA_BROWSER_LIVE_RPC !== "1";
 const routes = ["/", "/open/", "/record/", "/workbench/", "/method/"];
 const alice = "0x1111111111111111111111111111111111111111";
 const bob = "0x2222222222222222222222222222222222222222";
@@ -95,8 +97,13 @@ async function checkRoutes(browser) {
   ]) {
     const page = await browser.newPage({ viewport });
     const errors = [];
+    if (isolateExternalRpc) await page.route(rpcURL, route => route.abort("failed").catch(() => {}));
     page.on("pageerror", error => errors.push(`pageerror: ${error.message}`));
-    page.on("console", message => { if (message.type() === "error") errors.push(`console: ${message.text()}`); });
+    page.on("console", message => {
+      const text = message.text();
+      const expectedRpcFailure = /Access to fetch|Failed to load resource|GenLayer RPC error|Failed to initialize consensus smart contract|Failed to fetch/i.test(text);
+      if (message.type() === "error" && !(isolateExternalRpc && expectedRpcFailure)) errors.push(`console: ${text}`);
+    });
     page.on("response", response => { if (response.status() >= 400) errors.push(`http ${response.status()}: ${response.url()}`); });
     for (const route of routes) {
       const response = await page.goto(baseURL + route, { waitUntil: "networkidle" });
@@ -145,6 +152,14 @@ async function checkRoutes(browser) {
 
 async function checkPublicRead(browser) {
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  if (isolateExternalRpc) {
+    await page.route(rpcURL, route => route.abort("failed").catch(() => {}));
+    await page.goto(baseURL + "/open/", { waitUntil: "networkidle" });
+    await page.locator('.inline-error[role="alert"]').waitFor({ state: "visible" });
+    assert(await page.getByRole("button", { name: "Refresh records" }).isVisible(), "public read failure did not expose retry recovery");
+    await page.close();
+    return;
+  }
   await page.goto(baseURL + "/open/", { waitUntil: "networkidle" });
   await page.getByText(/public questions recorded/).waitFor({ state: "visible" });
   const body = await page.locator("body").innerText();
