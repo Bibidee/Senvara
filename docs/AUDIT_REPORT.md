@@ -31,4 +31,4 @@ Residual trust remains in GitHub's reported signature verification and response 
 
 ## Evidence boundary
 
-Local checks are source/model evidence only. The historical deployment and recorded Wallet A/B fixture are hosted-verified for the evidence stated in `docs/RELEASE_MANIFEST.json`; candidate branch CI is hosted-verified by run `39341092548`, but it does not certify candidate 0.2.0 on Studionet. The overall release label must remain blocked until a conclusive candidate application lifecycle, remaining provider/negative-path behavior and independent audit evidence are complete.
+Local checks are source/model evidence only. The historical deployment and recorded Wallet A/B fixture are hosted-verified for the evidence stated in `docs/RELEASE_MANIFEST.json`; candidate branch CI is hosted-verified by runs `39345753441` and `39345749672` on commit `478f098aa002c6abef0b655eb11bbbd207ec5955`, but it does not certify candidate 0.2.0 on Studionet. The overall release label must remain blocked until a conclusive candidate application lifecycle, remaining provider/negative-path behavior and independent audit evidence are complete.

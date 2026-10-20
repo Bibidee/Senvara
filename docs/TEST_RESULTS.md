@@ -23,7 +23,7 @@
 | `npm audit --omit=dev --audit-level=high` (frontend) | **PASS** | Production dependency tree reported 0 vulnerabilities |
 | `npm audit --omit=dev --audit-level=high` (repository) | **PASS** | Production dependency tree reported 0 vulnerabilities |
 | `npm audit --audit-level=high` (repository full install) | **6 findings; release limitation documented** | Four moderate and two critical development-tool findings are transitive through the pinned GenLayer CLI; the forced npm fix would replace the required CLI with an incompatible `0.0.35` major downgrade |
-| GitHub Actions `Source quality` run `39341092548` | **PASS** | Linux runner verified commit `a05b00a28675b67c281f93941148707fbc040fec`; Direct Mode, GenVM lint, production audit, typecheck, lint, static build, Chromium `--with-deps`, browser smoke and client tests all passed. [Run](https://github.com/Bibidee/Senvara/actions/runs/39341092548) |
+| GitHub Actions `Source quality` run `39345753441` | **PASS** | Linux runner verified exact commit `478f098aa002c6abef0b655eb11bbbd207ec5955`; Direct Mode, GenVM lint, production audit, typecheck, lint, static build, Chromium `--with-deps`, browser smoke and client tests all passed. [Push run](https://github.com/Bibidee/Senvara/actions/runs/39345753441) · [PR run](https://github.com/Bibidee/Senvara/actions/runs/39345749672) |
 
 ## Candidate remediation evidence
 
