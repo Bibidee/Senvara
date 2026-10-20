@@ -14,6 +14,7 @@ The historical 0.1.0 contract is preserved on Studionet 61999. Reviewed 0.2.0 is
 - [x] Local GenVM Direct Mode lifecycle and adversarial candidate cases on a supported runtime; candidate GenVM lint/schema validation passes.
 - [ ] Independent third-party security review; the implementation audit and disposition are recorded in `docs/AUDIT_REPORT.md`.
 - [ ] Confirm candidate Studio endpoint browser CORS/direct RPC support for the new ABI, without inserting a proxy. Read-only RPC/schema/version evidence passes; browser write and lifecycle evidence remains open.
+- [x] Candidate Vercel preview is **READY** at [senvara-41ex6g1wy-bibidees-projects.vercel.app](https://senvara-41ex6g1wy-bibidees-projects.vercel.app); protected browser route checks pass at 390px and 1440px with no failed requests or console errors. This is a preview-only read/navigation check.
 - [x] Deploy explicitly approved contract to Studionet 61999 and record source SHA-256 plus deployed-code readback.
 - [x] Generate and verify historical ABI against exact deployed code and version; candidate ABI signatures and frontend identity checks are recorded separately.
 - [ ] Complete a fresh candidate two-wallet hosted lifecycle, including a conclusive verdict and live unauthorized/replay/stale-action rejection. **Historical partial pass:** Wallet A/B proposal and response, three finalized retryable evaluations, canonical exhausted-state readback and no-false-verdict handling are verified for 0.1.0.

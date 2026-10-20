@@ -59,5 +59,15 @@
     "get_total": 0,
     "abi_schema_parity": "PASS"
   },
+  "frontend_preview": {
+    "url": "https://senvara-41ex6g1wy-bibidees-projects.vercel.app",
+    "deployment_id": "dpl_D5ZZ7D8JgTugswyhWWxQVLWqrGoU",
+    "target": "preview",
+    "status": "READY",
+    "environment": "Preview candidate identity; production unchanged",
+    "protected_browser_routes": ["/", "/method/", "/open/", "/workbench/"],
+    "protected_browser_viewports": ["390x844", "1440x900"],
+    "protected_browser_result": "PASS; no failed requests or console errors"
+  },
   "verification_command": "node scripts/verify-deployed-v020.cjs"
 }

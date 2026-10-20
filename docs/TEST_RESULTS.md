@@ -21,6 +21,7 @@
 | `npm --prefix frontend run lint` | **PASS** | ESLint core, React/hooks and JSX accessibility rules |
 | `npm --prefix frontend run build` | **PASS** | Next.js 16.4.2 Webpack static export; 7 routes prerendered |
 | `npm run test:browser` | **PASS** | Fresh static export on Chromium; routes, 390/1440px responsive layout, keyboard traversal, RPC retry recovery and fake EIP-6963 provider assertions. It never signs or broadcasts. |
+| Protected Vercel candidate preview browser sweep | **PASS** | Deployment `dpl_D5ZZ7D8JgTugswyhWWxQVLWqrGoU`; `/`, `/method/`, `/open/`, `/workbench/` at 390x844 and 1440x900; no failed requests or console errors. [Preview](https://senvara-41ex6g1wy-bibidees-projects.vercel.app) |
 | `npm audit --omit=dev --audit-level=high` (frontend) | **PASS** | Production dependency tree reported 0 vulnerabilities |
 | `npm audit --omit=dev --audit-level=high` (repository) | **PASS** | Production dependency tree reported 0 vulnerabilities |
 | `npm audit --audit-level=high` (repository full install) | **6 findings; release limitation documented** | Four moderate and two critical development-tool findings are transitive through the pinned GenLayer CLI; the forced npm fix would replace the required CLI with an incompatible `0.0.35` major downgrade |
@@ -57,7 +58,7 @@ Evaluation transactions: `0x7106ba897365d5b4336ca5cb0f7e8fca0fa06f9b60bf053b3299
 ## Browser, hosted and security boundaries
 
 - The local browser harness is a fake-provider test and must not be described as MetaMask/Rabby extension validation or a signed lifecycle.
-- The earlier protected Vercel preview and read-only route checks do not authorize a new deployment or production promotion.
+- The protected candidate Vercel preview is read-only route/browser evidence only; it does not authorize production promotion or prove wallet signing.
 - Real MetaMask extension testing, account/network-change testing in real extensions, a fresh candidate hosted lifecycle and independent security review remain open. Hosted exact-head CI passes on commit `4189258e3dff1df7a14347dd43b29133e78690b4`.
 - The current local full-install audit is reproducible and no longer an unexplained Vercel-only report: the six findings are confined to the development CLI dependency graph; the frontend and repository production audits are clean. This is not treated as a production-runtime vulnerability, but it remains a supply-chain limitation.
 - The trace RPC method `gen_dbg_traceTransaction` was unavailable for the historical evaluations, so the exact hidden exception inside v0.1.0's broad catch remains unresolved.

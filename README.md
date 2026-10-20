@@ -68,6 +68,8 @@ The frontend is configured for reads and writes against this historical identity
 
 The reviewed 0.2.0 candidate is deployed at `0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C` by transaction `0xeabdd3db0a1648a6a02928161ceb715bddb79718ba0c4353898feeb4a63896f1`. Its decoded source is 25,549 bytes with SHA-256 `d56076f0e63d91d449e4a34f55c3d88474dc13af579c5ddbefe05a02c6e503a2`; readback is recorded in `docs/CANDIDATE_V020_MANIFEST.json`. This does not authorize production promotion or prove a conclusive semantic judgment.
 
+Candidate preview: [senvara-41ex6g1wy-bibidees-projects.vercel.app](https://senvara-41ex6g1wy-bibidees-projects.vercel.app). It is protected, preview-only, and configured with the candidate identity; production remains on the historical default.
+
 ## Start locally
 
 ```sh
