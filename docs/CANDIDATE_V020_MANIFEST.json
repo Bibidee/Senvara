@@ -69,5 +69,35 @@
     "protected_browser_viewports": ["390x844", "1440x900"],
     "protected_browser_result": "PASS; no failed requests or console errors"
   },
+  "live_two_wallet_lifecycle": {
+    "network": "GenLayer Studionet 61999",
+    "record": 1,
+    "signed_commit": "272a0a003e875c95902aa6f39c03458f26e4798c",
+    "wallet_a": "0x4a7d76b8c4668a3426d6d54ec24b41fa87b532f5",
+    "wallet_b": "0xff203bb65942f50cb81a8af98c5f5bd9d8a79b54",
+    "propose_transaction": "0x003cb9d95ca902ddb23b18360abbaf9e7ef13d617b7c93f838e3361d97f08b71",
+    "respond_transaction": "0x8d742581322cb6ec5561d63c8d4777df4064aa56b53c4f23023551d8c61c3e8f",
+    "evaluate_transaction": "0xa067be9406c12f2d009484a0157c5ba84f3bc70f7ec47ef80cc8baf786c17553",
+    "transaction_statuses": ["FINALIZED", "FINALIZED", "FINALIZED"],
+    "consensus_result": "MAJORITY_AGREE",
+    "canonical_state": {
+      "status": "DECIDED",
+      "decision": "SUPPORTED",
+      "attempts": 1,
+      "last_attempt_by": "0xff203bb65942f50cb81a8af98c5f5bd9d8a79b54",
+      "last_reason": "",
+      "last_attempt_nonce_sha256": "73b2202c15b98b4b448c096ea9d5dca2c5055ccf81bf0fe4d1ef13b7d4b345e6"
+    },
+    "canonical_observation": {
+      "kind": "EVALUATED",
+      "primary": "SUPPORTS",
+      "opposing": "SUPPORTS",
+      "primary_sha256": "3db378e9de1da30612c95b77f6d6df91ab92b1d820f266f34691bf232d8fdec6",
+      "opposing_sha256": "edfbfc0916142a9e2184044e9cc3080bab03dcbb1fa8f666a4167b92c0a3f290",
+      "signed_payload_sha256": "c97518376d4714921d633ec60cdca2f7a0cbf520f646d1c34c1e84814f280927"
+    },
+    "browser_record_result": "DECISION RECORDED / SUPPORTED; all three transaction traces VERIFIED",
+    "negative_path_coverage": "UNVERIFIED: unauthorized, exact replay and stale-action hosted writes remain open"
+  },
   "verification_command": "node scripts/verify-deployed-v020.cjs"
 }

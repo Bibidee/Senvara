@@ -39,9 +39,19 @@
 | Conflicting classifications or source fingerprints | **PASS; rejected without state write** |
 | Retryable diagnostic accounting | **PASS; nonce/cooldown recorded, semantic `attempts` remains 0** |
 | Conclusive semantic fixture | **PASS locally; candidate reaches `DECIDED`/`SUPPORTED` in Direct Mode** |
-| Hosted conclusive validator judgment | **NOT EXECUTED; deployment is verified, but no candidate record lifecycle or live semantic transaction has been run** |
+| Hosted conclusive validator judgment | **PASS;** candidate record `#1` finalized with `SUPPORTED` after Wallet A proposal, Wallet B response and Wallet B evaluation; all three transactions were reconciled to canonical state |
 
 The conclusive fixture is an actual candidate Direct Mode execution with model-like JSON text and literal source excerpts. It is not a hosted Studionet result and does not prove external LLM/provider reliability.
+
+### Hosted candidate lifecycle (Studionet 61999)
+
+| Step | Transaction | Final state |
+|---|---|---|
+| Wallet A proposes | `0x003cb9d95ca902ddb23b18360abbaf9e7ef13d617b7c93f838e3361d97f08b71` | `FINALIZED`, `MAJORITY_AGREE`; dossier `#1` `AWAITING_REVIEWER` |
+| Wallet B responds | `0x8d742581322cb6ec5561d63c8d4777df4064aa56b53c4f23023551d8c61c3e8f` | `FINALIZED`, `MAJORITY_AGREE`; dossier `#1` `READY_FOR_REVIEW` |
+| Wallet B evaluates | `0xa067be9406c12f2d009484a0157c5ba84f3bc70f7ec47ef80cc8baf786c17553` | `FINALIZED`, `MAJORITY_AGREE`; dossier `#1` `DECIDED` / `SUPPORTED` |
+
+Canonical observation readback: `kind=EVALUATED`, `primary=SUPPORTS`, `opposing=SUPPORTS`, `attempts=1`, `last_attempt_by=0xff203bb65942f50cb81a8af98c5f5bd9d8a79b54`, `last_reason=""`, nonce fingerprint `73b2202c15b98b4b448c096ea9d5dca2c5055ccf81bf0fe4d1ef13b7d4b345e6`, signed-payload fingerprint `c97518376d4714921d633ec60cdca2f7a0cbf520f646d1c34c1e84814f280927`. The production record page displayed `DECISION RECORDED / SUPPORTED` and marked all three transactions verified.
 
 ## Historical Studionet evidence (v0.1.0; unchanged)
 
@@ -59,7 +69,7 @@ Evaluation transactions: `0x7106ba897365d5b4336ca5cb0f7e8fca0fa06f9b60bf053b3299
 
 - The local browser harness is a fake-provider test and must not be described as MetaMask/Rabby extension validation or a signed lifecycle.
 - The protected candidate Vercel preview is read-only route/browser evidence only; it does not authorize production promotion or prove wallet signing.
-- Real MetaMask extension testing, account/network-change testing in real extensions, a fresh candidate hosted lifecycle and independent security review remain open. Hosted exact-head CI passes on commit `4189258e3dff1df7a14347dd43b29133e78690b4`.
+- Real MetaMask extension testing, account/network-change testing in real extensions, hosted unauthorized/replay/stale-action rejection and independent security review remain open. Hosted exact-head CI passes on commit `4189258e3dff1df7a14347dd43b29133e78690b4`.
 - The current local full-install audit is reproducible and no longer an unexplained Vercel-only report: the six findings are confined to the development CLI dependency graph; the frontend and repository production audits are clean. This is not treated as a production-runtime vulnerability, but it remains a supply-chain limitation.
 - The trace RPC method `gen_dbg_traceTransaction` was unavailable for the historical evaluations, so the exact hidden exception inside v0.1.0's broad catch remains unresolved.
-- No claim of submission readiness is justified until the verified 0.2.0 deployment produces a conclusive finalized result and the complete negative-path matrix is evidenced.
+- The candidate deployment now has a conclusive finalized result, but submission readiness remains blocked by the open negative-path, real MetaMask/account-change and independent-audit gates.
