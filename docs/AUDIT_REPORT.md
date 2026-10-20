@@ -31,4 +31,4 @@ Residual trust remains in GitHub's reported signature verification and response 
 
 ## Evidence boundary
 
-Local checks are source/model evidence only. Both deployment identities are hosted-verified for the evidence stated in the two release manifests; candidate branch CI is hosted-verified by runs `39346268942` and `39346261337` on commit `4189258e3dff1df7a14347dd43b29133e78690b4`, but it does not certify a live semantic judgment. The overall release label must remain blocked until a conclusive candidate application lifecycle, remaining provider/negative-path behavior and independent audit evidence are complete.
+Local checks are source/model evidence only. Both deployment identities are hosted-verified for the evidence stated in the two release manifests; candidate branch CI is hosted-verified by runs `39349659429` and `39349663850` on commit `7f0a8fe1c000c8a0330877609b99ce64bca623ad`, but it does not certify a live semantic judgment. The overall release label must remain blocked until a conclusive candidate application lifecycle, remaining provider/negative-path behavior and independent audit evidence are complete.
