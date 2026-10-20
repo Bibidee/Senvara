@@ -79,7 +79,7 @@
     "contract": "0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C",
     "chain_id": 61999,
     "rpc": "https://studio.genlayer.com/api",
-    "browser_result": "Production record page read-only verified; real Rabby reload recovery still failed after deployment"
+    "browser_result": "Production record page read-only verified; after one explicit Rabby reconnect, two consecutive reloads silently restored Wallet B and preserved DECISION RECORDED / SUPPORTED"
   },
   "live_two_wallet_lifecycle": {
     "network": "GenLayer Studionet 61999",
