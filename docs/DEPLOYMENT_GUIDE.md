@@ -52,4 +52,4 @@ The explicitly authorized deployment was finalized on Studionet 61999:
 - **Exact source readback:** 19,552 bytes; SHA-256 `33385d0283d67cd7c13f0cdafe79ba06c3466a20a35356032afe7c9d32fc797c`
 - **Schema/version readback:** `evaluate(number:int, request_nonce:string)`; `get_version() = 0.1.0`
 
-The historical source readback exactly matches `contracts/senvara.py`. The v0.2.0 source readback exactly matches `contracts/senvara_v02.py` and is recorded in `docs/CANDIDATE_V020_MANIFEST.json`. Frontend environment configuration defaults to the historical canonical deployment; candidate preview configuration remains opt-in and no production promotion was made. The remaining hosted lifecycle gates are tracked in `docs/RELEASE_GATES.md`.
+The historical source readback exactly matches `contracts/senvara.py`. The v0.2.0 source readback exactly matches `contracts/senvara_v02.py` and is recorded in `docs/CANDIDATE_V020_MANIFEST.json`. The explicitly authorized production frontend deployment uses the v0.2.0 identity and is recorded in the candidate manifest. The remaining hosted lifecycle gates are tracked in `docs/RELEASE_GATES.md`.

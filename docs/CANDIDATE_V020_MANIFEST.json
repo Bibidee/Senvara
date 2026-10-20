@@ -37,7 +37,7 @@
     "new_dossier_field": "last_attempt_nonce_sha256"
   },
   "historical_deployment_preserved": true,
-  "release_head": "4189258e3dff1df7a14347dd43b29133e78690b4",
+  "release_head": "b428ba6549abaf970139465740bffb52f385fcdb",
   "deployment_receipt": {
     "status": "FINALIZED",
     "from": "0x527dA5f7022f14f7105e5f06cEc1a8EFf53556b5",
@@ -64,10 +64,22 @@
     "deployment_id": "dpl_D5ZZ7D8JgTugswyhWWxQVLWqrGoU",
     "target": "preview",
     "status": "READY",
-    "environment": "Preview candidate identity; production unchanged",
+    "environment": "Preview candidate identity; production deployment recorded separately",
     "protected_browser_routes": ["/", "/method/", "/open/", "/workbench/"],
     "protected_browser_viewports": ["390x844", "1440x900"],
     "protected_browser_result": "PASS; no failed requests or console errors"
+  },
+  "frontend_production": {
+    "url": "https://senvara.vercel.app",
+    "deployment_url": "https://senvara-hm8oiry7n-bibidees-projects.vercel.app",
+    "deployment_id": "dpl_HnWosGJmYZFmWzrLJt3eAVuJ4aME",
+    "target": "production",
+    "status": "READY",
+    "environment": "Candidate v0.2.0; explicitly authorized production deployment",
+    "contract": "0xF563d381C3ec5BDA61f166Bb1FFf781dE6B81b8C",
+    "chain_id": 61999,
+    "rpc": "https://studio.genlayer.com/api",
+    "browser_result": "Production record page read-only verified; real Rabby reload recovery still failed after deployment"
   },
   "live_two_wallet_lifecycle": {
     "network": "GenLayer Studionet 61999",
