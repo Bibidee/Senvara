@@ -73,7 +73,7 @@
   "vercel_preview_deployment_id": "dpl_4DV1UPFwnUxJ2jtXk423YaJey3VC",
   "vercel_status": "HISTORICAL_RECORD_ONLY; ACTIVE_V0_2_0_PRODUCTION_DEPLOYMENT_RECORDED_IN_CANDIDATE_V020_MANIFEST",
   "github_actions_workflow": ".github/workflows/quality.yml",
-  "github_actions_status": "PASS; active exact-head evidence is run 39408875469 on commit 73c6b4767bb390e5b1be5cc1d513165155dc2488",
+  "github_actions_status": "PASS; active exact-head evidence is run 39416229941 on commit 4be09df8160d7cf62cb2d02fd313085aafff4bd4; full-install dependency audit passed",
   "live_two_wallet_lifecycle": {
     "record": 1,
     "signed_commit": "272a0a003e875c95902aa6f39c03458f26e4798c",
